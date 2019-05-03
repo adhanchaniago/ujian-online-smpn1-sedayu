@@ -30,17 +30,17 @@
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Login SMP Megeri 1 Sedayu</p>
+      <p class="login-box-msg">Login SMP Negeri 1 Sedayu</p>
 
       <form action="<?php echo base_url('auth/process'); ?>" method="post">
         <div class="input-group mb-3">
-          <input name="username" type="text" class="form-control" placeholder="Username" required="">
+          <input name="username" type="text" class="form-control" placeholder="Masukan Username / NIP / NIS" required="">
           <div class="input-group-append">
               <span class="fa fa-user input-group-text"></span>
           </div>
         </div>
         <div class="input-group mb-3">
-          <input name="password" type="password" class="form-control" placeholder="Password" required="">
+          <input name="password" type="password" class="form-control" placeholder="Masukan Password" required="">
           <div class="input-group-append">
               <span class="fa fa-lock input-group-text"></span>
           </div>

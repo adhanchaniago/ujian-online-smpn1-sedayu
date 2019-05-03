@@ -11,71 +11,42 @@ class Auth extends CI_Controller{
         $this->load->view('login');
     }
 
-    function aksi_login(){
+    function process(){
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         
         $where_admin = array(
-            'admin_username' => $username,
-            'admin_password' => $password
+            'username' => $username,
+            'password' => $password
         );
-
         $where_guru = array(
-            'guru_username' => $username,
-            'guru_password' => $password
+            'username' => $username,
+            'password' => $password
         );
-
         $where_siswa = array(
-            'siswa_username' => $username,
-            'siswa_password' => $password
+            'username' => $username,
+            'password' => $password
         );
 
-        $cek_admin  = $this->m_login->cek_login("admin",$where_admin)->num_rows();
-        $cek_guru   = $this->m_login->cek_login("guru",$where_guru)->num_rows();
-        $cek_siswa  = $this->m_login->cek_login("siswa",$where_siswa)->num_rows();
+        $cek_admin  = $this->m_auth->check_auth("admin",$where_admin)->num_rows();
+        $cek_guru   = $this->m_auth->check_auth("guru",$where_guru)->num_rows();
+        $cek_siswa  = $this->m_auth->check_auth("siswa",$where_siswa)->num_rows();
         
         if ( $cek_admin > 0 ) {
             # code...
-            $row  = $this->m_login->cek_login("admin",$where_admin)->row();
+            $row  = $this->m_auth->check_auth("admin",$where_admin)->row();
             $data_session = array(
-                'id' => $row->admin_id,
-                'nama' => $username,
-                'status' => "login",
-                'level' => 'admin'
+                'id' => $row->id_admin,
+                'username'  => $username,
+                'password'  => $password,
+                'fullname'  => $row->nama,
+                'email'     => $row->email,
+                'status'    => "login",
+                'level'     => 'admin'
             );
             
             $this->session->set_userdata($data_session);
             
-            redirect(base_url("admin/beranda"));
-        }
-        
-        elseif ( $cek_guru > 0 ) {
-            # code...
-            $row   = $this->m_login->cek_login("guru",$where_guru)->row();
-            $data_session = array(
-                'id' => $row->guru_id,
-                'nama' => $username,
-                'status' => "login",
-                'level' => 'guru'
-            );
-            
-            $this->session->set_userdata($data_session);
-            
-            redirect(base_url("admin/beranda"));
-        }
-        
-        elseif ( $cek_siswa > 0 ) {
-            # code...
-            $row  = $this->m_login->cek_login("siswa",$where_siswa)->row();
-            $data_session = array(
-                'id' => $row->siswa_id,
-                'nama' => $username,
-                'status' => "login",
-                'level' => 'siswa'
-            );
-        
-            $this->session->set_userdata($data_session);
-        
             redirect(base_url("admin/beranda"));
         }
 
@@ -88,6 +59,6 @@ class Auth extends CI_Controller{
 
     function logout(){
         $this->session->sess_destroy();
-        redirect(base_url('login'));
+        redirect(base_url('auth'));
     }
 }
