@@ -48,7 +48,7 @@
                         <td>
                           <div class='btn-group'>
                             <button type='button' class='btn btn-default'>Action</button>
-                            <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
+                            <button type='button' class='btn btn-default dropdown-toggle' data-template-toggle='dropdown' aria-expanded='false'>
                               <span class='caret'></span>
                               <span class='sr-only'>Toggle Dropdown</span>
                             </button>

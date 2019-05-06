@@ -83,7 +83,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(2) == 'kelas' || $this->uri->segment(2) == 'pelajaran' || $this->uri->segment(2) == 'pbm') ? 'menu-open' : null ; ?>">
+          <li class="nav-item has-treeview <?php echo ($this->uri->segment(2) == 'data-kelas' || $this->uri->segment(2) == 'data-pelajaran' || $this->uri->segment(2) == 'data-pbm') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-graduation-cap"></i>
               <p>
@@ -93,19 +93,19 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item" >
-                <a href="<?php echo base_url() ?>admin/kelas" class="nav-link <?php echo ($this->uri->segment(2) == 'kelas') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url() ?>admin/data-kelas" class="nav-link <?php echo ($this->uri->segment(2) == 'data-kelas') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>Kelas</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo base_url('admin/pelajaran')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'pelajaran') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('admin/data-pelajaran')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'data-pelajaran') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>Pelajaran</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo base_url('admin/pbm')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'pbm') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('admin/data-pbm')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'data-pbm') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>PBM</p>
                 </a>

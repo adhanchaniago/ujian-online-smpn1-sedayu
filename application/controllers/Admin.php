@@ -1031,4 +1031,501 @@ default function in this app:
         }
     }
     // end users controller
+
+    // start akademik controller
+    public function data_kelas()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->content['rows']= $this->m_admin->data_kelas();
+                $this->view= 'admin/data_kelas';
+                $this->render_pages();
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function form_data_kelas()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->html= '
+                <form action="'.base_url().'admin/data-kelas-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Kelas</label>
+                        <input name="nama_kelas" type="text" class="form-control" placeholder="*) Masukan Nama Kelas" required="">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_kelas_store()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_kelas_store() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                }
+                echo json_encode($this->msg);
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function form_data_kelas_edit()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->m_admin->id_kelas= $this->uri->segment(3);
+                $row= $this->m_admin->data_kelas_edit();
+                $this->html= '
+                <form action="'.base_url().'admin/data-kelas-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Kelas</label>
+                        <input value="'.$row->nama_kelas.'" name="nama_kelas" type="text" class="form-control" placeholder="*) Masukan Nama Kelas" required="">
+                    </div>
+                    <input value="'.$row->id_kelas.'" type="hidden" name="id_kelas">
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_kelas_update()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_kelas_update() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Diubah',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>0,
+                        'msg'=>'Data Gagal Diubah',
+                    ];
+                }
+                echo json_encode($this->msg);
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_kelas_delete()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->m_admin->id_kelas= $this->uri->segment(3);
+                if ( $this->m_admin->data_kelas_delete() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Dihapus',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>0,
+                        'msg'=>'Data Gagal Dihapus',
+                    ];
+                }
+                echo json_encode($this->msg);
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pelajaran()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->content['rows']= $this->m_admin->data_pelajaran();
+                $this->view= 'admin/data_pelajaran';
+                $this->render_pages();
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function form_data_pelajaran()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pelajaran_store()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function form_data_pelajaran_edit()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pelajaran_update()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pelajaran_delete()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pbm()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                $this->view= 'admin/data_pbm';
+                $this->render_pages();
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function form_data_pbm()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pbm_store()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function form_data_pbm_edit()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pbm_update()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    public function data_pbm_delete()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+    // end akademik controller
 }

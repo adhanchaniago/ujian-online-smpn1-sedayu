@@ -546,4 +546,282 @@ class M_admin extends CI_Model{
         }
     }
 
+    public function data_kelas()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM kelas
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+        
+    public function data_kelas_store()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $data= [
+                    'nama_kelas'=>$this->post['nama_kelas'],
+                    'blok'=>'N',
+                ];
+                return $this->db->insert('kelas',$data);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_kelas_edit()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM kelas WHERE id_kelas='{$this->id_kelas}'
+                ")->row();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_kelas_update()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $data= [
+                    'nama_kelas'=>$this->post['nama_kelas'],
+                ];
+                $where= [
+                    'id_kelas'=>$this->post['id_kelas'],
+                ];
+                return $this->db->update('kelas',$data,$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+    
+    public function data_kelas_delete()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $where= [
+                    'id_kelas'=>$this->id_kelas,
+                ];
+                return $this->db->delete('kelas',$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_pelajaran()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("
+                    SELECT *,
+                        pelajaran.blok AS pelajaran_blok
+                    FROM pelajaran
+                        LEFT JOIN kelas
+                            ON pelajaran.id_kelas=kelas.id_kelas
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+        
+    public function data_pelajaran_store()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $data= [
+                    'name'=>$this->post['name']
+                ];
+                return $this->db->insert('table',$data);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_pelajaran_edit()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM table WHERE id='{$this->id}'
+                ")->row();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_pelajaran_update()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $data= [
+                    'name'=>$this->post['name'],
+                ];
+                $where= [
+                    'id'=>$this->post['id'],
+                ];
+                return $this->db->update('table',$data,$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+    
+    public function data_pelajaran_delete()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $where= [
+                    'id'=>$this->post['id'],
+                ];
+                return $this->db->delete('table',$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_pbm()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM pbm
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+        
+    public function data_pbm_store()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $data= [
+                    'name'=>$this->post['name']
+                ];
+                return $this->db->insert('table',$data);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_pbm_edit()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM table WHERE id='{$this->id}'
+                ")->row();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_pbm_update()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $data= [
+                    'name'=>$this->post['name'],
+                ];
+                $where= [
+                    'id'=>$this->post['id'],
+                ];
+                return $this->db->update('table',$data,$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+    
+    public function data_pbm_delete()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $where= [
+                    'id'=>$this->post['id'],
+                ];
+                return $this->db->delete('table',$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
 }
