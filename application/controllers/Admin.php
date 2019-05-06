@@ -1267,7 +1267,29 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->html= '
+                <form action="'.base_url().'admin/data-pelajaran-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Pelajaran</label>
+                        <input name="nama_pelajaran" type="text" class="form-control" placeholder="*) Masukan Nama Pelajaran" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Kelas</label>
+                        <select name="id_kelas" class="form-control" required="">
+                            <option value="" selected disabled> -- Pilih Kelas -- </option>
+                ';
+                            foreach ($this->m_admin->data_kelas() as $key => $value) {
+                                $this->html .= '
+                                <option value="'.$value->id_kelas.'">'.$value->nama_kelas.'</option>
+                                ';
+                            }
+                $this->html .= '
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
                 break;
             
             case 'guru':
@@ -1291,7 +1313,19 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_pelajaran_store() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                }
+                echo json_encode($this->msg);
                 break;
             
             case 'guru':
@@ -1315,7 +1349,32 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->id_pelajaran= $this->uri->segment(3);
+                $row= $this->m_admin->data_pelajaran_edit();
+                $this->html= '
+                <form action="'.base_url().'admin/data-pelajaran-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Pelajaran</label>
+                        <input value="'.$row->nama_pelajaran.'" name="nama_pelajaran" type="text" class="form-control" placeholder="*) Masukan Nama Pelajaran" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Kelas</label>
+                        <select name="id_kelas" class="form-control" required="">
+                            <option value="" disabled> -- Pilih Kelas -- </option>
+                ';
+                            foreach ($this->m_admin->data_kelas() as $key => $value) {
+                                $this->html .= '
+                                <option '.($value->id_kelas==$row->id_kelas? 'selected' : null ).' value="'.$value->id_kelas.'">'.$value->nama_kelas.'</option>
+                                ';
+                            }
+                $this->html .= '
+                        </select>
+                    </div>
+                    <input value="'.$row->id_pelajaran.'" type="hidden" name="id_pelajaran">
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
                 break;
             
             case 'guru':
@@ -1339,7 +1398,19 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_pelajaran_update() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Diubah',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>0,
+                        'msg'=>'Data Gagal Diubah',
+                    ];
+                }
+                echo json_encode($this->msg);
                 break;
             
             case 'guru':
@@ -1363,7 +1434,19 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->id_pelajaran= $this->uri->segment(3);
+                if ( $this->m_admin->data_pelajaran_delete() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Dihapus',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>0,
+                        'msg'=>'Data Gagal Dihapus',
+                    ];
+                }
+                echo json_encode($this->msg);
                 break;
             
             case 'guru':
@@ -1387,6 +1470,7 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
+                $this->content['rows']= $this->m_admin->data_pbm();
                 $this->view= 'admin/data_pbm';
                 $this->render_pages();
                 break;
@@ -1412,7 +1496,54 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->html= '
+				<form action="'.base_url().'admin/data-pbm-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+					<div class="card-body">
+						<div class="form-group">
+							<label for="inputPelajaran">Tahun Ajaran</label>
+							<input name="tahun_ajaran" type="text" class="form-control" placeholder="*) Masukan Tahun Ajaran" required="">
+						</div>
+						<div class="form-group">
+							<label for="inputPelajaran">NIS <small id="alertInputNis"></small></label>
+							<input name="nis" type="text" class="form-control" id="inputNis" placeholder="*) Masukan Nomor Induk Siswa" required="">
+						</div>
+						<div class="form-group">
+							<label for="inputPelajaran">Pelajaran</label>
+							<select id="inputPelajaran" name="id_pelajaran" class="form-control" required="">
+								<option value="" selected disabled> -- Pilih Pelajaran -- </option>
+				';
+								foreach ($this->m_admin->data_pelajaran() as $key => $value) {
+									$this->html .= '
+										<option value="'.$value->id_pelajaran.'">('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>
+									';
+								}
+				$this->html .= '
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="inputPelajaran">Guru</label>
+							<select name="nip" class="form-control" required="">
+								<option value="" selected disabled> -- Pilih Guru -- </option>
+				';
+								foreach ($this->m_admin->data_guru() as $key => $value) {
+									$this->html .= '
+										<option value="'.$value->nip.'">'.$value->nama.'</option>
+									';
+								}
+				$this->html .= '
+							</select>
+						</div>
+					</div>
+					<!-- /.card-body -->
+				';
+				$this->html.= '
+					
+					<div class="card-footer">
+						<button type="submit" class="btn btn-primary">Publish</button>
+					</div>
+				</form>
+				';
+				echo $this->html; 
                 break;
             
             case 'guru':
@@ -1431,12 +1562,86 @@ default function in this app:
                 break;
         }
     }
+
+    public function data_pbm_cek_nis(){
+		switch ( $this->session->userdata('level') ) {
+			case 'admin':
+				# code...
+				$this->m_admin->post= [];
+				$this->m_admin->post['nis']= $this->input->get('nis');
+				if ( $this->m_admin->data_pbm_cek_nis()->num_rows() > 0 ) {
+					# code...
+					$this->msg= [
+						'stats'=>1,
+						'msg'=> 'Siswa dengan NIS '.$this->input->get('nis').' berhasil ditemukan',
+						'nis'=> $this->m_admin->data_pbm_cek_nis()->row()->nis,
+					];
+				} else {
+					# code...
+					$this->msg= [
+						'stats'=>0,
+						'msg'=> 'Siswa dengan NIS '.$this->input->get('nis').' tidak ditemukan'
+					];
+				}
+				echo json_encode($this->msg );
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+    }
+    
+    public function data_pbm_pelajaran(){
+		switch ($_SESSION['level']) {
+			case 'admin':
+				# code...
+				$this->m_admin->nis= $this->input->get('nis');
+				$this->html= '<option value="" selected disabled> -- Pilih Pelajaran -- </option>';
+				foreach ($this->m_admin->data_pbm_pelajaran() as $key => $value) {
+					# code...
+					$this->html.= '<option value="'.$value->id_pelajaran.'" > ('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+				}
+				echo $this->html;
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+	}
+    
     public function data_pbm_store()
     {
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->post= $this->input->post();
+				if ( $this->m_admin->data_pbm_cek_nis()->num_rows() > 0 ) {
+					$this->m_admin->post['nis']= $this->m_admin->data_pbm_cek_nis()->row()->nis;
+					if ( $this->m_admin->data_pbm_store() ) {
+						# code...
+						$this->msg=[
+							'stats'=>1,
+							'msg'=> 'Data Berhasil Disimpan',
+						];
+					} else {
+						# code...
+						$this->msg=[
+							'stats'=>0,
+							'msg'=> 'Data Gagal Disimpan',
+						];
+					}
+					
+				} else {
+					$this->msg=[
+						'stats'=>0,
+						'msg'=> 'Maaf Siswa dengan Nis '.$this->input->post('nis').' belum terdaftar',
+					];
+					# code...
+				}
+				echo json_encode($this->msg);
+				// echo json_encode($this->m_admin->post);
                 break;
             
             case 'guru':

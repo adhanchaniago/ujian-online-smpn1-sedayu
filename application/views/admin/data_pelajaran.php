@@ -9,12 +9,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Data Informasi Template</h1>
+            <h1>Data Informasi Pelajaran</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?php echo base_url() ?>admin">Beranda</a></li>
-              <li class="breadcrumb-item active">Informasi Template</li>
+              <li class="breadcrumb-item active">Informasi Pelajaran</li>
             </ol>
           </div>
         </div>
@@ -48,7 +48,7 @@
                       <tr>
                         <td>{$value->nama_pelajaran}</td>
                         <td>{$value->nama_kelas}</td>
-                        <td>{$value->blok_pelajaran}</td>
+                        <td>{$value->pelajaran_blok}</td>
                         <td>
                           <div class='btn-group'>
                             <button type='button' class='btn btn-default'>Action</button>
@@ -126,7 +126,7 @@
   $(document).on('click', '.form-add-new', function(e){
     e.preventDefault();
     $.get($(this).attr('href'), function(data){
-      $('#myModal .modal-title').html('Tambah Data Informasi Template');
+      $('#myModal .modal-title').html('Tambah Data Informasi Pelajaran');
       $('#myModal .modal-body').html(data);
       $('#myModal').modal('show');
     },'html');
@@ -156,7 +156,7 @@
   $('.edit').on('click', function(e){
     e.preventDefault(); 
     $.get( $(this).attr('href'), function(data){
-      $('#myModal .modal-title').html('Edit Informasi Template');
+      $('#myModal .modal-title').html('Edit Informasi Pelajaran');
       $('#myModal .modal-body').html(data);
       $('#myModal').modal('show');
     } ,'html');

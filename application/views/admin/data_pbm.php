@@ -9,12 +9,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Data Informasi Template</h1>
+            <h1>Data Informasi PBM</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?php echo base_url() ?>admin">Beranda</a></li>
-              <li class="breadcrumb-item active">Informasi Template</li>
+              <li class="breadcrumb-item active">Informasi PBM</li>
             </ol>
           </div>
         </div>
@@ -28,15 +28,19 @@
           <div class="card">
             <div class="card-header">
               <!-- <h3 class="card-title">Daftar Informasi Kelas</h3> -->
-              <a href="<?php echo base_url() ?>admin/form-data-template" class="btn btn-default float-right form-add-new"><i class="fa fa-plus"></i> Add New</a>
+              <a href="<?php echo base_url() ?>admin/form-data-pbm" class="btn btn-default float-right form-add-new"><i class="fa fa-plus"></i> Add New</a>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Field 1</th>
-                  <th>Field 1</th>
+                  <th>Tahun Ajaran</th>
+                  <th>NIS</th>
+                  <th>Nama Siswa</th>
+                  <th>Kelas</th>
+                  <th>Pelajaran</th>
+                  <th>Nama Guru</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -44,20 +48,12 @@
                   foreach ($rows as $key => $value) {
                     echo "
                       <tr>
-                        <td>{value}</td>
-                        <td>
-                          <div class='btn-group'>
-                            <button type='button' class='btn btn-default'>Action</button>
-                            <button type='button' class='btn btn-default dropdown-toggle' data-template-toggle='dropdown' aria-expanded='false'>
-                              <span class='caret'></span>
-                              <span class='sr-only'>Toggle Dropdown</span>
-                            </button>
-                            <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                              <a class='dropdown-item edit' href='".base_url('admin/form-data-template-edit/')."'>Edit</a>
-                              <a class='dropdown-item delete' href='".base_url('admin/data-template-delete/')."'>Delete</a>
-                            </div>
-                          </div>
-                        </td>
+                        <td>{$value->tahun_ajaran}</td>
+                        <td>{$value->nis}</td>
+                        <td>{$value->nama_siswa}</td>
+                        <td>{$value->nama_kelas}</td>
+                        <td>{$value->nama_pelajaran}</td>
+                        <td>{$value->nama_guru}</td>
                       </tr>
                     ";
                   }
@@ -122,9 +118,24 @@
   $(document).on('click', '.form-add-new', function(e){
     e.preventDefault();
     $.get($(this).attr('href'), function(data){
-      $('#myModal .modal-title').html('Tambah Data Informasi Template');
+      $('#myModal .modal-title').html('Tambah Data Informasi PBM');
       $('#myModal .modal-body').html(data);
       $('#myModal').modal('show');
+
+      $('#inputNis').on('keyup',function(){
+        $.get('<?php echo base_url() ?>admin/data-pbm-cek-nis',{"nis":$(this).val()},function(data){
+            $('#alertInputNis').html(')'+data.msg);
+            if ( data.stats == '1' ) {
+                $.get('<?php echo base_url() ?>admin/data-pbm-pelajaran',{ "nis" : data.nis },function(_data){
+                    $('#inputPelajaran').html(_data);
+                    console.log(_data);
+                },'html');
+            }else{
+                $('#inputPelajaran').html('<option value="">'+data.msg+'</option>');
+            }
+            console.log(data);
+        },'json');
+      });
     },'html');
   });
   $(document).on('submit', 'form#addNew', function(e) {
@@ -142,40 +153,6 @@
             alert( data.msg );
           }
           // console.log(data);
-        },
-        cache: false,
-        contentType: false,
-        processData: false,
-        dataType: 'json'
-    });
-  });
-  $('.edit').on('click', function(e){
-    e.preventDefault(); 
-    $.get( $(this).attr('href'), function(data){
-      $('#myModal .modal-title').html('Edit Informasi Template');
-      $('#myModal .modal-body').html(data);
-      $('#myModal').modal('show');
-    } ,'html');
-  });
-  
-  $('.delete').on('click', function(e){
-    e.preventDefault(); 
-    $.get( $(this).attr('href'), function(data){
-      alert( (data.stats=='1') ? data.msg : data.msg )
-      location.reload()
-    } ,'json');
-  });
-  $(document).on('submit','form#edit',function(e){
-    e.preventDefault();    
-    var formData = new FormData(this);
-    $.ajax({
-        url: $(this).attr("action"),
-        type: 'POST',
-        data: formData,
-        success: function (data) {
-          // console.log(data)
-            alert( (data.stats=='1') ? data.msg : data.msg )
-            location.reload()
         },
         cache: false,
         contentType: false,

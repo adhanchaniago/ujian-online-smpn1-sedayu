@@ -665,9 +665,11 @@ class M_admin extends CI_Model{
             case 'admin':
                 # code...
                 $data= [
-                    'name'=>$this->post['name']
+                    'id_kelas'=>$this->post['id_kelas'],
+                    'nama_pelajaran'=>$this->post['nama_pelajaran'],
+                    'blok'=>'N',
                 ];
-                return $this->db->insert('table',$data);
+                return $this->db->insert('pelajaran',$data);
                 break;
             
             default:
@@ -683,7 +685,7 @@ class M_admin extends CI_Model{
             case 'admin':
                 # code...
                 return $this->db->query("
-                    SELECT * FROM table WHERE id='{$this->id}'
+                    SELECT * FROM pelajaran WHERE id_pelajaran='{$this->id_pelajaran}'
                 ")->row();
                 break;
             
@@ -700,12 +702,13 @@ class M_admin extends CI_Model{
             case 'admin':
                 # code...
                 $data= [
-                    'name'=>$this->post['name'],
+                    'nama_pelajaran'=>$this->post['nama_pelajaran'],
+                    'id_kelas'=>$this->post['id_kelas'],
                 ];
                 $where= [
-                    'id'=>$this->post['id'],
+                    'id_pelajaran'=>$this->post['id_pelajaran'],
                 ];
-                return $this->db->update('table',$data,$where);
+                return $this->db->update('pelajaran',$data,$where);
                 break;
             
             default:
@@ -721,9 +724,9 @@ class M_admin extends CI_Model{
             case 'admin':
                 # code...
                 $where= [
-                    'id'=>$this->post['id'],
+                    'id_pelajaran'=>$this->id_pelajaran,
                 ];
-                return $this->db->delete('table',$where);
+                return $this->db->delete('pelajaran',$where);
                 break;
             
             default:
@@ -739,7 +742,22 @@ class M_admin extends CI_Model{
             case 'admin':
                 # code...
                 return $this->db->query("
-                    SELECT * FROM pbm
+                    SELECT
+                        pbm.tahun_ajaran,
+                        siswa.nis,
+                        siswa.nama AS nama_siswa,
+                        kelas.nama_kelas,
+                        pelajaran.nama_pelajaran,
+                        guru.nama AS nama_guru
+                    FROM pbm
+                        LEFT JOIN siswa
+                            ON pbm.nis = siswa.nis
+                        LEFT JOIN pelajaran
+                            ON pbm.id_pelajaran = pelajaran.id_pelajaran
+                        LEFT JOIN guru
+                            ON pbm.nip = guru.nip
+                        LEFT JOIN kelas
+                            ON pelajaran.id_kelas = kelas.id_kelas
                 ")->result_object();
                 break;
             
@@ -749,16 +767,55 @@ class M_admin extends CI_Model{
                 break;
         }
     }
+
+    public function data_pbm_cek_nis()
+	{
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("SELECT * FROM siswa WHERE nis='{$this->post["nis"]}' ");
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+    
+    public function data_pbm_pelajaran()
+	{
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                return $this->db->query("
+                    SELECT id_pelajaran, nama_pelajaran,nama_kelas 
+                        FROM   pelajaran
+                            LEFT JOIN kelas
+                                ON pelajaran.id_kelas=kelas.id_kelas
+                        WHERE id_pelajaran
+                            NOT IN (SELECT id_pelajaran FROM pbm WHERE nis='{$this->nis}')
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+	}
         
     public function data_pbm_store()
     {
         switch ($this->session->userdata('level')) {
             case 'admin':
                 # code...
-                $data= [
-                    'name'=>$this->post['name']
-                ];
-                return $this->db->insert('table',$data);
+                return $this->db->insert('pbm', [
+                    'tahun_ajaran'  => $this->post['tahun_ajaran'],
+                    'id_pelajaran'  => $this->post['id_pelajaran'],
+                    'nip'           => $this->post['nip'],
+                    'nis'           => $this->post['nis'],
+                ] );
                 break;
             
             default:
