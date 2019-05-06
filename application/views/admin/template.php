@@ -28,7 +28,7 @@
           <div class="card">
             <div class="card-header">
               <!-- <h3 class="card-title">Daftar Informasi Kelas</h3> -->
-              <a href="<?php echo base_url() ?>admin/form-add-data-materi" class="btn btn-default float-right add-new"><i class="fa fa-plus"></i> Add New</a>
+              <a href="<?php echo base_url() ?>admin/form-data-template" class="btn btn-default float-right form-add-new"><i class="fa fa-plus"></i> Add New</a>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -48,13 +48,13 @@
                         <td>
                           <div class='btn-group'>
                             <button type='button' class='btn btn-default'>Action</button>
-                            <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
+                            <button type='button' class='btn btn-default dropdown-toggle' data-template-toggle='dropdown' aria-expanded='false'>
                               <span class='caret'></span>
                               <span class='sr-only'>Toggle Dropdown</span>
                             </button>
                             <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                              <a class='dropdown-item edit' href='".base_url('admin/form-edit-data-materi/')."'>Edit</a>
-                              <a class='dropdown-item delete' href='".base_url('admin/delete-data-materi/')."'>Delete</a>
+                              <a class='dropdown-item edit' href='".base_url('admin/form-data-template-edit/')."'>Edit</a>
+                              <a class='dropdown-item delete' href='".base_url('admin/data-template-delete/')."'>Delete</a>
                             </div>
                           </div>
                         </td>
@@ -165,7 +165,7 @@
       location.reload()
     } ,'json');
   });
-  $(document).on('submit','form#editMateri',function(e){
+  $(document).on('submit','form#edit',function(e){
     e.preventDefault();    
     var formData = new FormData(this);
     $.ajax({

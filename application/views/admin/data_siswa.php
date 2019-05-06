@@ -173,7 +173,7 @@
       location.reload()
     } ,'json');
   });
-  $(document).on('submit','form#editMateri',function(e){
+  $(document).on('submit','form#edit',function(e){
     e.preventDefault();    
     var formData = new FormData(this);
     $.ajax({
