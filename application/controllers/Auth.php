@@ -13,47 +13,34 @@ class Auth extends CI_Controller{
 
     function process(){
         $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        $password = md5($this->input->post('password'));
         
-        $where_admin = array(
-            'username' => $username,
-            'password' => $password
-        );
-        $where_guru = array(
-            'username' => $username,
-            'password' => $password
-        );
-        $where_siswa = array(
+        $where_users = array(
             'username' => $username,
             'password' => $password
         );
 
-        $cek_admin  = $this->m_auth->check_auth("admin",$where_admin)->num_rows();
-        $cek_guru   = $this->m_auth->check_auth("guru",$where_guru)->num_rows();
-        $cek_siswa  = $this->m_auth->check_auth("siswa",$where_siswa)->num_rows();
+        $cek_users  = $this->m_auth->check_auth("users",$where_users)->num_rows();
         
-        if ( $cek_admin > 0 ) {
+        if ( $cek_users > 0 ) {
             # code...
-            $row  = $this->m_auth->check_auth("admin",$where_admin)->row();
+            $row  = $this->m_auth->check_auth("users",$where_users)->row();
             $data_session = array(
-                'id' => $row->id_admin,
                 'username'  => $username,
                 'password'  => $password,
-                'fullname'  => $row->nama,
-                'email'     => $row->email,
-                'status'    => "login",
-                'level'     => 'admin'
+                'level'     => $row->level,
+                'status'     => 'login',
             );
             
             $this->session->set_userdata($data_session);
             
-            redirect(base_url("admin/beranda"));
+            redirect(base_url("admin"));
         }
-
+        
         else{
-            // login error
-            // redirect(base_url("login-error"));
-            $this->load->view('login_error');
+            
+            $this->session->set_flashdata('msg', 'Maaf! Username atau Password anda salah!');
+            redirect(base_url('auth'));
         }
     }
 

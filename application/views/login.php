@@ -31,10 +31,20 @@
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Login SMP Negeri 1 Sedayu</p>
-
+      <?php
+        if ( ! empty($this->session->flashdata('msg')) ) {
+          # code...
+          echo '
+            <div class="alert alert-warning alert-dismissible">
+                <h5><i class="icon fa fa-warning"></i> Alert!</h5>
+                '.$this->session->flashdata('msg').'
+            </div>
+          ';
+        }
+      ?>
       <form action="<?php echo base_url('auth/process'); ?>" method="post">
         <div class="input-group mb-3">
-          <input name="username" type="text" class="form-control" placeholder="Masukan Username / NIP / NIS" required="">
+          <input name="username" type="text" class="form-control" placeholder="Masukan Username" required="">
           <div class="input-group-append">
               <span class="fa fa-user input-group-text"></span>
           </div>
@@ -62,7 +72,7 @@
 <!-- /.login-box -->
 
 <!-- jQuery -->
-<script src="themes/adminlte/adminlte.io/themes/dev/adminlte/   plugins/jquery/jquery.min.js"></script>
+<script src="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- iCheck -->

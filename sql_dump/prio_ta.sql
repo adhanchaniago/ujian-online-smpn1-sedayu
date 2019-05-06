@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 02, 2019 at 11:17 AM
+-- Generation Time: May 06, 2019 at 08:45 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -30,43 +30,19 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `admin` (
   `id_admin` int(3) NOT NULL,
-  `username` varchar(20) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  `nama` varchar(30) NOT NULL,
-  `level` varchar(20) NOT NULL,
-  `alamat` text NOT NULL,
-  `no_telp` char(13) NOT NULL,
-  `email` varchar(20) NOT NULL,
-  `blok` enum('Y','N') NOT NULL
+  `username` varchar(64) DEFAULT NULL,
+  `nama` varchar(30) DEFAULT NULL,
+  `alamat` text,
+  `no_telp` char(13) DEFAULT NULL,
+  `email` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `det_pelajaran`
+-- Dumping data for table `admin`
 --
 
-CREATE TABLE `det_pelajaran` (
-  `id_det_pelajaran` int(11) NOT NULL,
-  `id_pelajaran` int(11) NOT NULL,
-  `id_guru` int(11) NOT NULL,
-  `id_kelas` int(11) NOT NULL,
-  `blok` enum('Y','N') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `formula_lcg`
---
-
-CREATE TABLE `formula_lcg` (
-  `id_formula_lcg` int(11) NOT NULL,
-  `formula_name` varchar(20) DEFAULT NULL,
-  `a` int(2) DEFAULT NULL,
-  `b` int(2) DEFAULT NULL,
-  `m` int(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `admin` (`id_admin`, `username`, `nama`, `alamat`, `no_telp`, `email`) VALUES
+(1, 'admin', 'Super Admin', 'Jogja', '08123456789', 'admin@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -88,11 +64,9 @@ CREATE TABLE `grup_soal` (
 --
 
 CREATE TABLE `guru` (
-  `id_guru` int(11) NOT NULL,
-  `nip` char(12) DEFAULT NULL,
+  `nip` char(20) NOT NULL,
+  `username` char(64) DEFAULT NULL,
   `nama` varchar(30) DEFAULT NULL,
-  `password` varchar(20) DEFAULT NULL,
-  `level` varchar(20) DEFAULT NULL,
   `alamat` text,
   `tempat_lahir` varchar(20) DEFAULT NULL,
   `tgl_lahir` date DEFAULT NULL,
@@ -100,10 +74,16 @@ CREATE TABLE `guru` (
   `no_telp` char(13) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `gambar` varchar(100) DEFAULT NULL,
-  `posisi` varchar(20) DEFAULT NULL,
-  `blok` enum('Y','N') DEFAULT NULL,
   `jk` enum('L','P') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `guru`
+--
+
+INSERT INTO `guru` (`nip`, `username`, `nama`, `alamat`, `tempat_lahir`, `tgl_lahir`, `agama`, `no_telp`, `email`, `gambar`, `jk`) VALUES
+('1985033020190428', '1985033020190428', 'Guru Satu', 'Jogja', 'Jogja', '2019-05-01', 'islam', '08123456789', 'gurusatu@gmail.com', NULL, 'L'),
+('1985033020190429', '1985033020190429', 'Guru Kepala Lab', 'jogja', 'jogja', '2019-05-01', 'islam', '08123456789', 'gurukepalalab@gmail.com', NULL, 'L');
 
 -- --------------------------------------------------------
 
@@ -120,26 +100,6 @@ CREATE TABLE `hasil_ujian` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `jadwal_ujian`
---
-
-CREATE TABLE `jadwal_ujian` (
-  `id_jadwal_ujian` int(11) NOT NULL,
-  `nama_jadwal_ujian` varchar(20) DEFAULT NULL,
-  `id_det_pelajaran` int(11) DEFAULT NULL,
-  `id_tahun_ajaran` int(11) DEFAULT NULL,
-  `semester` enum('Semester Ganjil','Semester Genap') DEFAULT NULL,
-  `id_formula_lcg` int(11) DEFAULT NULL,
-  `id_grup_soal` int(11) DEFAULT NULL,
-  `tgl_ujian` date DEFAULT NULL,
-  `jam_ujian` time DEFAULT NULL,
-  `waktu_ujian` int(3) DEFAULT NULL,
-  `enrol_key` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `kelas`
 --
 
@@ -147,6 +107,27 @@ CREATE TABLE `kelas` (
   `id_kelas` int(11) NOT NULL,
   `nama_kelas` varchar(20) DEFAULT NULL,
   `blok` enum('Y','N') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `kelas`
+--
+
+INSERT INTO `kelas` (`id_kelas`, `nama_kelas`, `blok`) VALUES
+(1, 'Kelas IX', 'N');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pbm`
+--
+
+CREATE TABLE `pbm` (
+  `id_pbm` int(11) NOT NULL,
+  `tahun_ajaran` char(9) DEFAULT NULL,
+  `id_pelajaran` int(11) DEFAULT NULL,
+  `nip` char(20) DEFAULT NULL,
+  `nis` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -157,35 +138,9 @@ CREATE TABLE `kelas` (
 
 CREATE TABLE `pelajaran` (
   `id_pelajaran` int(11) NOT NULL,
+  `id_kelas` int(11) DEFAULT NULL,
   `nama_pelajaran` varchar(20) DEFAULT NULL,
   `blok` enum('Y','N') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pendaftaran_ujian`
---
-
-CREATE TABLE `pendaftaran_ujian` (
-  `id_pendaftaran_ujian` int(11) NOT NULL,
-  `id_jadwal_ujian` int(11) DEFAULT NULL,
-  `id_siswa` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `proses_ujian`
---
-
-CREATE TABLE `proses_ujian` (
-  `id_proses_ujian` int(11) NOT NULL,
-  `id_pendaftaran_ujian` int(11) DEFAULT NULL,
-  `jawaban_salah` char(10) DEFAULT NULL,
-  `jawaban_benar` char(10) DEFAULT NULL,
-  `tidak_menjawab` char(10) DEFAULT NULL,
-  `jumlah_soal` char(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -195,24 +150,25 @@ CREATE TABLE `proses_ujian` (
 --
 
 CREATE TABLE `siswa` (
-  `id_siswa` int(11) NOT NULL,
-  `nis` char(20) DEFAULT NULL,
+  `nis` char(20) NOT NULL,
+  `username` char(64) DEFAULT NULL,
   `nama` varchar(30) DEFAULT NULL,
-  `password` varchar(20) DEFAULT NULL,
-  `id_kelas` int(11) DEFAULT NULL,
-  `level` varchar(20) DEFAULT NULL,
   `alamat` text,
   `tempat_lahir` varchar(20) DEFAULT NULL,
   `tgl_lahir` date DEFAULT NULL,
   `jk` enum('L','P') DEFAULT NULL,
   `agama` varchar(20) DEFAULT NULL,
-  `nama_bpk` varchar(20) DEFAULT NULL,
-  `nama_ibu` varchar(20) DEFAULT NULL,
   `no_telp` char(13) DEFAULT NULL,
   `email` varchar(20) DEFAULT NULL,
-  `gambar` varchar(100) DEFAULT NULL,
-  `blok` enum('Y','N') DEFAULT NULL
+  `gambar` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `siswa`
+--
+
+INSERT INTO `siswa` (`nis`, `username`, `nama`, `alamat`, `tempat_lahir`, `tgl_lahir`, `jk`, `agama`, `no_telp`, `email`, `gambar`) VALUES
+('111235020000120001', '111235020000120001', 'Siswa Satu', 'jogja', 'Jogja', '2019-05-01', 'L', 'islam', '08123456789', 'siswasatu@gmail.com', NULL);
 
 -- --------------------------------------------------------
 
@@ -235,23 +191,35 @@ CREATE TABLE `soal` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `thun_ajaran`
+-- Table structure for table `users`
 --
 
-CREATE TABLE `thun_ajaran` (
-  `id_thun_ajaran` int(11) NOT NULL,
-  `thun_ajaran` varchar(20) DEFAULT NULL
+CREATE TABLE `users` (
+  `username` char(64) NOT NULL,
+  `password` char(32) DEFAULT NULL,
+  `level` enum('admin','guru','siswa','guru_kep_lab') DEFAULT NULL,
+  `blok` enum('Y','N') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`username`, `password`, `level`, `blok`) VALUES
+('111235020000120001', 'bcd724d15cde8c47650fda962968f102', 'siswa', 'N'),
+('1985033020190428', '77e69c137812518e359196bb2f5e9bb9', 'guru', 'N'),
+('1985033020190429', '77e69c137812518e359196bb2f5e9bb9', 'guru_kep_lab', 'N'),
+('admin', '21232f297a57a5a743894a0e4a801fc3', 'admin', 'N');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `formula_lcg`
+-- Indexes for table `admin`
 --
-ALTER TABLE `formula_lcg`
-  ADD PRIMARY KEY (`id_formula_lcg`);
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id_admin`);
 
 --
 -- Indexes for table `grup_soal`
@@ -263,7 +231,7 @@ ALTER TABLE `grup_soal`
 -- Indexes for table `guru`
 --
 ALTER TABLE `guru`
-  ADD PRIMARY KEY (`id_guru`);
+  ADD PRIMARY KEY (`nip`);
 
 --
 -- Indexes for table `hasil_ujian`
@@ -273,16 +241,16 @@ ALTER TABLE `hasil_ujian`
   ADD KEY `id_proses_ujian` (`id_proses_ujian`);
 
 --
--- Indexes for table `jadwal_ujian`
---
-ALTER TABLE `jadwal_ujian`
-  ADD PRIMARY KEY (`id_jadwal_ujian`);
-
---
 -- Indexes for table `kelas`
 --
 ALTER TABLE `kelas`
   ADD PRIMARY KEY (`id_kelas`);
+
+--
+-- Indexes for table `pbm`
+--
+ALTER TABLE `pbm`
+  ADD PRIMARY KEY (`id_pbm`);
 
 --
 -- Indexes for table `pelajaran`
@@ -291,22 +259,10 @@ ALTER TABLE `pelajaran`
   ADD PRIMARY KEY (`id_pelajaran`);
 
 --
--- Indexes for table `pendaftaran_ujian`
---
-ALTER TABLE `pendaftaran_ujian`
-  ADD PRIMARY KEY (`id_pendaftaran_ujian`);
-
---
--- Indexes for table `proses_ujian`
---
-ALTER TABLE `proses_ujian`
-  ADD PRIMARY KEY (`id_proses_ujian`);
-
---
 -- Indexes for table `siswa`
 --
 ALTER TABLE `siswa`
-  ADD PRIMARY KEY (`id_siswa`);
+  ADD PRIMARY KEY (`nis`);
 
 --
 -- Indexes for table `soal`
@@ -315,10 +271,32 @@ ALTER TABLE `soal`
   ADD PRIMARY KEY (`id_soal`);
 
 --
--- Indexes for table `thun_ajaran`
+-- Indexes for table `users`
 --
-ALTER TABLE `thun_ajaran`
-  ADD PRIMARY KEY (`id_thun_ajaran`);
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`username`(32));
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id_admin` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `kelas`
+--
+ALTER TABLE `kelas`
+  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `pbm`
+--
+ALTER TABLE `pbm`
+  MODIFY `id_pbm` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
