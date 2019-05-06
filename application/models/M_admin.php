@@ -318,7 +318,11 @@ class M_admin extends CI_Model{
             case 'admin':
                 # code...
                 return $this->db->query("
-                    SELECT * FROM table WHERE id='{$this->id}'
+                    SELECT *
+                    FROM guru
+                        LEFT JOIN users
+                            ON guru.username=users.username
+                    WHERE guru.username='{$this->username}'
                 ")->row();
                 break;
             
@@ -334,13 +338,29 @@ class M_admin extends CI_Model{
         switch ($this->session->userdata('level')) {
             case 'admin':
                 # code...
+                if ( ! empty($this->post['password']) ) {
+                    $this->user_update();
+                } 
+                
                 $data= [
-                    'name'=>$this->post['name'],
+                    'nama'=>$this->post['nama'],
+                    'alamat'=>$this->post['alamat'],
+                    'tempat_lahir'=>$this->post['tempat_lahir'],
+                    'tgl_lahir'=>$this->post['tgl_lahir'],
+                    'agama'=>$this->post['agama'],
+                    'no_telp'=>$this->post['telp'],
+                    'email'=>$this->post['email'],
+                    'jk'=>$this->post['jk'],
                 ];
+                
+                if ( ! empty($this->post['gambar']) ) {
+                    $data['gambar']= $this->post['gambar'];
+                }
+
                 $where= [
-                    'id'=>$this->post['id'],
+                    'username'=>$this->post['username'],
                 ];
-                return $this->db->update('table',$data,$where);
+                return $this->db->update('guru',$data,$where);
                 break;
             
             default:
@@ -355,10 +375,12 @@ class M_admin extends CI_Model{
         switch ($this->session->userdata('level')) {
             case 'admin':
                 # code...
-                $where= [
-                    'id'=>$this->post['id'],
-                ];
-                return $this->db->delete('table',$where);
+                return $this->db->query("
+                    DELETE users , guru
+                    FROM users
+                        INNER JOIN guru  
+                    WHERE users.username= guru.username AND users.username = '{$this->username}'
+                ");
                 break;
             
             default:
