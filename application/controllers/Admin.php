@@ -1008,7 +1008,10 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->username= $this->session->userdata('username');
+                $this->content['row']= $this->m_admin->data_admin_edit();
+                $this->view= 'admin/profil';
+                $this->render_pages();
                 break;
             
             case 'guru':
