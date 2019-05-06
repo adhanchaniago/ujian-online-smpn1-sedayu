@@ -66,38 +66,7 @@ default function in this app:
 		
         $this->load->model('m_admin');
         
-		$msg= [
-            'store'=> [
-                'true'=> [
-                    'stats'=> 1,
-                    'msg'=> 'Data Berhasil Ditambahkan',
-                ],
-                'false'=> [
-                    'stats'=> 0,
-                    'msg'=> 'Data Gagal Ditambahkan',
-                ],
-            ],
-            'update'=> [
-                'true'=> [
-                    'stats'=> 1,
-                    'msg'=> 'Data Berhasil Diubah',
-                ],
-                'false'=> [
-                    'stats'=> 0,
-                    'msg'=> 'Data Gagal Diubah',
-                ],
-            ],
-            'delete'=> [
-                'true'=> [
-                    'stats'=> 1,
-                    'msg'=> 'Data Berhasil Dihapus',
-                ],
-                'false'=> [
-                    'stats'=> 0,
-                    'msg'=> 'Data Gagal Dihapus',
-                ],
-            ],
-        ];
+		$msg= null;
 		$html= null;
 		$json= null;
     }
@@ -155,8 +124,28 @@ default function in this app:
                 $this->html= '
                 <form action="'.base_url().'admin/data-admin-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="inputNip">Nama Admin</label>
+                        <label>Nama Admin</label>
                         <input name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>No Telp</label>
+                        <input name="telp" type="telp" class="form-control" placeholder="*) 08123456789" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input name="email" type="text" class="form-control" placeholder="*) email@gmail.com" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat</label>
+                        <textarea name="alamat" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input name="username" type="text" class="form-control" placeholder="*) Masukan Username" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input name="password" type="password" class="form-control" placeholder="**********" required="">
                     </div>
                     <button type="submit" class="btn btn-primary">Publish</button>
                 </form>
@@ -175,7 +164,28 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->username= $this->input->post('username');
+                if ( $this->m_admin->cek_user() > 0 ) {
+                    $this->msg= [
+                        'stats'=> 0,
+                        'msg'=> 'Maaf Username Sudah Digunakan',
+                    ];
+                } else {
+                    $this->m_admin->post= $this->input->post();
+                    if ( $this->m_admin->data_admin_store() ) {
+                        $this->msg= [
+                            'stats'=> 1,
+                            'msg'=> 'Data Berhasil Ditambahkan',
+                        ];
+                    } else {
+                        $this->msg= [
+                            'stats'=> 0,
+                            'msg'=> 'Data Gagal Ditambahkan',
+                        ];
+                    }
+                    
+                }
+                echo json_encode($this->msg);
                 break;                
             
             default:
@@ -189,7 +199,38 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->username= $this->uri->segment(3);
+                $row= $this->m_admin->data_admin_edit();
+                $this->html= '
+                <form action="'.base_url().'admin/data-admin-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Admin</label>
+                        <input value="'.$row->nama.'" name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>No Telp</label>
+                        <input value="'.$row->no_telp.'" name="telp" type="telp" class="form-control" placeholder="*) 08123456789" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input value="'.$row->email.'" name="email" type="text" class="form-control" placeholder="*) email@gmail.com" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat</label>
+                        <textarea name="alamat" class="form-control" rows="3" required>'.$row->alamat.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input readonly value="'.$row->username.'" name="username" type="text" class="form-control" placeholder="*) Masukan Username" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Password <small>*) Jika tidak diisi password masih sama seperti sebelumnya</small></label>
+                        <input name="password" type="password" class="form-control" placeholder="**********" >
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
                 break;                
             
             default:
@@ -203,7 +244,19 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_admin_update() ) {
+                    $this->msg= [
+                        'stats'=> 1,
+                        'msg'=> 'Data Berhasil Diubah',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=> 0,
+                        'msg'=> 'Data Gagal Diubah',
+                    ];
+                }
+                echo json_encode($this->msg);
                 break;                
             
             default:
@@ -217,7 +270,20 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->username= $this->uri->segment(3);
+                if ( $this->m_admin->data_admin_delete() ) {
+                    $this->msg= [
+                        'stats'=> 1,
+                        'msg'=> 'Data Berhasil Dihapus',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=> 0,
+                        'msg'=> 'Data Gagal Dihapus',
+                    ];
+                }
+                echo json_encode($this->msg);
+                
                 break;                
             
             default:

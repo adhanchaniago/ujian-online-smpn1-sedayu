@@ -92,13 +92,34 @@ class M_admin extends CI_Model{
         }
     }
 */	
+    public function cek_user()
+    {
+        return $this->db->query("SELECT * FROM users WHERE username='{$this->username}' ")->num_rows();
+    }
+    public function user_store()
+    {
+        return $this->db->insert('users',[
+            'username'=>$this->post['username'],
+            'password'=> md5($this->post['password']),
+            'level'=> $this->session->userdata('level'),
+            'blok'=> 'N',
+        ]);
+    }
+    public function user_update()
+    {
+        return $this->db->update('users',[
+            'password'=> md5($this->post['password']),
+        ],['username'=>$this->post['username'] ]);
+    }
     public function data_admin()
     {
         switch ($this->session->userdata('level')) {
             case 'admin':
                 # code...
                 return $this->db->query("
-                    SELECT * FROM admin
+                    SELECT *,
+                        IF(admin.username='{$this->session->userdata('username')}',FALSE,TRUE) AS del
+                    FROM admin
                         LEFT JOIN users
                             ON admin.username=users.username
                 ")->result_object();
@@ -115,17 +136,31 @@ class M_admin extends CI_Model{
     {
         switch ($this->session->userdata('level')) {
             case 'admin':
-            # code...
-            $data= [
-                'name'=>$this->post['name']
-            ];
-            return $this->db->insert('table',$data);
-            break;
+                # code...
+                if ( $this->user_store() ) {
+                    $admin_store= $this->db->insert('admin', [
+                        'username' => $this->post['username'],
+                        'nama' => $this->post['nama'],
+                        'alamat' => $this->post['alamat'],
+                        'no_telp' => $this->post['telp'],
+                        'email' => $this->post['email'],
+                    ]);
+
+                    if ( $admin_store )
+                        return TRUE;
+                    else
+                        return FALSE;
+                    
+                } else {
+                    return FALSE;
+                }
+                
+                break;
             
             default:
-            # code...
-            return NULL;
-            break;
+                # code...
+                return NULL;
+                break;
         }
     }
 
@@ -135,7 +170,11 @@ class M_admin extends CI_Model{
             case 'admin':
                 # code...
                 return $this->db->query("
-                    SELECT * FROM table WHERE id='{$this->id}'
+                    SELECT *
+                    FROM admin
+                        LEFT JOIN users
+                            ON admin.username=users.username
+                    WHERE admin.username='{$this->username}'
                 ")->row();
                 break;
             
@@ -151,13 +190,20 @@ class M_admin extends CI_Model{
         switch ($this->session->userdata('level')) {
             case 'admin':
                 # code...
+                if ( ! empty($this->post['password']) ) {
+                    $this->user_update();
+                } 
+                
                 $data= [
-                    'name'=>$this->post['name'],
+                    'nama'=>$this->post['nama'],
+                    'alamat'=>$this->post['alamat'],
+                    'no_telp'=>$this->post['telp'],
+                    'email'=>$this->post['email'],
                 ];
                 $where= [
-                    'id'=>$this->post['id'],
+                    'username'=>$this->post['username'],
                 ];
-                return $this->db->update('table',$data,$where);
+                return $this->db->update('admin',$data,$where);
                 break;
             
             default:
@@ -172,10 +218,12 @@ class M_admin extends CI_Model{
         switch ($this->session->userdata('level')) {
             case 'admin':
                 # code...
-                $where= [
-                    'id'=>$this->post['id'],
-                ];
-                return $this->db->delete('table',$where);
+                return $this->db->query("
+                    DELETE users , admin
+                    FROM users
+                        INNER JOIN admin  
+                    WHERE users.username= admin.username AND users.username = '{$this->username}'
+                ");
                 break;
             
             default:
