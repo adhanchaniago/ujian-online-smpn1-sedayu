@@ -345,6 +345,17 @@ class M_admin extends CI_Model{
                     WHERE guru.username='{$this->username}'
                 ")->row();
                 break;
+
+            case 'guru':
+                # code...
+                return $this->db->query("
+                    SELECT *
+                    FROM guru
+                        LEFT JOIN users
+                            ON guru.username=users.username
+                    WHERE guru.username='{$this->username}'
+                ")->row();
+                break;
             
             default:
                 # code...
@@ -357,6 +368,32 @@ class M_admin extends CI_Model{
     {
         switch ($this->session->userdata('level')) {
             case 'admin':
+                # code...
+                if ( ! empty($this->post['password']) ) {
+                    $this->user_update();
+                } 
+                
+                $data= [
+                    'nama'=>$this->post['nama'],
+                    'alamat'=>$this->post['alamat'],
+                    'tempat_lahir'=>$this->post['tempat_lahir'],
+                    'tgl_lahir'=>$this->post['tgl_lahir'],
+                    'agama'=>$this->post['agama'],
+                    'no_telp'=>$this->post['telp'],
+                    'email'=>$this->post['email'],
+                    'jk'=>$this->post['jk'],
+                ];
+                
+                if ( ! empty($this->post['gambar']) ) {
+                    $data['gambar']= $this->post['gambar'];
+                }
+
+                $where= [
+                    'username'=>$this->post['username'],
+                ];
+                return $this->db->update('guru',$data,$where);
+                break;
+            case 'guru':
                 # code...
                 if ( ! empty($this->post['password']) ) {
                     $this->user_update();

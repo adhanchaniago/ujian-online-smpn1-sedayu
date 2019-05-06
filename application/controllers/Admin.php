@@ -547,6 +547,95 @@ default function in this app:
                 ';
                 echo $this->html;
                 break;                
+            case 'guru':
+                # code...
+                $this->m_admin->username= $this->session->userdata('username');
+                $row= $this->m_admin->data_guru_edit();
+                $jk= "";
+                foreach ($this->m_admin->guru_jk() as $key => $value) {
+                    $jk .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input '.($value==$row->jk? 'checked' : null).' type="radio" class="form-check-input" name="jk" value="'.$value.'" required>'.($value=='L' ? 'Laki-Laki' : 'Perempuan' ).'
+                            </label>
+                        </div>
+                    ';
+                }
+
+                $agama= "";
+                foreach ($this->m_admin->guru_agama() as $key => $value) {
+                    $agama .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input '.($value==$row->agama? 'checked' : null).' type="radio" class="form-check-input" name="agama" value="'.$value.'" required>'.$value.'
+                            </label>
+                        </div>
+                    ';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-guru-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>NIP</label>
+                        <input readonly value="'.$row->nip.'" name="nip" type="text" class="form-control" placeholder="*) Masukan NIP" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Guru</label>
+                        <input value="'.$row->nama.'" name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <div class="form-group">
+                            '.$jk.'
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Agama</label>
+                        <div class="form-group">
+                            '.$agama.'
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tempat Lahir</label>
+                        <input value="'.$row->tempat_lahir.'" name="tempat_lahir" type="text" class="form-control" placeholder="*) Masukan Tempat Lahir" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <input value="'.$row->tgl_lahir.'" name="tgl_lahir" type="date" class="form-control" placeholder="" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>No Telp</label>
+                        <input value="'.$row->no_telp.'" name="telp" type="telp" class="form-control" placeholder="*) 08123456789" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input value="'.$row->email.'" name="email" type="text" class="form-control" placeholder="*) email@gmail.com" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat</label>
+                        <textarea name="alamat" class="form-control" rows="3" required>'.$row->alamat.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input readonly value="'.$row->username.'" name="username" type="text" class="form-control" placeholder="*) Masukan Username" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input name="password" type="password" class="form-control" placeholder="**********">
+                    </div>
+                    <div class="form-group">
+                        <label>Foto</label>
+                        <img class="d-block img-thumbnail" src="'.base_url('src/guru/'.$row->gambar).'">
+                    </div>
+                    <div class="form-group">
+                        <label>Ganti Foto <small class="badge badge-info">*) type: JPG atau PNG</small></label>
+                        <input name="fupload" type="file" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
+                break;                
             
             default:
                 # code...
@@ -558,6 +647,59 @@ default function in this app:
     {
         switch ( $this->session->userdata('level') ) {
             case 'admin':
+                # code...
+                $this->m_admin->post= $this->input->post();
+                if ( empty($_FILES['fupload']['tmp_name']) ) {
+                    # code...without upload file
+					if ( $this->m_admin->data_guru_update() ) {
+						$this->msg= [
+							'stats'=>1,
+							'msg'=> 'Data Berhasil Disimpan'
+						];
+					} else {
+						$this->msg= [
+							'stats'=>1,
+							'msg'=> 'Data Gagal Disimpan'
+						];
+					}
+                } else {
+                    # code...with upload file
+					$this->m_admin->username= $this->input->post('username');
+					$row= $this->m_admin->data_guru_edit();
+					$config['upload_path']          = 'src/guru/';
+					$config['allowed_types']        = 'jpg|png';
+					if ( file_exists($config['upload_path'].$row->gambar) ) {
+						unlink($config['upload_path'].$row->gambar);
+					}
+					$this->load->library('upload', $config);
+					if ( ! $this->upload->do_upload('fupload'))
+					{
+						$this->msg= [
+							'stats'=>0,
+							'msg'=> $this->upload->display_errors(),
+						];
+					}
+					else
+					{
+						$this->m_admin->post['gambar']= $this->upload->data()['file_name'];
+						if ( $this->m_admin->data_guru_update() ) {
+							$this->msg= [
+								'stats'=>1,
+								'msg'=> 'Data Berhasil Disimpan',
+							];
+							
+						} else {
+							$this->msg= [
+								'stats'=>0,
+								'msg'=> 'Maaf Data Gagal Disimpan',
+							];
+						}
+						
+					}
+                }
+                echo json_encode($this->msg);
+                break;                
+            case 'guru':
                 # code...
                 $this->m_admin->post= $this->input->post();
                 if ( empty($_FILES['fupload']['tmp_name']) ) {
@@ -1016,7 +1158,14 @@ default function in this app:
             
             case 'guru':
                 # code...
-                echo "guru";
+                $this->m_admin->username= $this->session->userdata('username');
+
+                $this->content['row']   = $this->m_admin->data_guru_edit();
+                $this->content['jk']    = $this->m_admin->guru_jk();
+                $this->content['agama'] = $this->m_admin->guru_agama();
+                
+                $this->view= 'guru/profil';
+                $this->render_pages();
                 break;
             
             case 'siswa':
@@ -1733,4 +1882,306 @@ default function in this app:
         }
     }
     // end akademik controller
+
+    public function data_grup_soal()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                $this->view= 'guru/data_grup_soal';
+                $this->render_pages();
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function form_data_grup_soal()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_grup_soal_store()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function form_data_grup_soal_edit()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_grup_soal_update()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_grup_soal_delete()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_soal()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                $this->view= 'guru/data_soal';
+                $this->render_pages();
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function form_data_soal()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_soal_store()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function form_data_soal_edit()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_soal_update()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_soal_delete()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
 }
