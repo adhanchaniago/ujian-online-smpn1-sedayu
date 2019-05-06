@@ -172,6 +172,7 @@ default function in this app:
                     ];
                 } else {
                     $this->m_admin->post= $this->input->post();
+                    $this->m_admin->post['level']= 'admin';
                     if ( $this->m_admin->data_admin_store() ) {
                         $this->msg= [
                             'stats'=> 1,
@@ -313,11 +314,81 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
+                $jk= "";
+                foreach ($this->m_admin->guru_jk() as $key => $value) {
+                    $jk .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="jk" value="'.$value.'" required>'.($value=='L' ? 'Laki-Laki' : 'Perempuan' ).'
+                            </label>
+                        </div>
+                    ';
+                }
+
+                $agama= "";
+                foreach ($this->m_admin->guru_agama() as $key => $value) {
+                    $agama .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="agama" value="'.$value.'" required>'.$value.'
+                            </label>
+                        </div>
+                    ';
+                }
+
                 $this->html= '
-                <form action="'.base_url().'admin/data-admin-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                <form action="'.base_url().'admin/data-guru-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="inputNip">Nama Admin</label>
+                        <label>NIP</label>
+                        <input name="nip" type="text" class="form-control" placeholder="*) Masukan NIP" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Guru</label>
                         <input name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <div class="form-group">
+                            '.$jk.'
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Agama</label>
+                        <div class="form-group">
+                            '.$agama.'
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tempat Lahir</label>
+                        <input name="tempat_lahir" type="text" class="form-control" placeholder="*) Masukan Tempat Lahir" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <input name="tgl_lahir" type="date" class="form-control" placeholder="" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>No Telp</label>
+                        <input name="telp" type="telp" class="form-control" placeholder="*) 08123456789" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input name="email" type="text" class="form-control" placeholder="*) email@gmail.com" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat</label>
+                        <textarea name="alamat" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input name="username" type="text" class="form-control" placeholder="*) Masukan Username" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input name="password" type="password" class="form-control" placeholder="**********" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Foto <small class="badge badge-info">*) type: JPG atau PNG</small></label>
+                        <input name="fupload" type="file" class="form-control"  required="">
                     </div>
                     <button type="submit" class="btn btn-primary">Publish</button>
                 </form>
@@ -336,7 +407,46 @@ default function in this app:
         switch ( $this->session->userdata('level') ) {
             case 'admin':
                 # code...
-                echo "admin";
+                $this->m_admin->username= $this->input->post('username');
+                if ( $this->m_admin->cek_user() > 0 ) {
+                    $this->msg= [
+                        'stats'=> 0,
+                        'msg'=> 'Maaf Username Sudah Digunakan',
+                    ];
+                } else {
+                    $config['upload_path']          = 'src/guru/';
+                    $config['allowed_types']        = 'jpg|png';
+                    // $config['max_size']             = 1000000;
+                    $this->load->library('upload', $config);
+                    if ( ! $this->upload->do_upload('fupload'))
+                    {
+                        $this->msg= [
+                            'stats'=>0,
+                            'msg'=> $this->upload->display_errors(),
+                        ];
+                    }
+                    else
+                    {
+                        $this->m_admin->post= $this->input->post();
+                        $this->m_admin->post['level']= 'guru';
+                        $this->m_admin->post['gambar']= $this->upload->data()['file_name'];
+                        if ( $this->m_admin->data_guru_store() ) {
+                            $this->msg= [
+                                'stats'=>1,
+                                'msg'=> 'Data Berhasil Disimpan',
+                            ];
+                            
+                        } else {
+                            $this->msg= [
+                                'stats'=>0,
+                                'msg'=> 'Maaf Data Gagal Disimpan',
+                            ];
+                        }
+                        
+                    }
+                    
+                }
+                echo json_encode($this->msg);
                 break;                
             
             default:

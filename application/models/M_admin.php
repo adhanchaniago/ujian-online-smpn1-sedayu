@@ -101,7 +101,7 @@ class M_admin extends CI_Model{
         return $this->db->insert('users',[
             'username'=>$this->post['username'],
             'password'=> md5($this->post['password']),
-            'level'=> $this->session->userdata('level'),
+            'level'=> $this->post['level'],
             'blok'=> 'N',
         ]);
     }
@@ -111,6 +111,27 @@ class M_admin extends CI_Model{
             'password'=> md5($this->post['password']),
         ],['username'=>$this->post['username'] ]);
     }
+
+    public function guru_jk()
+    {
+        $query = " SHOW COLUMNS FROM `guru` LIKE 'jk' ";
+        $row = $this->db->query(" {$query} ")->row()->Type;
+        $regex = "/'(.*?)'/";
+        preg_match_all( $regex , $row, $enum_array );
+        $enum_fields = $enum_array[1];
+        return( $enum_fields );
+    }
+
+    public function guru_agama()
+    {
+        $query = " SHOW COLUMNS FROM `guru` LIKE 'agama' ";
+        $row = $this->db->query(" {$query} ")->row()->Type;
+        $regex = "/'(.*?)'/";
+        preg_match_all( $regex , $row, $enum_array );
+        $enum_fields = $enum_array[1];
+        return( $enum_fields );
+    }
+
     public function data_admin()
     {
         switch ($this->session->userdata('level')) {
@@ -259,10 +280,29 @@ class M_admin extends CI_Model{
         switch ($this->session->userdata('level')) {
             case 'admin':
             # code...
-            $data= [
-                'name'=>$this->post['name']
-            ];
-            return $this->db->insert('table',$data);
+            if ( $this->user_store() ) {
+                $admin_store= $this->db->insert('guru', [
+                    'nip' => $this->post['nip'],
+                    'username' => $this->post['username'],
+                    'nama' => $this->post['nama'],
+                    'alamat' => $this->post['alamat'],
+                    'tempat_lahir' => $this->post['tempat_lahir'],
+                    'tgl_lahir' => $this->post['tgl_lahir'],
+                    'agama' => $this->post['agama'],
+                    'no_telp' => $this->post['telp'],
+                    'email' => $this->post['email'],
+                    'gambar' => $this->post['gambar'],
+                    'jk' => $this->post['jk'],
+                ]);
+
+                if ( $admin_store )
+                    return TRUE;
+                else
+                    return FALSE;
+                
+            } else {
+                return FALSE;
+            }
             break;
             
             default:
