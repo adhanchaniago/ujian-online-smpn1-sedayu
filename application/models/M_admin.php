@@ -151,6 +151,16 @@ class M_admin extends CI_Model{
         $enum_fields = $enum_array[1];
         return( $enum_fields );
     }
+    
+    public function soal_jawaban()
+    {
+        $query = " SHOW COLUMNS FROM `soal` LIKE 'jawaban' ";
+        $row = $this->db->query(" {$query} ")->row()->Type;
+        $regex = "/'(.*?)'/";
+        preg_match_all( $regex , $row, $enum_array );
+        $enum_fields = $enum_array[1];
+        return( $enum_fields );
+    }
 
     public function data_admin()
     {
@@ -356,6 +366,17 @@ class M_admin extends CI_Model{
                     WHERE guru.username='{$this->username}'
                 ")->row();
                 break;
+
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                    SELECT *
+                    FROM guru
+                        LEFT JOIN users
+                            ON guru.username=users.username
+                    WHERE guru.username='{$this->username}'
+                ")->row();
+                break;
             
             default:
                 # code...
@@ -394,6 +415,33 @@ class M_admin extends CI_Model{
                 return $this->db->update('guru',$data,$where);
                 break;
             case 'guru':
+                # code...
+                if ( ! empty($this->post['password']) ) {
+                    $this->user_update();
+                } 
+                
+                $data= [
+                    'nama'=>$this->post['nama'],
+                    'alamat'=>$this->post['alamat'],
+                    'tempat_lahir'=>$this->post['tempat_lahir'],
+                    'tgl_lahir'=>$this->post['tgl_lahir'],
+                    'agama'=>$this->post['agama'],
+                    'no_telp'=>$this->post['telp'],
+                    'email'=>$this->post['email'],
+                    'jk'=>$this->post['jk'],
+                ];
+                
+                if ( ! empty($this->post['gambar']) ) {
+                    $data['gambar']= $this->post['gambar'];
+                }
+
+                $where= [
+                    'username'=>$this->post['username'],
+                ];
+                return $this->db->update('guru',$data,$where);
+                break;
+                
+            case 'guru_kep_lab':
                 # code...
                 if ( ! empty($this->post['password']) ) {
                     $this->user_update();
@@ -901,6 +949,387 @@ class M_admin extends CI_Model{
     }
     
     public function data_pbm_delete()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $where= [
+                    'id'=>$this->post['id'],
+                ];
+                return $this->db->delete('table',$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_grup_soal()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                return $this->db->query("
+                    SELECT *,
+                        ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
+                    FROM grup_soal
+                        LEFT JOIN pbm
+                            ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                        LEFT JOIN pelajaran
+                            ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                        LEFT JOIN kelas
+                            ON pelajaran.id_kelas=kelas.id_kelas
+                    WHERE pbm.nip='{$this->session->userdata('username')}'
+                        
+                ")->result_object();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                    SELECT *,
+                        ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
+                    FROM grup_soal
+                        LEFT JOIN pbm
+                            ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                        LEFT JOIN pelajaran
+                            ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                        LEFT JOIN kelas
+                            ON pelajaran.id_kelas=kelas.id_kelas
+                    WHERE pbm.nip='{$this->session->userdata('username')}'
+                        
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_grup_soal_pelajaran()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                return $this->db->query("
+                SELECT *
+                FROM pbm
+                    LEFT JOIN pelajaran
+                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                    LEFT JOIN kelas
+                        ON pelajaran.id_kelas=kelas.id_kelas
+                WHERE pbm.nip='{$this->session->userdata('username')}'
+                ")->result_object();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                SELECT *
+                FROM pbm
+                    LEFT JOIN pelajaran
+                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                    LEFT JOIN kelas
+                        ON pelajaran.id_kelas=kelas.id_kelas
+                WHERE pbm.nip='{$this->session->userdata('username')}'
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+        
+    public function data_grup_soal_store()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                $data= [
+                    'nama_grup_soal'=>$this->post['nama_grup_soal'],
+                    'id_pelajaran'=>$this->post['id_pelajaran'],
+                ];
+                return $this->db->insert('grup_soal',$data);
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $data= [
+                    'nama_grup_soal'=>$this->post['nama_grup_soal'],
+                    'id_pelajaran'=>$this->post['id_pelajaran'],
+                ];
+                return $this->db->insert('grup_soal',$data);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_grup_soal_edit()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM table WHERE id='{$this->id}'
+                ")->row();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM table WHERE id='{$this->id}'
+                ")->row();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_grup_soal_update()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $data= [
+                    'name'=>$this->post['name'],
+                ];
+                $where= [
+                    'id'=>$this->post['id'],
+                ];
+                return $this->db->update('table',$data,$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+    
+    public function data_grup_soal_delete()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'admin':
+                # code...
+                $where= [
+                    'id'=>$this->post['id'],
+                ];
+                return $this->db->delete('table',$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_soal()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                return $this->db->query("
+                    SELECT *
+                    FROM soal
+                        LEFT JOIN grup_soal
+                            ON soal.id_grup_soal=grup_soal.id_grup_soal
+                        LEFT JOIN pbm
+                            ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                        LEFT JOIN pelajaran
+                            ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                        LEFT JOIN kelas
+                            ON pelajaran.id_kelas=kelas.id_kelas
+                    WHERE pbm.nip='{$this->session->userdata('username')}'
+                        
+                ")->result_object();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                    SELECT *
+                    FROM soal
+                        LEFT JOIN grup_soal
+                            ON soal.id_grup_soal=grup_soal.id_grup_soal
+                        LEFT JOIN pbm
+                            ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                        LEFT JOIN pelajaran
+                            ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                        LEFT JOIN kelas
+                            ON pelajaran.id_kelas=kelas.id_kelas
+                    WHERE pbm.nip='{$this->session->userdata('username')}'
+                        
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_soal_grup_soal()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                return $this->db->query("
+                SELECT *
+                FROM grup_soal
+                    LEFT JOIN pbm
+                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                    LEFT JOIN pelajaran
+                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                    LEFT JOIN kelas
+                        ON pelajaran.id_kelas=kelas.id_kelas
+                WHERE pbm.nip='{$this->session->userdata('username')}'
+                ")->result_object();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                SELECT *
+                FROM grup_soal
+                    LEFT JOIN pbm
+                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                    LEFT JOIN pelajaran
+                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                    LEFT JOIN kelas
+                        ON pelajaran.id_kelas=kelas.id_kelas
+                WHERE pbm.nip='{$this->session->userdata('username')}'
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+        
+    public function data_soal_store()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                $data= [
+                    'soal'=>$this->post['soal'],
+                    'a'=>$this->post['a'],
+                    'b'=>$this->post['b'],
+                    'c'=>$this->post['c'],
+                    'd'=>$this->post['d'],
+                    'id_grup_soal'=>$this->post['id_grup_soal'],
+                    'jawaban'=>$this->post['jawaban'],
+                ];
+                return $this->db->insert('soal',$data);
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $data= [
+                    'soal'=>$this->post['soal'],
+                    'a'=>$this->post['a'],
+                    'b'=>$this->post['b'],
+                    'c'=>$this->post['c'],
+                    'd'=>$this->post['d'],
+                    'id_grup_soal'=>$this->post['id_grup_soal'],
+                    'jawaban'=>$this->post['jawaban'],
+                ];
+                return $this->db->insert('soal',$data);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_soal_edit()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM soal WHERE id_soal='{$this->id_soal}'
+                ")->row();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                    SELECT * FROM soal WHERE id_soal='{$this->id_soal}'
+                ")->row();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+    public function data_soal_update()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru':
+                # code...
+                $data= [
+                    'soal'=>$this->post['soal'],
+                    'a'=>$this->post['a'],
+                    'b'=>$this->post['b'],
+                    'c'=>$this->post['c'],
+                    'd'=>$this->post['d'],
+                    'id_grup_soal'=>$this->post['id_grup_soal'],
+                    'jawaban'=>$this->post['jawaban'],
+                ];
+                $where= [
+                    'id_soal'=>$this->post['id_soal'],
+                ];
+                return $this->db->update('soal',$data,$where);
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $data= [
+                    'soal'=>$this->post['soal'],
+                    'a'=>$this->post['a'],
+                    'b'=>$this->post['b'],
+                    'c'=>$this->post['c'],
+                    'd'=>$this->post['d'],
+                    'id_grup_soal'=>$this->post['id_grup_soal'],
+                    'jawaban'=>$this->post['jawaban'],
+                ];
+                $where= [
+                    'id_soal'=>$this->post['id_soal'],
+                ];
+                return $this->db->update('soal',$data,$where);
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+    
+    public function data_soal_delete()
     {
         switch ($this->session->userdata('level')) {
             case 'admin':

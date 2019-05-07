@@ -9,6 +9,7 @@ class MY_Controller extends CI_Controller{
         $nav=[
             'admin' => 'admin/nav',
             'guru' => 'guru/nav',
+            'guru_kep_lab' => 'guru_kep_lab/nav',
             'siswa' => 'siswa/nav',
         ];
         $this->load->view($nav[ $this->session->userdata('level') ]);

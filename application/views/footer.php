@@ -1,5 +1,5 @@
   <footer class="main-footer">
-    <strong>E-Learning &copy; <?php echo date('Y') ?> SMK Tamansiswa Jetis 
+    <strong>Ujian Online &copy; <?php echo date('Y') ?> SMP N 1 Sedayu 
     <!-- <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 3.0.0-alpha
     </div> -->

@@ -86,6 +86,12 @@ default function in this app:
                 $this->render_pages();
                 break;
                 
+                case 'guru_kep_lab':
+                # code...
+                $this->view= 'guru_kep_lab/index';
+                $this->render_pages();
+                break;
+                
                 case 'siswa':
                 # code...
                 $this->view= 'siswa/index';
@@ -1167,6 +1173,18 @@ default function in this app:
                 $this->view= 'guru/profil';
                 $this->render_pages();
                 break;
+
+            case 'guru_kep_lab':
+                # code...
+                $this->m_admin->username= $this->session->userdata('username');
+
+                $this->content['row']   = $this->m_admin->data_guru_edit();
+                $this->content['jk']    = $this->m_admin->guru_jk();
+                $this->content['agama'] = $this->m_admin->guru_agama();
+                
+                $this->view= 'guru_kep_lab/profil';
+                $this->render_pages();
+                break;
             
             case 'siswa':
                 # code...
@@ -1894,6 +1912,14 @@ default function in this app:
             case 'guru':
                 # code...
                 $this->view= 'guru/data_grup_soal';
+                $this->content['rows']= $this->m_admin->data_grup_soal();
+                $this->render_pages();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $this->view= 'guru_kep_lab/data_grup_soal';
+                $this->content['rows']= $this->m_admin->data_grup_soal();
                 $this->render_pages();
                 break;
             
@@ -1919,7 +1945,54 @@ default function in this app:
             
             case 'guru':
                 # code...
-                echo "guru";
+                $pelajaran= "";
+                foreach ($this->m_admin->data_grup_soal_pelajaran() as $key => $value) {
+                    $pelajaran .= '<option value="'.$value->id_pelajaran.'">('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-grup-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Grup Soal</label>
+                        <input name="nama_grup_soal" type="text" class="form-control" placeholder="*) Masukan Nama Grup Soal" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <select name="id_pelajaran" class="form-control" required>
+                            <option value="" selected disabled> -- Pilih Pelajaran -- </option>
+                            '.$pelajaran.'
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $pelajaran= "";
+                foreach ($this->m_admin->data_grup_soal_pelajaran() as $key => $value) {
+                    $pelajaran .= '<option value="'.$value->id_pelajaran.'">('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-grup-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nama Grup Soal</label>
+                        <input name="nama_grup_soal" type="text" class="form-control" placeholder="*) Masukan Nama Grup Soal" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <select name="id_pelajaran" class="form-control" required>
+                            <option value="" selected disabled> -- Pilih Pelajaran -- </option>
+                            '.$pelajaran.'
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
                 break;
             
             case 'siswa':
@@ -1944,7 +2017,36 @@ default function in this app:
             
             case 'guru':
                 # code...
-                echo "guru";
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_grup_soal_store() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                }
+                echo json_encode($this->msg);
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_grup_soal_store() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                }
+                echo json_encode($this->msg);
                 break;
             
             case 'siswa':
@@ -2044,6 +2146,14 @@ default function in this app:
             
             case 'guru':
                 # code...
+                $this->content['rows']= $this->m_admin->data_soal();
+                $this->view= 'guru/data_soal';
+                $this->render_pages();
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $this->content['rows']= $this->m_admin->data_soal();
                 $this->view= 'guru/data_soal';
                 $this->render_pages();
                 break;
@@ -2070,7 +2180,126 @@ default function in this app:
             
             case 'guru':
                 # code...
-                echo "guru";
+                $grup_soal= "";
+                foreach ($this->m_admin->data_soal_grup_soal() as $key => $value) {
+                    $grup_soal .= '<option value="'.$value->id_grup_soal.'">'.$value->nama_grup_soal.' ('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                }
+
+                // $jawaban= 
+                $jawaban= "";
+                foreach ($this->m_admin->soal_jawaban() as $key => $value) {
+                    $jawaban .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="jawaban" value="'.$value.'" required>'.$value.'
+                            </label>
+                        </div>
+                    ';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Soal</label>
+                        <textarea name="soal" class="form-control" rows="5" required="" placeholder="*) Masukan Soal"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan A</label>
+                        <textarea name="a" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan A"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan B</label>
+                        <textarea name="b" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan B"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan C</label>
+                        <textarea name="c" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan C"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan D</label>
+                        <textarea name="d" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan D"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Grup Soal</label>
+                        <select name="id_grup_soal" class="form-control" required>
+                            <option value="" selected disabled> -- Pilih Grup Soal -- </option>
+                            '.$grup_soal.'
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label>Jawaban Benar</label>
+                            <div class="form-group">
+                                '.$jawaban.'
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $grup_soal= "";
+                foreach ($this->m_admin->data_soal_grup_soal() as $key => $value) {
+                    $grup_soal .= '<option value="'.$value->id_grup_soal.'">'.$value->nama_grup_soal.' ('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                }
+
+                // $jawaban= 
+                $jawaban= "";
+                foreach ($this->m_admin->soal_jawaban() as $key => $value) {
+                    $jawaban .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="jawaban" value="'.$value.'" required>'.$value.'
+                            </label>
+                        </div>
+                    ';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Soal</label>
+                        <textarea name="soal" class="form-control" rows="5" required="" placeholder="*) Masukan Soal"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan A</label>
+                        <textarea name="a" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan A"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan B</label>
+                        <textarea name="b" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan B"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan C</label>
+                        <textarea name="c" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan C"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan D</label>
+                        <textarea name="d" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan D"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Grup Soal</label>
+                        <select name="id_grup_soal" class="form-control" required>
+                            <option value="" selected disabled> -- Pilih Grup Soal -- </option>
+                            '.$grup_soal.'
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label>Jawaban Benar</label>
+                            <div class="form-group">
+                                '.$jawaban.'
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
                 break;
             
             case 'siswa':
@@ -2095,7 +2324,36 @@ default function in this app:
             
             case 'guru':
                 # code...
-                echo "guru";
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_soal_store() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                }
+                echo json_encode($this->msg);
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_soal_store() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Ditambahkan',
+                    ];
+                }
+                echo json_encode($this->msg);
                 break;
             
             case 'siswa':
@@ -2120,7 +2378,132 @@ default function in this app:
             
             case 'guru':
                 # code...
-                echo "guru";
+                $this->m_admin->id_soal= $this->uri->segment(3);
+                $row= $this->m_admin->data_soal_edit();
+                $grup_soal= "";
+                foreach ($this->m_admin->data_soal_grup_soal() as $key => $value) {
+                    $grup_soal .= '<option '.($value==$row->id_grup_soal? 'selected' : null).' value="'.$value->id_grup_soal.'">'.$value->nama_grup_soal.' ('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                }
+
+                // $jawaban= 
+                $jawaban= "";
+                foreach ($this->m_admin->soal_jawaban() as $key => $value) {
+                    $jawaban .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input '.($value==$row->jawaban? 'checked' : null).' type="radio" class="form-check-input" name="jawaban" value="'.$value.'" required>'.$value.'
+                            </label>
+                        </div>
+                    ';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-soal-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Soal</label>
+                        <textarea name="soal" class="form-control" rows="5" required="" placeholder="*) Masukan Soal">'.$row->soal.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan A</label>
+                        <textarea name="a" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan A">'.$row->a.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan B</label>
+                        <textarea name="b" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan B">'.$row->b.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan C</label>
+                        <textarea name="c" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan C">'.$row->c.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan D</label>
+                        <textarea name="d" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan D">'.$row->d.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Grup Soal</label>
+                        <select name="id_grup_soal" class="form-control" required>
+                            <option value="" disabled> -- Pilih Grup Soal -- </option>
+                            '.$grup_soal.'
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label>Jawaban Benar</label>
+                            <div class="form-group">
+                                '.$jawaban.'
+                            </div>
+                        </div>
+                    </div>
+                    <input value="'.$row->id_soal.'" type="hidden" name="id_soal">
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $this->m_admin->id_soal= $this->uri->segment(3);
+                $row= $this->m_admin->data_soal_edit();
+                $grup_soal= "";
+                foreach ($this->m_admin->data_soal_grup_soal() as $key => $value) {
+                    $grup_soal .= '<option '.($value==$row->id_grup_soal? 'selected' : null).' value="'.$value->id_grup_soal.'">'.$value->nama_grup_soal.' ('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                }
+
+                // $jawaban= 
+                $jawaban= "";
+                foreach ($this->m_admin->soal_jawaban() as $key => $value) {
+                    $jawaban .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input '.($value==$row->jawaban? 'checked' : null).' type="radio" class="form-check-input" name="jawaban" value="'.$value.'" required>'.$value.'
+                            </label>
+                        </div>
+                    ';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-soal-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Soal</label>
+                        <textarea name="soal" class="form-control" rows="5" required="" placeholder="*) Masukan Soal">'.$row->soal.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan A</label>
+                        <textarea name="a" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan A">'.$row->a.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan B</label>
+                        <textarea name="b" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan B">'.$row->b.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan C</label>
+                        <textarea name="c" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan C">'.$row->c.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilihan D</label>
+                        <textarea name="d" class="form-control" rows="5" required="" placeholder="*) Masukan Pilihan D">'.$row->d.'</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Grup Soal</label>
+                        <select name="id_grup_soal" class="form-control" required>
+                            <option value="" disabled> -- Pilih Grup Soal -- </option>
+                            '.$grup_soal.'
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label>Jawaban Benar</label>
+                            <div class="form-group">
+                                '.$jawaban.'
+                            </div>
+                        </div>
+                    </div>
+                    <input value="'.$row->id_soal.'" type="hidden" name="id_soal">
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
                 break;
             
             case 'siswa':
@@ -2145,7 +2528,36 @@ default function in this app:
             
             case 'guru':
                 # code...
-                echo "guru";
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_soal_update() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Diubah',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Diubah',
+                    ];
+                }
+                echo json_encode($this->msg);
+                break;
+
+            case 'guru_kep_lab':
+                # code...
+                $this->m_admin->post= $this->input->post();
+                if ( $this->m_admin->data_soal_update() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Diubah',
+                    ];
+                } else {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=>'Data Berhasil Diubah',
+                    ];
+                }
+                echo json_encode($this->msg);
                 break;
             
             case 'siswa':
