@@ -2111,7 +2111,103 @@ default function in this app:
         }
     }
 
-    public function data_grup_soal_delete()
+    public function data_ujian_grup_soal()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'guru_kep_lab':
+                # code...
+                $this->view= 'guru_kep_lab/data_ujian_grup_soal';
+                $this->content['rows']= $this->m_admin->data_ujian_grup_soal();
+                $this->render_pages();
+                break;            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function form_data_ujian_grup_soal()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'guru_kep_lab':
+                # code...
+                $metode= "";
+                $_metode=['LCG','SQL RANDOM'];
+                foreach ($_metode as $key => $value) {
+                    $metode .= '
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="metode" value="'.$value.'" required>'.$value.'
+                            </label>
+                        </div>
+                    ';
+                }
+                $pelajaran= "";
+                foreach ($this->m_admin->data_grup_soal_pelajaran() as $key => $value) {
+                    $pelajaran .= '<option value="'.$value->id_pelajaran.'">('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                }
+
+                $this->html= '
+                <form action="'.base_url().'admin/data-grup-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Pilih Grup Soal</label>
+                        <select name="id_pelajaran" class="form-control" required>
+                            <option value="" selected disabled> -- Pilih Pelajaran -- </option>
+                            '.$pelajaran.'
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Metode Acak</label>
+                        <div class="form-group">
+                            '.$metode.'
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </form>
+                ';
+                echo $this->html;
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_ujian_grup_soal_update()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'admin':
+                # code...
+                echo "admin";
+                break;
+            
+            case 'guru':
+                # code...
+                echo "guru";
+                break;
+            
+            case 'siswa':
+                # code...
+                echo "siswa";
+                break;
+            
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function data_ujian_grup_soal_delete()
     {
         switch ( $this->session->userdata('level') ) {
             case 'admin':
@@ -2440,8 +2536,7 @@ default function in this app:
                 ';
                 echo $this->html;
                 break;
-
-            case 'guru_kep_lab':
+            case 'guru':
                 # code...
                 $this->m_admin->id_soal= $this->uri->segment(3);
                 $row= $this->m_admin->data_soal_edit();
@@ -2527,23 +2622,6 @@ default function in this app:
                 break;
             
             case 'guru':
-                # code...
-                $this->m_admin->post= $this->input->post();
-                if ( $this->m_admin->data_soal_update() ) {
-                    $this->msg= [
-                        'stats'=>1,
-                        'msg'=>'Data Berhasil Diubah',
-                    ];
-                } else {
-                    $this->msg= [
-                        'stats'=>1,
-                        'msg'=>'Data Berhasil Diubah',
-                    ];
-                }
-                echo json_encode($this->msg);
-                break;
-
-            case 'guru_kep_lab':
                 # code...
                 $this->m_admin->post= $this->input->post();
                 if ( $this->m_admin->data_soal_update() ) {

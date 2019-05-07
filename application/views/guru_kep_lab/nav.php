@@ -70,6 +70,23 @@
               </p>
             </a>
           </li>
+          <li class="nav-item has-treeview <?php echo ($this->uri->segment(2) == 'data-ujian-grup-soal' || $this->uri->segment(2) == 'data-pelajaran' || $this->uri->segment(2) == 'data-pbm') ? 'menu-open' : null ; ?>">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-vcard"></i>
+              <p>
+                Ujian
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item" >
+                <a href="<?php echo base_url() ?>admin/data-ujian-grup-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-kelas') ? 'active' : null ; ?>">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>Grup Soal</p>
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

@@ -1010,6 +1010,32 @@ class M_admin extends CI_Model{
         }
     }
 
+    public function data_ujian_grup_soal()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("
+                    SELECT *,
+                        ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
+                    FROM grup_soal
+                        LEFT JOIN pbm
+                            ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                        LEFT JOIN pelajaran
+                            ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                        LEFT JOIN kelas
+                            ON pelajaran.id_kelas=kelas.id_kelas
+                        
+                ")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
     public function data_grup_soal_pelajaran()
     {
         switch ($this->session->userdata('level')) {
