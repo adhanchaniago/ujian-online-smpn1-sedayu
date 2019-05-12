@@ -1372,5 +1372,22 @@ class M_admin extends CI_Model{
                 break;
         }
     }
+    
+    public function metode_sql()
+    {
+        switch ($this->session->userdata('level')) {
+            case 'guru_kep_lab':
+                # code...
+                return $this->db->query("SELECT * FROM soal WHERE id_grup_soal='{$this->id_grup_soal}' ORDER BY RAND($this->seed)")->result_object();
+                break;
+            
+            default:
+                # code...
+                return NULL;
+                break;
+        }
+    }
+
+
 
 }

@@ -2138,23 +2138,23 @@ default function in this app:
                     $metode .= '
                         <div class="form-check-inline">
                             <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="metode" value="'.$value.'" required>'.$value.'
+                                <input type="radio" class="form-check-input metode" name="metode" value="'.$value.'" required>'.$value.'
                             </label>
                         </div>
                     ';
                 }
-                $pelajaran= "";
-                foreach ($this->m_admin->data_grup_soal_pelajaran() as $key => $value) {
-                    $pelajaran .= '<option value="'.$value->id_pelajaran.'">('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+                $grup_soal= "";
+                foreach ($this->m_admin->data_ujian_grup_soal() as $key => $value) {
+                    $grup_soal .= '<option value="'.$value->id_grup_soal.'"> '.$value->nama_grup_soal.' ('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
                 }
 
                 $this->html= '
                 <form action="'.base_url().'admin/data-grup-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label>Pilih Grup Soal</label>
-                        <select name="id_pelajaran" class="form-control" required>
-                            <option value="" selected disabled> -- Pilih Pelajaran -- </option>
-                            '.$pelajaran.'
+                        <select name="id_grup_soal" id="id_grup_soal" class="form-control" required>
+                            <option value="" selected disabled> -- Pilih Grup Soal -- </option>
+                            '.$grup_soal.'
                         </select>
                     </div>
                     <div class="form-group">
@@ -2163,8 +2163,9 @@ default function in this app:
                             '.$metode.'
                         </div>
                     </div>
+                    <div id="tryMetode"></div>
                     
-                    <button type="submit" class="btn btn-primary">Publish</button>
+                    <!--<button type="submit" class="btn btn-primary">Publish</button>-->
                 </form>
                 ';
                 echo $this->html;
@@ -2671,6 +2672,108 @@ default function in this app:
             
             default:
                 # code...
+                break;
+        }
+    }
+
+    public function try_metode_acak()
+    {
+        switch ( $this->session->userdata('level') ) {
+            case 'guru_kep_lab':
+                if( $this->input->get('metode')=='LCG' ){
+                    $lcg= [];
+                    $xn= [];
+                    $tr= '';
+                    $_lcg= [
+                        'b'=>47,
+                        'm'=>50
+                    ];
+                    for ($i=1; $i < 41 ; $i++) {
+                        $tr.= '<tr>';
+                        $tr.= "<td>$i</td>"; 
+                        for ($j=1; $j < 4 ; $j++) {
+                            if ( $i==1 ) {
+                                $lcg[$i][$j]= ( (1* $j )+ $_lcg['b'] ) % $_lcg['m'];
+                                $xn[$i][$j]= $lcg[$i][$j];
+                                $tr.= "<td>X".($i)."=( (1*{$j})+ {$_lcg['b']}) mod {$_lcg['m']}= {$lcg[$i][$j]} </td>";
+                            }
+                            else {
+                                $xn[$i][$j]= $xn[($i-1)][$j];
+                                $lcg[$i][$j]= ( (1* $xn[$i][$j] )+ $_lcg['b'] ) % $_lcg['m'];
+                                $xn[$i][$j]= $lcg[$i][$j];
+                                $tr.= "<td>X ($i) =( (1*{$xn[$i][$j]})+ {$_lcg['b']}) mod {$_lcg['m']}= {$lcg[$i][$j]} </td>";
+                            }
+                        }
+
+                        $tr.= '<tr>';
+                    }
+
+                    $this->html= '
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="3">Pengacakan Ke</th>
+                                        <th colspan="3">Nomor Ujian</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Pendaftar Ke 1</th>
+                                        <th>Pendaftar Ke 2</th>
+                                        <th>Pendaftar Ke 3</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Xo=1</th>
+                                        <th>Xo=2</th>
+                                        <th>Xo=3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    '.$tr.'
+                                </tbody>
+                            </table>
+                        </div>
+                    ';
+                } else {
+                    $tr= '';
+                    for ($i=1; $i < 41 ; $i++) {
+                        $tr.= '<tr>';
+                        $tr.= "<td>$i</td>"; 
+                        for ($j=1; $j < 4 ; $j++) {
+                            $tr .= "<td>RANDOM({$j})</td>";
+                        }
+
+                        $tr.= '<tr>';
+                    }
+                    $this->html= '
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="3">Pengacakan Ke</th>
+                                        <th colspan="3">Nomor Ujian</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Pendaftar Ke 1</th>
+                                        <th>Pendaftar Ke 2</th>
+                                        <th>Pendaftar Ke 3</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Xo=1</th>
+                                        <th>Xo=2</th>
+                                        <th>Xo=3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    '.$tr.'
+                                </tbody>
+                            </table>
+                        </div>
+                    ';
+                }
+                
+                echo $this->html;
+                break;
+            default:
                 break;
         }
     }

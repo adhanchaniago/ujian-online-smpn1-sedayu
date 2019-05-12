@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 06, 2019 at 08:45 AM
+-- Generation Time: May 07, 2019 at 08:41 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -54,8 +54,16 @@ CREATE TABLE `grup_soal` (
   `id_grup_soal` int(11) NOT NULL,
   `nama_grup_soal` varchar(30) DEFAULT NULL,
   `id_pelajaran` int(11) DEFAULT NULL,
-  `id_guru` int(11) DEFAULT NULL
+  `metode_acak` enum('LCG','SQL RANDOM') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `grup_soal`
+--
+
+INSERT INTO `grup_soal` (`id_grup_soal`, `nama_grup_soal`, `id_pelajaran`, `metode_acak`) VALUES
+(1, 'Ujian Akhir Semester (UAS)', 3, NULL),
+(2, 'Ujian Tengah Semester (UTS)', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -70,7 +78,7 @@ CREATE TABLE `guru` (
   `alamat` text,
   `tempat_lahir` varchar(20) DEFAULT NULL,
   `tgl_lahir` date DEFAULT NULL,
-  `agama` varchar(20) DEFAULT NULL,
+  `agama` enum('Islam','Hindu','Budha','Kristen Protestan','Katolik','Kong Hu Cu') DEFAULT NULL,
   `no_telp` char(13) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `gambar` varchar(100) DEFAULT NULL,
@@ -82,8 +90,8 @@ CREATE TABLE `guru` (
 --
 
 INSERT INTO `guru` (`nip`, `username`, `nama`, `alamat`, `tempat_lahir`, `tgl_lahir`, `agama`, `no_telp`, `email`, `gambar`, `jk`) VALUES
-('1985033020190428', '1985033020190428', 'Guru Satu', 'Jogja', 'Jogja', '2019-05-01', 'islam', '08123456789', 'gurusatu@gmail.com', NULL, 'L'),
-('1985033020190429', '1985033020190429', 'Guru Kepala Lab', 'jogja', 'jogja', '2019-05-01', 'islam', '08123456789', 'gurukepalalab@gmail.com', NULL, 'L');
+('1985033020190428', '1985033020190428', 'Guru Satu', 'Jogja', 'Jogja', '2019-05-01', 'Islam', '08123456789', 'gurusatu@gmail.com', 'Default-avatar.jpg', 'L'),
+('1985033020190429', '1985033020190429', 'Guru Kepala Lab', 'jogja', 'jogja', '2019-05-01', 'Islam', '08123456789', 'gurukepalalab@gmail.com', 'Default-avatar1.jpg', 'L');
 
 -- --------------------------------------------------------
 
@@ -114,7 +122,9 @@ CREATE TABLE `kelas` (
 --
 
 INSERT INTO `kelas` (`id_kelas`, `nama_kelas`, `blok`) VALUES
-(1, 'Kelas IX', 'N');
+(1, 'Kelas IX', 'N'),
+(2, 'Kelas VIII', 'N'),
+(3, 'Kelas VII', 'N');
 
 -- --------------------------------------------------------
 
@@ -130,6 +140,13 @@ CREATE TABLE `pbm` (
   `nis` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `pbm`
+--
+
+INSERT INTO `pbm` (`id_pbm`, `tahun_ajaran`, `id_pelajaran`, `nip`, `nis`) VALUES
+(3, '2019/2020', 3, '1985033020190428', '111235020000120001');
+
 -- --------------------------------------------------------
 
 --
@@ -142,6 +159,15 @@ CREATE TABLE `pelajaran` (
   `nama_pelajaran` varchar(20) DEFAULT NULL,
   `blok` enum('Y','N') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `pelajaran`
+--
+
+INSERT INTO `pelajaran` (`id_pelajaran`, `id_kelas`, `nama_pelajaran`, `blok`) VALUES
+(3, 1, 'Bahasa Indonesia', 'N'),
+(4, 1, 'Matematika', 'N'),
+(5, 1, 'Bahasa Inggris', 'N');
 
 -- --------------------------------------------------------
 
@@ -157,7 +183,7 @@ CREATE TABLE `siswa` (
   `tempat_lahir` varchar(20) DEFAULT NULL,
   `tgl_lahir` date DEFAULT NULL,
   `jk` enum('L','P') DEFAULT NULL,
-  `agama` varchar(20) DEFAULT NULL,
+  `agama` enum('Islam','Hindu','Budha','Kristen Protestan','Katolik','Kong Hu Cu') DEFAULT NULL,
   `no_telp` char(13) DEFAULT NULL,
   `email` varchar(20) DEFAULT NULL,
   `gambar` varchar(100) DEFAULT NULL
@@ -168,7 +194,7 @@ CREATE TABLE `siswa` (
 --
 
 INSERT INTO `siswa` (`nis`, `username`, `nama`, `alamat`, `tempat_lahir`, `tgl_lahir`, `jk`, `agama`, `no_telp`, `email`, `gambar`) VALUES
-('111235020000120001', '111235020000120001', 'Siswa Satu', 'jogja', 'Jogja', '2019-05-01', 'L', 'islam', '08123456789', 'siswasatu@gmail.com', NULL);
+('111235020000120001', '111235020000120001', 'Siswa Satu', 'jogja', 'Jogja', '2019-05-01', 'L', 'Islam', '08123456789', 'siswasatu@gmail.com', 'Default-avatar.jpg');
 
 -- --------------------------------------------------------
 
@@ -187,6 +213,19 @@ CREATE TABLE `soal` (
   `d` text,
   `jawaban` enum('A','B','C','D') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `soal`
+--
+
+INSERT INTO `soal` (`id_soal`, `id_grup_soal`, `soal`, `gambar`, `a`, `b`, `c`, `d`, `jawaban`) VALUES
+(1, 1, 'Perekonomian di dunia terus merosot yang disebabkan resesi di Eropa yang berkepanjangan. Hal ini membawa dampak yang sangat besar bagi perajin di Indonesia karena produknya tidak dapat diekspor bahkan gagal ekspor. Untuk mempertahankan kelangsungan hidup keluarga dan karyawannya banyak perajin kita yang beralih usaha lain.\r\nMakna tersurat paragraf di atas adalah ….', NULL, 'Perekonomian Indonesia merosot sehingga berdampak di perekonomian dunia.', 'Dampak kemerosoton perekonomian dunia, perajin Indonesia beralih usaha lain.', 'Kegagalan mengekspor produk karena perajin tidak mampu bersaing untuk menghasilkan produk unggulan.', ' Eropa menjadi penyebab Indonesia tidak bisa ekspor produk.', 'B'),
+(2, 1, 'Dewasa ini kita tidak asing lagi mendengar kata internet. Penggunaan internet berkembang dengan pesat. Sekarang masyarakat dapat dengan mudah mengakses internet di warnet atau melalui laptop dengan modem ataupun wireless-connected bahkan lewat HP. Jumlah pengguna interenet pun akan terus bertaambah.\r\nArti istilah pesat dalam paragraf tersebut adalah ….', NULL, 'Banyak', 'Lambat', 'Cepat', ' Kuat', 'C'),
+(3, 1, 'Hidup bermasyarakat perlu saling menghargai. Salah satu bentuk penghargaan adalah pemberian pujian. Membiasakan memberikan pujian berarti belajar hidup saling menghargai. Hal itu akan membuat hidup ini semakin terasa indah.\r\nMakna tersurat paragraf di atas adalah ….', NULL, 'Bentuk penghargaan tidak hanya pemberian pujian tetapi bisa juga dengan   pemberian hadiah.', ' Hidup dengan memberi akan terasa sangat indah.', 'Hidup dalam keanekaragaman harus saling menghargai.', 'Pemberian pujian merupakan salah satu bentuk penghargaan dalam hidup bermasyarakat.', 'D'),
+(4, 1, 'Berdasarkan hasil penelitian, satu pohon jika dikonversi ke rupiah bisa menghasilkan oksigen senilai Rp 1.174.000,00 per hari. Tentu pohon-pohon yang ditebang secara asal-asalan akan mempengaruhi ekosistem yang ada. Jika keseimbangan alam terganggu, dampaknya akan sangat dirasakan oleh manusia. Padahal fungsi pohon itu sendiri untuk menyerap air dan menyediakan oksigen secara gratis. Bayangkan saja apabila kila harus membeli oksigen untuk bernafas, berapa biaya yang kita keluarkan?\r\n\r\nArti istilah dikonversi dalam paragraf tersebut adalah ….', NULL, 'Dibentuk', 'Ditukar', 'Digunakan', 'Dihasilkan', 'B'),
+(5, 1, 'Bacalah kutipan cerpen berikut!\r\n“Mamaaaaa!!!!” teriak Sasa.\r\n“Ada apa, Sasa? Kok teriak-teriak begitu kayak di hutan saja,” tanya mama.\r\n“Ini nih, Ma. Lihat!! Masak bajunya gak muat, mana besok harus datang ke pesta ulang tahun Reno.”\r\n“Ya sudah, pakai yang lain saja atau mau pakai punya mama?” kata mama sambil tersenyum.\r\nSasa hanya bisa mengernyitkan dahinya dan mendengus kesal.\r\nMakna tersurat dari kutipan cerpen di atas adalah ….', NULL, 'Sasa kesal karena diejek oleh mamanya.', ' Sasa tidak memiliki baju untuk ke pesta ulang tahun Reno.', 'Mama memilihkan baju untuk Sasa.', 'Sasa sedang mempersiapkan baju yang akan dipakai saat pesta ulang tahun Reno.', 'B'),
+(6, 1, 'Bacalah kutipan cerpen berikut!\r\nAku bersyukur kepada Tuhan karena dia telah berubah. Aku pun memaafkannya, meskipun sampai saat ini aku belum bertemu dia lagi. Aku berharap suatu hari nanti kami akan menjalin persahabatan lagi.\r\nPenggalan cerpen di atas merupakan bagian ….', NULL, 'Krisis', 'Resolusi', 'Orientasi', 'Komplikasi', 'B'),
+(7, 1, 'Bacalah kutipan fabel berikut!\r\nMatahari mulai tenggelam, anak katak yang nakal itu tidak juga pulang. Ibu katak sangat khawatir. Ia kemudian mencari anak katak. Ternyata anak katak masih asyik bermain dengan teman-temannya. Ibu katak mengajak anaknya pulang. Dengan berat hati, katak menyudahi dan mengikuti ibunya pulang.\r\nKata ‘matahari yang mulai tenggelam” tersebut mengandung makna ….', NULL, 'Hari hampir sore', 'Hari hampir pagi', 'Hari hampir malam', 'Hari hampir siang', 'C');
 
 -- --------------------------------------------------------
 
@@ -287,16 +326,34 @@ ALTER TABLE `admin`
   MODIFY `id_admin` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `grup_soal`
+--
+ALTER TABLE `grup_soal`
+  MODIFY `id_grup_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `kelas`
 --
 ALTER TABLE `kelas`
-  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `pbm`
 --
 ALTER TABLE `pbm`
-  MODIFY `id_pbm` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pbm` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `pelajaran`
+--
+ALTER TABLE `pelajaran`
+  MODIFY `id_pelajaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `soal`
+--
+ALTER TABLE `soal`
+  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

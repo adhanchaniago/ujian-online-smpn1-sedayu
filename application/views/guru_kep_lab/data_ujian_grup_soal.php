@@ -96,7 +96,7 @@
 
     <!-- The Modal -->
     <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
       
         <!-- Modal Header -->
@@ -133,6 +133,19 @@
       $('#myModal .modal-title').html('Tambah Data Informasi Ujian Grup Soal');
       $('#myModal .modal-body').html(data);
       $('#myModal').modal('show');
+
+      $('.metode').on('change',function(){
+        var id_grup_soal= $('#id_grup_soal').val();
+        if ( id_grup_soal==null ) {
+          alert('Maaf Anda Belum Bisa Memilih Metode, Mohon Pilih Grup Soal Terlebih Dahulu');
+        } else {
+          var p= {"metode": $(this).val(),"id_grup_Soal": id_grup_soal};
+          $.get('<?php echo base_url() ?>admin/try-metode-acak',p,function(data){
+            $('#tryMetode').html(data);
+          },'html');
+          
+        }
+      });
     },'html');
   });
   $(document).on('submit', 'form#addNew', function(e) {
