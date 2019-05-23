@@ -1,6 +1,44 @@
 <?php 
-class M_guru extends CI_Model{
+class M_kep_lab extends CI_Model{
     public $post= null;
+
+    public function edit_profil()
+    {
+        return $this->db->query("
+            SELECT *
+            FROM guru
+                LEFT JOIN users
+                    ON guru.username=users.username
+            WHERE guru.username='{$this->username}'
+        ")->row();
+    }
+    public function update_profil()
+    {
+        if ( ! empty($this->post['password']) ) {
+            $this->user_update();
+        } 
+        
+        $data= [
+            'nama'=>$this->post['nama'],
+            'alamat'=>$this->post['alamat'],
+            'tempat_lahir'=>$this->post['tempat_lahir'],
+            'tgl_lahir'=>$this->post['tgl_lahir'],
+            'agama'=>$this->post['agama'],
+            'no_telp'=>$this->post['telp'],
+            'email'=>$this->post['email'],
+            'jk'=>$this->post['jk'],
+        ];
+        
+        if ( ! empty($this->post['gambar']) ) {
+            $data['gambar']= $this->post['gambar'];
+        }
+
+        $where= [
+            'username'=>$this->post['username'],
+        ];
+        return $this->db->update('guru',$data,$where);
+    }
+    /* end profiil */
     public function cek_user()
     {
         return $this->db->query("SELECT * FROM users WHERE username='{$this->username}' ")->num_rows();
@@ -71,45 +109,8 @@ class M_guru extends CI_Model{
         return( $enum_fields );
     }
 
-    public function data_guru_edit()
-    {
-        return $this->db->query("
-            SELECT *
-            FROM guru
-                LEFT JOIN users
-                    ON guru.username=users.username
-            WHERE guru.username='{$this->username}'
-        ")->row();
-    }
-    
-    public function data_guru_update()
-    {
-        if ( ! empty($this->post['password']) ) {
-            $this->user_update();
-        } 
-        
-        $data= [
-            'nama'=>$this->post['nama'],
-            'alamat'=>$this->post['alamat'],
-            'tempat_lahir'=>$this->post['tempat_lahir'],
-            'tgl_lahir'=>$this->post['tgl_lahir'],
-            'agama'=>$this->post['agama'],
-            'no_telp'=>$this->post['telp'],
-            'email'=>$this->post['email'],
-            'jk'=>$this->post['jk'],
-        ];
-        
-        if ( ! empty($this->post['gambar']) ) {
-            $data['gambar']= $this->post['gambar'];
-        }
-
-        $where= [
-            'username'=>$this->post['username'],
-        ];
-        return $this->db->update('guru',$data,$where);
-    }
-
-    public function data_grup_soal()
+    /* start grup soal */
+    public function grup_soal()
     {
         return $this->db->query("
             SELECT *,
@@ -125,6 +126,57 @@ class M_guru extends CI_Model{
                 
         ")->result_object();
     }
+    public function store_grup_soal()
+    {
+        $data= [
+            'nama_grup_soal'=>$this->post['nama_grup_soal'],
+            'id_pelajaran'=>$this->post['id_pelajaran'],
+        ];
+        return $this->db->insert('grup_soal',$data);
+    }
+
+    public function edit_grup_soal()
+    {
+        return $this->db->query("
+            SELECT * FROM table WHERE id='{$this->id}'
+        ")->row();
+    }
+/* end grup soal */
+
+/* start ujian grup soal */
+    public function ujian_grup_soal()
+    {
+        if( ! empty($this->post['id_grup_soal']) ){
+            return $this->db->query("
+                SELECT *,
+                    ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
+                FROM grup_soal
+                    LEFT JOIN pbm
+                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                    LEFT JOIN pelajaran
+                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                    LEFT JOIN kelas
+                        ON pelajaran.id_kelas=kelas.id_kelas
+                WHERE grup_soal.id_grup_soal='{$this->post["id_grup_soal"]}'
+            ")->result_object();
+
+        } else {
+            return $this->db->query("
+                SELECT *,
+                    ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
+                FROM grup_soal
+                    LEFT JOIN pbm
+                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                    LEFT JOIN pelajaran
+                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                    LEFT JOIN kelas
+                        ON pelajaran.id_kelas=kelas.id_kelas
+                    
+            ")->result_object();
+
+        }
+    }
+/* end ujian grup soal */
 
     public function data_grup_soal_pelajaran()
     {
@@ -139,79 +191,29 @@ class M_guru extends CI_Model{
         ")->result_object();
     }
         
-    public function data_grup_soal_store()
-    {
-        $data= [
-            'nama_grup_soal'=>$this->post['nama_grup_soal'],
-            'id_pelajaran'=>$this->post['id_pelajaran'],
-        ];
-        return $this->db->insert('grup_soal',$data);
-    }
+    
 
-    public function data_grup_soal_edit()
+    
+    
+    /* start soal */
+    public function soal()
     {
         return $this->db->query("
-            SELECT * FROM grup_soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}'
-        ")->row();
+            SELECT *
+            FROM soal
+                LEFT JOIN grup_soal
+                    ON soal.id_grup_soal=grup_soal.id_grup_soal
+                LEFT JOIN pbm
+                    ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                LEFT JOIN pelajaran
+                    ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                LEFT JOIN kelas
+                    ON pelajaran.id_kelas=kelas.id_kelas
+            WHERE pbm.nip='{$this->session->userdata('username')}'
+                
+        ")->result_object();
     }
-    public function update_grup_soal()
-    {
-        $data= [
-            'nama_grup_soal'=>$this->post['nama_grup_soal'],
-            'id_pelajaran'=>$this->post['id_pelajaran']
-        ];
-        $where= [
-            'id_grup_soal'=>$this->post['id_grup_soal']
-        ];
-        return $this->db->update('grup_soal',$data,$where);
-    }
-    public function delete_grup_soal()
-    {
-        $where= [
-            'id_grup_soal'=> $this->post['id_grup_soal']
-        ];
-        return $this->db->delete('grup_soal',$where);
-    }
-
-    public function data_soal()
-    {
-        if ( ! empty($this->post['id_grup_soal']) ) {
-            # code...
-            return $this->db->query("
-                SELECT *
-                FROM soal
-                    LEFT JOIN grup_soal
-                        ON soal.id_grup_soal=grup_soal.id_grup_soal
-                    LEFT JOIN pbm
-                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
-                    LEFT JOIN pelajaran
-                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
-                    LEFT JOIN kelas
-                        ON pelajaran.id_kelas=kelas.id_kelas
-                WHERE pbm.nip='{$this->session->userdata('username')}' AND grup_soal.id_grup_soal='{$this->post["id_grup_soal"]}'
-                    
-            ")->result_object();
-        } else {
-            # code...
-            return $this->db->query("
-                SELECT *
-                FROM soal
-                    LEFT JOIN grup_soal
-                        ON soal.id_grup_soal=grup_soal.id_grup_soal
-                    LEFT JOIN pbm
-                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
-                    LEFT JOIN pelajaran
-                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
-                    LEFT JOIN kelas
-                        ON pelajaran.id_kelas=kelas.id_kelas
-                WHERE pbm.nip='{$this->session->userdata('username')}'
-                    
-            ")->result_object();
-        }
-        
-    }
-
-    public function data_soal_grup_soal()
+    public function soal_grup_soal()
     {
         return $this->db->query("
         SELECT *
@@ -225,8 +227,7 @@ class M_guru extends CI_Model{
         WHERE pbm.nip='{$this->session->userdata('username')}'
         ")->result_object();
     }
-        
-    public function data_soal_store()
+    public function store_soal()
     {
         $data= [
             'soal'=>$this->post['soal'],
@@ -239,15 +240,13 @@ class M_guru extends CI_Model{
         ];
         return $this->db->insert('soal',$data);
     }
-
-    public function data_soal_edit()
+    public function edit_soal()
     {
         return $this->db->query("
             SELECT * FROM soal WHERE id_soal='{$this->id_soal}'
         ")->row();
     }
-
-    public function data_soal_update()
+    public function update_soal()
     {
         $data= [
             'soal'=>$this->post['soal'],
@@ -263,5 +262,32 @@ class M_guru extends CI_Model{
         ];
         return $this->db->update('soal',$data,$where);
     }
+    public function delete_soal()
+    {
+        $where= [
+            'id_soal'=> $this->id_soal,
+        ];
+        return $this->db->delete('soal',$where);
+    }
+    /* end grup soal */
     
+    
+    public function metode_sql()
+    {
+        return $this->db->query("SELECT * FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}' ORDER BY RAND({$this->post["seed"]})
+            LIMIT {$this->post["limit"]}
+        ")->result_object();
+    }
+
+    /* mendapatkan soal */
+    public function get_soal()
+    {
+        return $this->db->query("
+            SELECT * FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}'
+            ORDER BY id_soal ASC
+        ")->result_object();
+    }
+    /* end mendapatkan soal */
+
+
 }

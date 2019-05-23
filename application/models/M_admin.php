@@ -92,6 +92,22 @@ class M_admin extends CI_Model{
         }
     }
 */	
+    public function beranda_guru()
+    {
+        return $this->db->get('guru')->num_rows();
+    }
+    public function beranda_siswa()
+    {
+        return $this->db->get('siswa')->num_rows();
+    }
+    public function beranda_kelas()
+    {
+        return $this->db->get('kelas')->num_rows();
+    }
+    public function beranda_pelajaran()
+    {
+        return $this->db->get('pelajaran')->num_rows();
+    }
     public function cek_user()
     {
         return $this->db->query("SELECT * FROM users WHERE username='{$this->username}' ")->num_rows();

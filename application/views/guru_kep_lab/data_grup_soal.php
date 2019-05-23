@@ -13,7 +13,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="<?php echo base_url() ?>admin">Beranda</a></li>
+              <li class="breadcrumb-item"><a href="<?php echo base_url() ?>guru-kep-lab">Beranda</a></li>
               <li class="breadcrumb-item active">Informasi Grup Soal</li>
             </ol>
           </div>
@@ -28,7 +28,7 @@
           <div class="card">
             <div class="card-header">
               <!-- <h3 class="card-title">Daftar Informasi Kelas</h3> -->
-              <a href="<?php echo base_url() ?>admin/form-data-grup-soal" class="btn btn-default float-right form-add-new"><i class="fa fa-plus"></i> Add New</a>
+              <a href="<?php echo base_url() ?>guru-kep-lab/add-grup-soal" class="btn btn-default float-right form-add-new"><i class="fa fa-plus"></i> Add New</a>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -61,8 +61,8 @@
                               <span class='sr-only'>Toggle Dropdown</span>
                             </button>
                             <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                              <a class='dropdown-item edit' href='".base_url('admin/form-data-grup-soal-edit/')."'>Edit</a>
-                              <a class='dropdown-item delete' href='".base_url('admin/data-grup-soal-delete/')."'>Delete</a>
+                              <a class='dropdown-item edit' href='".base_url('guru-kep-lab/edit-grup-soal/' .$value->id_grup_soal)."'>Edit</a>
+                              <a class='dropdown-item delete' href='".base_url('guru-kep-lab/delete-grup-soal/' .$value->id_grup_soal)."'>Delete</a>
                             </div>
                           </div>
                         </td>

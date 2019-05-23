@@ -12,7 +12,7 @@
 
     <!-- Right navbar links -->
     <div class="navbar-nav ml-auto">
-      <a href="<?php echo base_url() ?>admin/data-profil" class="btn btn-default mr-2">Profil</a>
+      <a href="<?php echo base_url() ?>guru/data-profil" class="btn btn-default mr-2">Profil</a>
       <a href="<?php echo base_url('auth/logout'); ?>" class="btn btn-default">Logout</a>
       <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
         <i class="fa fa-th-large"></i>
@@ -39,7 +39,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item ">
-            <a href="<?php echo base_url('admin') ?>" class="nav-link <?php echo empty( $this->uri->segment(2) ) ? 'active' : null ?>">
+            <a href="<?php echo base_url('guru') ?>" class="nav-link <?php echo empty( $this->uri->segment(2) ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-dashboard"></i>
               <p>
                 Beranda
@@ -47,7 +47,7 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>admin/data-profil" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>guru/data-profil" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-user-circle-o"></i>
               <p>
                 Profil
@@ -55,7 +55,7 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>admin/data-grup-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-grup-soal' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>guru/data-grup-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-grup-soal' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-archive"></i>
               <p>
                 Grup Soal
@@ -63,7 +63,7 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>admin/data-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-soal' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>guru/data-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-soal' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-tasks"></i>
               <p>
                 Soal

@@ -12,7 +12,7 @@
 
     <!-- Right navbar links -->
     <div class="navbar-nav ml-auto">
-      <a href="<?php echo base_url() ?>admin/data-profil" class="btn btn-default mr-2">Profil</a>
+      <a href="<?php echo base_url() ?>guru-kep-lab/profil" class="btn btn-default mr-2">Profil</a>
       <a href="<?php echo base_url('auth/logout'); ?>" class="btn btn-default">Logout</a>
       <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
         <i class="fa fa-th-large"></i>
@@ -24,7 +24,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?php echo base_url('admin') ?>" class="brand-link">
+    <a href="<?php echo base_url('guru-kep-lab') ?>" class="brand-link">
       <img src="<?php echo base_url()?>/themes/adminlte/adminlte.io/themes/dev/adminlte/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">Ujian Online</span>
@@ -39,7 +39,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item ">
-            <a href="<?php echo base_url('admin') ?>" class="nav-link <?php echo empty( $this->uri->segment(2) ) ? 'active' : null ?>">
+            <a href="<?php echo base_url('guru-kep-lab') ?>" class="nav-link <?php echo empty( $this->uri->segment(2) ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-dashboard"></i>
               <p>
                 Beranda
@@ -47,7 +47,7 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>admin/data-profil" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>guru-kep-lab/profil" class="nav-link <?php echo ($this->uri->segment(2) == 'profil' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-user-circle-o"></i>
               <p>
                 Profil
@@ -55,7 +55,7 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>admin/data-grup-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-grup-soal' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>guru-kep-lab/grup-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'grup-soal' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-archive"></i>
               <p>
                 Grup Soal
@@ -63,14 +63,14 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>admin/data-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-soal' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>guru-kep-lab/soal" class="nav-link <?php echo ($this->uri->segment(2) == 'soal' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-tasks"></i>
               <p>
                 Soal
               </p>
             </a>
           </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(2) == 'data-ujian-grup-soal' || $this->uri->segment(2) == 'data-pelajaran' || $this->uri->segment(2) == 'data-pbm') ? 'menu-open' : null ; ?>">
+          <li class="nav-item has-treeview <?php echo ($this->uri->segment(2) == 'ujian-grup-soal' || $this->uri->segment(2) == 'pelajaran' || $this->uri->segment(2) == 'data-pbm') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-vcard"></i>
               <p>
@@ -80,7 +80,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item" >
-                <a href="<?php echo base_url() ?>admin/data-ujian-grup-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-kelas') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url() ?>guru-kep-lab/ujian-grup-soal" class="nav-link <?php echo ($this->uri->segment(2) == 'data-kelas') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
                   <p>Grup Soal</p>
                 </a>

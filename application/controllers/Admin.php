@@ -16,6 +16,10 @@ class Admin extends MY_Controller{
 
     public function index()
     {
+        $this->content['count_guru']= $this->m_admin->beranda_guru();
+        $this->content['count_siswa']= $this->m_admin->beranda_siswa();
+        $this->content['count_kelas']= $this->m_admin->beranda_kelas();
+        $this->content['count_pelajaran']= $this->m_admin->beranda_pelajaran();
         $this->view= 'admin/index';
         $this->render_pages();
     }

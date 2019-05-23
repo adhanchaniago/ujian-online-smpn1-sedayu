@@ -9,7 +9,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="<?php echo base_url() ?>admin">Beranda</a></li>
+              <li class="breadcrumb-item"><a href="<?php echo base_url() ?>guru">Beranda</a></li>
               <li class="breadcrumb-item active">Informasi Profil</li>
             </ol>
           </div>
@@ -27,7 +27,7 @@
             <!-- </div> -->
             <!-- /.card-header -->
             <div class="card-body">
-                <form action="'.base_url().'admin/data-guru-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                <form action="'.base_url().'guru/data-guru-update" role="form" id="edit" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label>NIP</label>
                         <input readonly value="<?php echo $row->nip ?>" name="nip" type="text" class="form-control" placeholder="*) Masukan NIP" required="">
@@ -56,7 +56,7 @@
                         <label>Agama</label>
                         <div class="form-group">
                             <?php
-                              foreach ($this->m_admin->guru_agama() as $key => $value) {
+                              foreach ($agama as $key => $value) {
                                 echo '
                                     <div class="form-check-inline">
                                         <label class="form-check-label">
@@ -96,7 +96,7 @@
                         <label>Foto</label>
                         <img class="d-block img-thumbnail" src="<?php echo base_url('src/guru/'.$row->gambar) ?>">
                     </div>
-                    <a href="<?php echo base_url('admin/form-data-guru-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a>
+                    <a href="<?php echo base_url('guru/form-data-guru-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a>
             </div>
             <!-- /.card-body -->
           </div>

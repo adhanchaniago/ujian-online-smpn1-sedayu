@@ -3,7 +3,7 @@ class Guru extends MY_Controller{
 	function __construct(){
         parent::__construct();
 		
-		if($this->session->userdata('status') != "login" || $this->session->userdata('level') != "guru"){
+		if($this->session->userdata('status') != "login" && $this->session->userdata('level') != "guru"){
 			redirect(base_url('auth'));
 		}
 		
@@ -50,7 +50,7 @@ class Guru extends MY_Controller{
         }
 
         $this->html= '
-        <form action="'.base_url().'admin/data-guru-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+        <form action="'.base_url().'guru/data-guru-update" role="form" id="edit" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label>NIP</label>
                 <input readonly value="'.$row->nip.'" name="nip" type="text" class="form-control" placeholder="*) Masukan NIP" required="">
@@ -175,7 +175,6 @@ class Guru extends MY_Controller{
         $this->content['row']   = $this->m_guru->data_guru_edit();
         $this->content['jk']    = $this->m_guru->guru_jk();
         $this->content['agama'] = $this->m_guru->guru_agama();
-        
         $this->view= 'guru/profil';
         $this->render_pages();
     }
@@ -196,7 +195,7 @@ class Guru extends MY_Controller{
         }
 
         $this->html= '
-        <form action="'.base_url().'admin/data-grup-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+        <form action="'.base_url().'guru/data-grup-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Nama Grup Soal</label>
                 <input name="nama_grup_soal" type="text" class="form-control" placeholder="*) Masukan Nama Grup Soal" required="">
@@ -213,7 +212,34 @@ class Guru extends MY_Controller{
         ';
         echo $this->html;
     }
+    public function form_data_grup_soal_edit()
+    {
+        $this->m_guru->post['id_grup_soal']= $this->uri->segment(3);
+        $row= $this->m_guru->data_grup_soal_edit();
+        $pelajaran= "";
+        foreach ($this->m_guru->data_grup_soal_pelajaran() as $key => $value) {
+            $pelajaran .= '<option '.($value->id_pelajaran==$row->id_pelajaran? 'selected' : null).' value="'.$value->id_pelajaran.'">('.$value->nama_kelas.') '.$value->nama_pelajaran.'</option>';
+        }
 
+        $this->html= '
+        <form action="'.base_url().'guru/update-grup-soal" role="form" id="addNew" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Nama Grup Soal</label>
+                <input value="'.$row->nama_grup_soal.'" name="nama_grup_soal" type="text" class="form-control" placeholder="*) Masukan Nama Grup Soal" required="">
+            </div>
+            <div class="form-group">
+                <label>Jenis Kelamin</label>
+                <select name="id_pelajaran" class="form-control" required>
+                    <option value="" selected disabled> -- Pilih Pelajaran -- </option>
+                    '.$pelajaran.'
+                </select>
+            </div>
+            <input value="'.$row->id_grup_soal.'" name="id_grup_soal" type="hidden">
+            <button type="submit" class="btn btn-primary">Publish</button>
+        </form>
+        ';
+        echo $this->html;
+    }
     public function data_grup_soal_store()
     {
         $this->m_guru->post= $this->input->post();
@@ -230,7 +256,45 @@ class Guru extends MY_Controller{
         }
         echo json_encode($this->msg);
     }
-
+    public function update_grup_soal()
+    {
+        $this->m_guru->post= $this->input->post();
+        if ( $this->m_guru->update_grup_soal() ) {
+            $this->msg= [
+                'stats'=>1,
+                'msg'=>'Data Berhasil Diubah',
+            ];
+        } else {
+            $this->msg= [
+                'stats'=>1,
+                'msg'=>'Data Berhasil Diubah',
+            ];
+        }
+        echo json_encode($this->msg);
+    }
+    public function delete_grup_soal()
+    {
+        $this->m_guru->post['id_grup_soal']= $this->uri->segment(3);
+        if ( count($this->m_guru->data_soal()) > 0 ) {
+            $this->msg= [
+                'stats'=>0,
+                'msg'=>'Maaf Grup Soal Ini Sedang Dipakai',
+            ];
+        } else {
+            if ( $this->m_guru->delete_grup_soal() ) {
+                $this->msg= [
+                    'stats'=>1,
+                    'msg'=>'Data Berhasil Dihapus',
+                ];
+            } else {
+                $this->msg= [
+                'stats'=>0,
+                    'msg'=>'Maaf Gagal Dihapus',
+                ];
+            }
+        }
+        echo json_encode($this->msg);
+    }
     public function data_soal()
     {
         $this->content['rows']= $this->m_guru->data_soal();
@@ -258,7 +322,7 @@ class Guru extends MY_Controller{
         }
 
         $this->html= '
-        <form action="'.base_url().'admin/data-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
+        <form action="'.base_url().'guru/data-soal-store" role="form" id="addNew" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Soal</label>
                 <textarea name="soal" class="form-control" rows="5" required="" placeholder="*) Masukan Soal"></textarea>
@@ -339,7 +403,7 @@ class Guru extends MY_Controller{
         }
 
         $this->html= '
-        <form action="'.base_url().'admin/data-soal-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+        <form action="'.base_url().'guru/data-soal-update" role="form" id="edit" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Soal</label>
                 <textarea name="soal" class="form-control" rows="5" required="" placeholder="*) Masukan Soal">'.$row->soal.'</textarea>

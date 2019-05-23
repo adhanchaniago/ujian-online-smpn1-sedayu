@@ -19,8 +19,10 @@ class Auth extends CI_Controller{
             'username' => $username,
             'password' => $password
         );
-
+        
         $cek_users  = $this->m_auth->check_auth("users",$where_users)->num_rows();
+        // print_r($cek_users);
+        // die();
         
         if ( $cek_users > 0 ) {
             # code...
@@ -33,8 +35,13 @@ class Auth extends CI_Controller{
             );
             
             $this->session->set_userdata($data_session);
-            
-            redirect(base_url("admin"));
+            $url=[
+                'admin' => 'admin',
+                'guru' => 'guru',
+                'guru_kep_lab' => 'guru-kep-lab',
+                'siswa' => 'siswa',
+            ];
+            redirect(base_url( $url[$this->session->userdata('level')] ));
         }
         
         else{
