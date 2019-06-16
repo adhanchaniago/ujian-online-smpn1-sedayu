@@ -11,7 +11,7 @@ Ujian Online SMP  Negeri 1 Sedayu
 - clone or download
 - download zip
 - extract zip and move or copy to your xampp directory
-- create new database on your phpmyadmin or sqlYog  with name "eka_sql"
+- create new database on your phpmyadmin or sqlYog  with name "prio_ta"
 - Importt database, sql file : "{project_path}/sql_dump/prio_ta.sql"
 
 # SS Login Page:
