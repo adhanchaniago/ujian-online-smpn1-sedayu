@@ -436,7 +436,9 @@ class Guru_kep_lab extends MY_Controller{
         }
         echo json_encode($this->msg);
     }
-/* end soal */
+/* end soal */    
+    
+/* ==================== start Controller Menu Ujian ==================== */
     public function bilangan_prima($limit)
     {
         $this->result=[];
@@ -449,7 +451,7 @@ class Guru_kep_lab extends MY_Controller{
                     if ($i % $j == 0) { 
                         $t++;
                     }
-                   
+                
                 }
         
             if ($t == 2) {   // syarat atau kondisi bilangan prima
@@ -475,6 +477,71 @@ class Guru_kep_lab extends MY_Controller{
         ';
         echo $this->html;
     }
+    public function get_hasil_pengujian($jumlah_siswa,$jumlah_soal,$xn)
+    {
+        $this->html='';
+        $th='<td>No</td>';# header table
+        for ($i=1; $i < $jumlah_siswa ; $i++) { 
+            $th .= '<td>Siswa '.$i.'</td>';
+        }
+
+        $tr_array= [];
+        for ($j=1; $j < $jumlah_soal+1 ; $j++) {
+            for ($i=1; $i < $jumlah_siswa  ; $i++) { 
+                $tr_array[$j][$i]=0;
+            }
+        }
+
+        $siswa_array= [];
+        foreach ($xn as $key => $value) {
+            $sub=[];
+            foreach ($xn as $key_sub => $value_sub) {
+                // $sub[$key_sub]= ( $value_sub[$key]==0 )? 50 : $value_sub[$key] ;
+                $sub[]= $value_sub ;
+            }
+            $siswa_array[$key]= [
+                'siswa'=>$key,
+                'soal'=>$sub,
+            ];
+        }
+
+        # ganti data tr_array dengan siswa array
+        foreach ($siswa_array as $key => $value) {
+            foreach ($value['soal'] as $key_sub => $value_sub) {
+                $tr_array[$value_sub][$key] += 1;
+            }
+        }
+
+        # generate tr body table
+        $tr='';
+        foreach ($tr_array as $key => $value) {
+            $tr .= '
+                <tr>
+                    <td>Soal '.$key.'</td>
+            ';
+            foreach ($value as $key_sub => $value_sub) {
+                $tr .= '<td>' .$value_sub .'</td>';
+            }
+            $tr .= '</tr>';
+        }
+        
+        return $xn;
+        die();
+        return $this->html .= '
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        '.$th.'
+                    </tr>
+                </thead>
+                <tbody>
+                    '.$tr.'
+                </tbody>
+            </table>
+        </div>
+        ';
+    }
     /* mendapatkan soal berdasarkan grup soal */
     public function get_soal($id_grup_soal)
     {
@@ -493,6 +560,7 @@ class Guru_kep_lab extends MY_Controller{
         return $this->html;
     }
     /* end mendapatkan soal berdasarkan grup soal */
+
     public function try_metode_acak()
     {
         if( $this->input->get('metode')=='LCG' ){
@@ -512,8 +580,7 @@ class Guru_kep_lab extends MY_Controller{
                 'm'=> $this->input->get('total_soal')
             ];
 
-            /* metode lcg */
-            $this->benchmark->mark('code_start');
+            $this->benchmark->mark('code_start'); # mulai waktu pengacakan metode LCG
             for ($i=1; $i < ($this->input->get('jumlah_soal')+1) ; $i++) {
                 $tr.= '<tr>';
                 $tr.= "<td>$i</td>"; 
@@ -533,9 +600,11 @@ class Guru_kep_lab extends MY_Controller{
 
                 $tr.= '<tr>';
             }
-            $this->benchmark->mark('code_end');
-            /* end metode lcg */
-
+            $this->benchmark->mark('code_end'); # selesai waktu pengacakan metode LCG
+            echo '<pre>';
+            print_r( $this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn) );
+            echo '</pre>';
+            die();
             $this->html= '
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs">
@@ -558,6 +627,9 @@ class Guru_kep_lab extends MY_Controller{
                     <br>
                     <div class="tab-pane container active" id="home">
                         <div class="table-responsive">
+                            <span class="alert alert-info"><strong>Info!</strong> Jika Xn=0 maka soal yang digunakan adalah soal no 50</span>
+                            </br>
+                            <br>
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -571,7 +643,9 @@ class Guru_kep_lab extends MY_Controller{
                             </table>
                         </div>
                     </div>
-                    <div class="tab-pane container fade" id="menu1">...</div>
+                    <div class="tab-pane container fade" id="menu1">
+                        '.$this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn).'
+                    </div>
                     <div class="tab-pane container fade" id="menu2">
                         <button type="button" class="btn btn-block btn-outline-info disabled">'.$this->benchmark->elapsed_time('code_start','code_end') .' Detik</button>
                     </div>
@@ -602,6 +676,7 @@ class Guru_kep_lab extends MY_Controller{
             $this->benchmark->mark('code_start');
             $tr= '';
             $sql=[];
+            $xn=[];
             $this->m_kep_lab->post["id_grup_soal"]= $this->input->get('id_grup_soal');
             $this->m_kep_lab->post["limit"]= $this->input->get('jumlah_soal');
             for ($js=1; $js < ($this->input->get('jumlah_siswa')+1) ; $js++) { 
@@ -612,6 +687,7 @@ class Guru_kep_lab extends MY_Controller{
                         'seed'=> $js,
                         'result'=> $value->id_soal
                     ];
+                    $xn[$no][$js]= $value->id_soal;
                     $no++;
                 }
             }
@@ -628,6 +704,10 @@ class Guru_kep_lab extends MY_Controller{
                 $tr.= '<tr>';
             }
             $this->benchmark->mark('code_end');
+            // echo "<pre>";
+            // print_r( $this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn) );
+            // echo "</pre>";
+            // die();
             $this->html= '
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
@@ -664,17 +744,7 @@ class Guru_kep_lab extends MY_Controller{
                     </div>
                 </div>
                 <div class="tab-pane container fade" id="menu1">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th rowspan="1">Siswa Ke</th>
-                                <th rowspan="1">Soal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
+                    '.$this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn).'
                 </div>
                 <div class="tab-pane container fade" id="menu2">
                     <button type="button" class="btn btn-block btn-outline-info disabled">'.$this->benchmark->elapsed_time('code_start','code_end') .' Detik</button>
@@ -705,4 +775,5 @@ class Guru_kep_lab extends MY_Controller{
         // print_r($this->benchmark);
         // echo "</pre>";
     }
+/* ==================== end Controller Menu Ujian ==================== */
 }
