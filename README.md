@@ -14,5 +14,8 @@ Ujian Online SMP  Negeri 1 Sedayu
 - create new database on your phpmyadmin or sqlYog  with name "eka_sql"
 - Importt database, sql file : "{project_path}/sql_dump/prio_ta.sql"
 
-# SS Front Website:
+# SS Login Page:
 ![alt text](https://raw.githubusercontent.com/csynoers/ujian-online-smpn1-sedayu/master/login-page.png)
+
+# SS Admin Dashboard:
+![alt text](https://raw.githubusercontent.com/csynoers/ujian-online-smpn1-sedayu/master/admin-dashboard.PNG)
