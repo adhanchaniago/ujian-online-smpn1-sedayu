@@ -18,4 +18,4 @@ Ujian Online SMP  Negeri 1 Sedayu
 ![alt text](https://raw.githubusercontent.com/csynoers/ujian-online-smpn1-sedayu/master/login-page.png)
 
 # SS Admin Dashboard:
-![alt text](https://raw.githubusercontent.com/csynoers/ujian-online-smpn1-sedayu/master/admin-dashboard.PNG)
+![alt text](https://raw.githubusercontent.com/csynoers/ujian-online-smpn1-sedayu/master/admin-dashboard.png)
