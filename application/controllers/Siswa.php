@@ -3,7 +3,7 @@ class Siswa extends MY_Controller{
 	function __construct(){
         parent::__construct();
 		
-		if($this->session->userdata('status') != "login" || $this->session->userdata('level') != "siswa"){
+		if($this->session->userdata('status') != "login" && $this->session->userdata('level') != "siswa"){
 			redirect(base_url('auth'));
 		}
 		
@@ -14,56 +14,23 @@ class Siswa extends MY_Controller{
 		$json= null;
     }
 
+/* ==================== Start Beranda ==================== */
     public function index()
     {
-        switch ( $this->session->userdata('level') ) {
-            case 'admin':
-                # code...
-                $this->view= 'admin/index';
-                $this->render_pages();
-                break;
-                
-                case 'guru':
-                # code...
-                $this->view= 'guru/index';
-                $this->render_pages();
-                break;
-                
-                case 'guru_kep_lab':
-                # code...
-                $this->view= 'guru_kep_lab/index';
-                $this->render_pages();
-                break;
-                
-                case 'siswa':
-                # code...
-                $this->view= 'siswa/index';
-                $this->render_pages();
-                break;
-            
-            
-            default:
-                # code...
-                break;
-        }
+        $this->content['rows'] =[];
+        $this->view= 'siswa/index';
+        $this->render_pages();
     }
+/* ==================== End Beranda ==================== */
 
-    // start users controller
-    public function data_admin()
+/* ==================== Start Profil ==================== */
+    public function data_profil()
     {
-        switch ( $this->session->userdata('level') ) {
-            case 'admin':
-                # code...
-                $this->content['rows']= $this->m_admin->data_admin();
-                $this->view= 'admin/data_admin';
-                $this->render_pages();
-                break;            
-                
-            default:
-                # code...
-                break;
-        }
+        $this->content['rows']= $this->m_admin->data_admin();
+        $this->view= 'admin/data_admin';
+        $this->render_pages();
     }
+/* ==================== End Profil ==================== */
 
     public function form_data_admin()
     {
@@ -1087,53 +1054,6 @@ class Siswa extends MY_Controller{
 				}
 				echo json_encode($this->msg);
                 break;                
-            
-            default:
-                # code...
-                break;
-        }
-    }
-
-    public function data_profil()
-    {
-        switch ( $this->session->userdata('level') ) {
-            case 'admin':
-                # code...
-                $this->m_admin->username= $this->session->userdata('username');
-                $this->content['row']= $this->m_admin->data_admin_edit();
-                $this->view= 'admin/profil';
-                $this->render_pages();
-                break;
-            
-            case 'guru':
-                # code...
-                $this->m_admin->username= $this->session->userdata('username');
-
-                $this->content['row']   = $this->m_admin->data_guru_edit();
-                $this->content['jk']    = $this->m_admin->guru_jk();
-                $this->content['agama'] = $this->m_admin->guru_agama();
-                
-                $this->view= 'guru/profil';
-                $this->render_pages();
-                break;
-
-            case 'guru_kep_lab':
-                # code...
-                $this->m_admin->username= $this->session->userdata('username');
-
-                $this->content['row']   = $this->m_admin->data_guru_edit();
-                $this->content['jk']    = $this->m_admin->guru_jk();
-                $this->content['agama'] = $this->m_admin->guru_agama();
-                
-                $this->view= 'guru_kep_lab/profil';
-                $this->render_pages();
-                break;
-            
-            case 'siswa':
-                # code...
-                echo "siswa";
-                break;
-            
             
             default:
                 # code...
