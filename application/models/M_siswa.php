@@ -31,5 +31,39 @@ class M_siswa extends CI_Model
         $enum_fields = $enum_array[1];
         return( $enum_fields );
     }
+    public function data_siswa_update()
+    {
+        if ( ! empty($this->post['password']) ) {
+            $this->user_update();
+        } 
+        
+        $data= [
+            'nama'=>$this->post['nama'],
+            'alamat'=>$this->post['alamat'],
+            'tempat_lahir'=>$this->post['tempat_lahir'],
+            'tgl_lahir'=>$this->post['tgl_lahir'],
+            'agama'=>$this->post['agama'],
+            'no_telp'=>$this->post['telp'],
+            'email'=>$this->post['email'],
+            'jk'=>$this->post['jk'],
+        ];
+        
+        if ( ! empty($this->post['gambar']) ) {
+            $data['gambar']= $this->post['gambar'];
+        }
+
+        $where= [
+            'username'=>$this->post['username'],
+        ];
+        return $this->db->update('siswa',$data,$where);
+    }
+
+    # update user
+    public function user_update()
+    {
+        return $this->db->update('users',[
+            'password'=> md5($this->post['password']),
+        ],['username'=>$this->post['username'] ]);
+    }
 /* ==================== End Profil ==================== */
 }

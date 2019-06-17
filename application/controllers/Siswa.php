@@ -128,6 +128,59 @@ class Siswa extends MY_Controller{
         ';
         echo $this->html;
     }
+    public function data_siswa_update()
+    {
+        $this->m_siswa->post= $this->input->post();
+        if ( empty($_FILES['fupload']['tmp_name']) ) {
+            # code...without upload file
+            if ( $this->m_siswa->data_siswa_update() ) {
+                $this->msg= [
+                    'stats'=>1,
+                    'msg'=> 'Data Berhasil Disimpan'
+                ];
+            } else {
+                $this->msg= [
+                    'stats'=>1,
+                    'msg'=> 'Data Gagal Disimpan'
+                ];
+            }
+        } else {
+            # code...with upload file
+            $this->m_siswa->username= $this->input->post('username');
+            $row= $this->m_siswa->data_siswa_edit();
+            $config['upload_path']          = 'src/siswa/';
+            $config['allowed_types']        = 'jpg|png';
+            if ( file_exists($config['upload_path'].$row->gambar) ) {
+                unlink($config['upload_path'].$row->gambar);
+            }
+            $this->load->library('upload', $config);
+            if ( ! $this->upload->do_upload('fupload'))
+            {
+                $this->msg= [
+                    'stats'=>0,
+                    'msg'=> $this->upload->display_errors(),
+                ];
+            }
+            else
+            {
+                $this->m_siswa->post['gambar']= $this->upload->data()['file_name'];
+                if ( $this->m_siswa->data_siswa_update() ) {
+                    $this->msg= [
+                        'stats'=>1,
+                        'msg'=> 'Data Berhasil Disimpan',
+                    ];
+                    
+                } else {
+                    $this->msg= [
+                        'stats'=>0,
+                        'msg'=> 'Maaf Data Gagal Disimpan',
+                    ];
+                }
+                
+            }
+        }
+        echo json_encode($this->msg);
+    }
 /* ==================== End Profil ==================== */
 
     public function form_data_admin()
@@ -956,69 +1009,6 @@ class Siswa extends MY_Controller{
                         
                     }
                     
-                }
-                echo json_encode($this->msg);
-                break;                
-            
-            default:
-                # code...
-                break;
-        }
-    }
-
-    public function data_siswa_update()
-    {
-        switch ( $this->session->userdata('level') ) {
-            case 'admin':
-                # code...
-                $this->m_admin->post= $this->input->post();
-                if ( empty($_FILES['fupload']['tmp_name']) ) {
-                    # code...without upload file
-					if ( $this->m_admin->data_siswa_update() ) {
-						$this->msg= [
-							'stats'=>1,
-							'msg'=> 'Data Berhasil Disimpan'
-						];
-					} else {
-						$this->msg= [
-							'stats'=>1,
-							'msg'=> 'Data Gagal Disimpan'
-						];
-					}
-                } else {
-                    # code...with upload file
-					$this->m_admin->username= $this->input->post('username');
-					$row= $this->m_admin->data_siswa_edit();
-					$config['upload_path']          = 'src/siswa/';
-					$config['allowed_types']        = 'jpg|png';
-					if ( file_exists($config['upload_path'].$row->gambar) ) {
-						unlink($config['upload_path'].$row->gambar);
-					}
-					$this->load->library('upload', $config);
-					if ( ! $this->upload->do_upload('fupload'))
-					{
-						$this->msg= [
-							'stats'=>0,
-							'msg'=> $this->upload->display_errors(),
-						];
-					}
-					else
-					{
-						$this->m_admin->post['gambar']= $this->upload->data()['file_name'];
-						if ( $this->m_admin->data_siswa_update() ) {
-							$this->msg= [
-								'stats'=>1,
-								'msg'=> 'Data Berhasil Disimpan',
-							];
-							
-						} else {
-							$this->msg= [
-								'stats'=>0,
-								'msg'=> 'Maaf Data Gagal Disimpan',
-							];
-						}
-						
-					}
                 }
                 echo json_encode($this->msg);
                 break;                
