@@ -49,76 +49,28 @@
             </a>
           </li>
           <li class="nav-item ">
+            <a href="<?php echo base_url() ?>siswa/data-ujian" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
+              <i class="nav-icon fa fa-pencil-square-o"></i>
+              <p>
+                Ujian
+              </p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a href="<?php echo base_url() ?>siswa/data-hasil-ujian" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
+              <i class="nav-icon fa fa-file-text-o"></i>
+              <p>
+                Hasil Ujian
+              </p>
+            </a>
+          </li>
+          <li class="nav-item ">
             <a href="<?php echo base_url() ?>siswa/data-profil" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-user-circle-o"></i>
               <p>
                 Profil
               </p>
             </a>
-          </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(2) == 'data-admin' || $this->uri->segment(2) == 'data-guru' || $this->uri->segment(2) == 'data-siswa' || $this->uri->segment(2) == 'data-profil') ? 'menu-open' : null ; ?>">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fa fa-user"></i>
-              <p>
-                Users
-                <i class="right fa fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo base_url() ?>admin/data-admin" class="nav-link <?php echo ($this->uri->segment(2) == 'data-admin') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Admin</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url() ?>admin/data-guru" class="nav-link <?php echo ($this->uri->segment(2) == 'data-guru') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Guru</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url() ?>admin/data-siswa" class="nav-link <?php echo ($this->uri->segment(2) == 'data-siswa') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Siswa</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url() ?>admin/data-profil" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Profil</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(2) == 'data-kelas' || $this->uri->segment(2) == 'data-pelajaran' || $this->uri->segment(2) == 'data-pbm') ? 'menu-open' : null ; ?>">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fa fa-graduation-cap"></i>
-              <p>
-                Akademik
-                <i class="right fa fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item" >
-                <a href="<?php echo base_url() ?>admin/data-kelas" class="nav-link <?php echo ($this->uri->segment(2) == 'data-kelas') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Kelas</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url('admin/data-pelajaran')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'data-pelajaran') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Pelajaran</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url('admin/data-pbm')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'data-pbm') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>PBM</p>
-                </a>
-              </li>
-            </ul>
           </li>
         </ul>
       </nav>
