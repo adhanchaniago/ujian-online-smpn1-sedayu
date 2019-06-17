@@ -27,13 +27,13 @@
             <!-- </div> -->
             <!-- /.card-header -->
             <div class="card-body">
-                <form action="'.base_url().'guru/data-guru-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+                <form action="'.base_url().'siswa/data-siswa-update" role="form" id="edit" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label>NIP</label>
-                        <input readonly value="<?php echo $row->nip ?>" name="nip" type="text" class="form-control" placeholder="*) Masukan NIP" required="">
+                        <label>NIS</label>
+                        <input readonly value="<?php echo $row->nis ?>" name="nip" type="text" class="form-control" placeholder="*) Masukan NIS" required="">
                     </div>
                     <div class="form-group">
-                        <label>Nama Guru</label>
+                        <label>Nama Siswa</label>
                         <input readonly value="<?php echo $row->nama ?>" name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
                     </div>
                     <div class="form-group">
@@ -94,9 +94,9 @@
                     </div>
                     <div class="form-group">
                         <label>Foto</label>
-                        <img class="d-block img-thumbnail" src="<?php echo base_url('src/guru/'.$row->gambar) ?>">
+                        <img class="d-block img-thumbnail" src="<?php echo base_url('src/siswa/'.$row->gambar) ?>">
                     </div>
-                    <a href="<?php echo base_url('guru/form-data-guru-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a>
+                    <a href="<?php echo base_url('siswa/form-data-siswa-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a>
             </div>
             <!-- /.card-body -->
           </div>
