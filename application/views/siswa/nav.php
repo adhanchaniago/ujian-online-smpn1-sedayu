@@ -9,6 +9,17 @@
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
       </li>
     </ul>
+    <table>
+      <tr style="border-bottom: 1px solid #ddd;">
+        <td id="tglSekarang" colspan="4"></td>
+      </tr>
+      <tr>
+        <td>Jam </td>
+        <td id="jam"></td>
+        <td id="menit"></td>
+        <td id="detik"></td>
+      </tr>
+    </table>
 
     <!-- Right navbar links -->
     <div class="navbar-nav ml-auto">
@@ -49,7 +60,7 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>siswa/data-ujian" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>siswa/data-ujian" class="nav-link <?php echo ($this->uri->segment(2) == 'data-ujian' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-pencil-square-o"></i>
               <p>
                 Ujian
@@ -57,7 +68,7 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="<?php echo base_url() ?>siswa/data-hasil-ujian" class="nav-link <?php echo ($this->uri->segment(2) == 'data-profil' ) ? 'active' : null ?>">
+            <a href="<?php echo base_url() ?>siswa/data-hasil-ujian" class="nav-link <?php echo ($this->uri->segment(2) == 'data-hasil-ujian' ) ? 'active' : null ?>">
               <i class="nav-icon fa fa-file-text-o"></i>
               <p>
                 Hasil Ujian

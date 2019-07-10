@@ -43,6 +43,87 @@
 <script src="<?php echo base_url()?>/themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url()?>/themes/adminlte/adminlte.io/themes/dev/adminlte/dist/js/adminlte.js"></script>
+<script>
+window.setTimeout("waktu()",1000); 
+function waktu() { 
+  var tanggal = new Date(); 
+  setTimeout("waktu()",1000); 
+  document.getElementById("jam").innerHTML = tanggal.getHours(); 
+  document.getElementById("menit").innerHTML = ': '+tanggal.getMinutes();
+  document.getElementById("detik").innerHTML = ': '+tanggal.getSeconds();
+
+  document.getElementById("tglSekarang").innerHTML = getTanggalIndoSekarang();
+}
+
+function getTanggalIndoSekarang()
+{
+  var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+  var myDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum&#39;at', 'Sabtu'];
+
+  var date = new Date();
+
+  var day = date.getDate();
+
+  var month = date.getMonth();
+
+  var thisDay = date.getDay(),
+
+      thisDay = myDays[thisDay];
+
+  var yy = date.getYear();
+
+  var year = (yy < 1000) ? yy + 1900 : yy;
+
+  return (thisDay + ', ' + day + ' ' + months[month] + ' ' + year);
+
+}
+
+function countDownUjian()
+{
+  // Set the date we're counting down to
+  var countDownDate = new Date("2019-06-19 15:37:25").getTime();
+
+  // Update the count down every 1 second
+  var x = setInterval(function() {
+
+    // Get today's date and time
+    var now = new Date().getTime();
+      
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+      
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+    // Output the result in an element with id="demo"
+    // document.getElementById("countDownUjian").innerHTML = days + "d " + hours + "h "
+    // + minutes + "m " + seconds + "s ";
+    document.getElementById("countDownUjian").innerHTML = hours + " Jam "
+    + minutes + " Menit " + seconds + " Detik ";
+      
+    // If the count down is over, write some text 
+    if (distance < 0) { 
+      clearInterval(x);
+      document.getElementById("countDownUjian").innerHTML = "EXPIRED";
+    }
+  }, 1000);
+}
+  <?php
+    if ( $this->uri->segment(2)!='data-ujian' ) {
+      ?>
+        /* cek proses ujian */
+        $.get('<?php echo base_url() ?>siswa/cek-proses-ujian',function(data){
+          if ( data==1 ) 
+            window.location.replace('<?php echo base_url() ?>siswa/data-ujian')
+        })
+      <?php
+    }
+  ?>
+</script>
 </body>
 
 </html>

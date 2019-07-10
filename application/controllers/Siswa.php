@@ -5,13 +5,14 @@ class Siswa extends MY_Controller{
 		
 		if($this->session->userdata('status') != "login" && $this->session->userdata('level') != "siswa"){
 			redirect(base_url('auth'));
-		}
+        }
+
 		
         $this->load->model('m_siswa');
         
 		$msg= null;
 		$html= null;
-		$json= null;
+        $json= null;
     }
 
 /* ==================== Start Beranda ==================== */
@@ -190,14 +191,240 @@ class Siswa extends MY_Controller{
         $this->view= 'siswa/ujian';
         $this->render_pages();
     }
-/* ==================== End Profil ==================== */
+    public function proses_ujian()
+    {
+        if ( $this->session->has_userdata('proses-ujian') ) {
+            # get last_soal
+            $index_soal= $this->session->userdata('proses-ujian')['last_soal'];
+            if ( ($index_soal < count( $this->session->userdata('proses-ujian')['soal']) && !empty($this->input->post('jawaban')) ) ) {
+                # update soal->jawaban $this->session->userdata('proses-ujian')['soal'][$index_soal]['jawaban']
+                $_SESSION['proses-ujian']['soal'][$index_soal]['jawaban']= $this->input->post('jawaban');
+    
+                # update $this->session->userdata('proses-ujian')['last_soal']
+                $_SESSION['proses-ujian']['last_soal']= $index_soal +1;
+            } else {
+                // $this->session->unset_userdata('proses-ujian');
+            }
+            
 
-/* ==================== Start Ujian ==================== */
+        } else {
+            $data_session = array(
+                'id_grup_soal'  => $this->uri->segment(3),
+                'start_ujian' => 'waktu start',
+                'end_ujian' => 'waktu berakhir',
+                'last_soal'=>0,
+                'soal'=> [
+                    [
+                        'id_soal'=>1,
+                        'soal'=>'Perekonomian di dunia terus merosot yang disebabkan resesi di Eropa yang berkepanjangan. Hal ini membawa dampak yang sangat besar bagi perajin di Indonesia karena produknya tidak dapat diekspor bahkan gagal ekspor. Untuk mempertahankan kelangsungan hidup keluarga dan karyawannya banyak perajin kita yang beralih usaha lain.
+                        Makna tersurat paragraf di atas adalah ...',
+                        'gambar'=>'gambar soal 1',
+                        'a'=> 'pilihan a',
+                        'b'=> 'pilihan b',
+                        'c'=> 'pilihan c',
+                        'd'=> 'pilihan d',
+                        'kunci'=> 'a',
+                        'jawaban'=> '',
+                    ],
+                    [
+                        'id_soal'=>2,
+                        'soal'=>'Perekonomian di dunia terus merosot yang disebabkan resesi di Eropa yang berkepanjangan. Hal ini membawa dampak yang sangat besar bagi perajin di Indonesia karena produknya tidak dapat diekspor bahkan gagal ekspor. Untuk mempertahankan kelangsungan hidup keluarga dan karyawannya banyak perajin kita yang beralih usaha lain.
+                        Makna tersurat paragraf di atas adalah ….',
+                        'gambar'=>'gambar soal 2',
+                        'a'=> 'pilihan a',
+                        'b'=> 'pilihan b',
+                        'c'=> 'pilihan c',
+                        'd'=> 'pilihan d',
+                        'kunci'=> 'b',
+                        'jawaban'=> '',
+                    ],
+                    [
+                        'id_soal'=>3,
+                        'soal'=>'Perekonomian di dunia terus merosot yang disebabkan resesi di Eropa yang berkepanjangan. Hal ini membawa dampak yang sangat besar bagi perajin di Indonesia karena produknya tidak dapat diekspor bahkan gagal ekspor. Untuk mempertahankan kelangsungan hidup keluarga dan karyawannya banyak perajin kita yang beralih usaha lain.
+                        Makna tersurat paragraf di atas adalah ….',
+                        'gambar'=>'gambar soal 3',
+                        'a'=> 'pilihan a',
+                        'b'=> 'pilihan b',
+                        'c'=> 'pilihan c',
+                        'd'=> 'pilihan d',
+                        'kunci'=> 'c',
+                        'jawaban'=> '',
+                    ],
+                ],
+            );
+            $this->session->set_userdata('proses-ujian',$data_session);
+        }
+        
+        $this->html= '
+        <div class="card">
+            <div class="card-header">
+                <div class="table-responsive-lg">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Jumlah Soal</th>
+                                <th>Waktu Pengerjaan</th>
+                                <th>Waktu Tersisa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>'.count( $this->session->userdata('proses-ujian')['soal'] ).'</td>
+                                <td>90 Menit</td>
+                                <td id="countDownUjian"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-body">                
+                ';
+                if ( $this->session->userdata('proses-ujian')['last_soal'] < count( $this->session->userdata('proses-ujian')['soal'] ) ) {
+                    $soal= $this->session->userdata('proses-ujian')['soal'][ $this->session->userdata('proses-ujian')['last_soal'] ];
+                    $this->html .= '
+                    <div class="card">
+                        <form method="post" class="next-soal" action="'.base_url('siswa/proses-ujian').'">
+                            <div class="card-header"> <label>Soal No '.($this->session->userdata('proses-ujian')['last_soal'] +1).'</label></div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="pertanyaan">Pertanyaan:</label>
+                                    <div class="callout callout-success">
+                                        <p>'.$soal['soal'].'</p>
+                                    </div>
+                                </div>
+                                <label for="pilihJawaban">Pilih Jawaban:</label>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:3rem">A .</td>
+                                            <td style="width:1rem">
+                                                <input type="radio" class="form-check-input" name="jawaban" value="A" required="">
+                                            </td>
+                                            <td>'.$soal['a'].'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>B .</td>
+                                            <td>
+                                                <input type="radio" class="form-check-input" name="jawaban" value="B" required="">
+                                            </td>
+                                            <td>'.$soal['b'].'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>C .</td>
+                                            <td>
+                                                <input type="radio" class="form-check-input" name="jawaban" value="C" required="">
+                                            </td>
+                                            <td>'.$soal['c'].'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>D .</td>
+                                            <td>
+                                                <input type="radio" class="form-check-input" name="jawaban" value="D" required="">
+                                            </td>
+                                            <td>'.$soal['d'].'</td>
+                                        </tr>
+                                    </tbody>
+                                </table>                        
+                            </div> 
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-block btn-outline-primary">Klik Disini Untuk Melihat Soal Selanjutnya</button>
+                            </div>
+                        </form>
+                    </div>
+                    ';
+                } else {
+                    $this->session->unset_userdata('proses-ujian');
+                    $this->html .= '
+                    <div class="callout callout-info text-center">
+                        <h5>Ujian Selesai</h5>
+                        <p>*Terima Kasih*</p>
+                    </div>
+                    ';
+                }
+                $this->html .= '
+            </div>
+        </div>
+        ';
+        echo $this->html;
+        // echo '<pre>';
+        // print_r($_SESSION['proses-ujian']['soal'][$index_soal]['jawaban']);
+        // print_r($this->input->post());
+        // print_r($this->session->userdata('proses-ujian'));
+        // print_r($this->session->userdata('proses-ujian')['soal'][ $this->session->userdata('proses-ujian')['last_soal'] ]);
+        // print_r($this->session->has_userdata('proses-ujian'));
+        // echo '</pre>';
+    }
+    public function cek_proses_ujian()
+    {
+        echo $this->session->has_userdata('proses-ujian')? 1 : 0;
+    }
+/* ==================== End Ujian ==================== */
+
+/* ==================== Start Hasil Ujian ==================== */
     public function data_hasil_ujian()
     {
         $this->content['rows']= [];
         $this->view= 'siswa/hasil_ujian';
         $this->render_pages();
     }
-/* ==================== End Profil ==================== */
+    public function detail_hasil_ujian()
+    {
+        $this->html= '
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive-lg">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Jumlah Soal</th>
+                                <th>Jawaban Benar</th>
+                                <th>Jawaban Salah</th>
+                                <th>Nilai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>40</td>
+                                <td>20</td>
+                                <td>20</td>
+                                <td>50</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive-lg">
+            <h5>Detail Koreksi Jawaban</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Soal</th>
+                        <th>Koreksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Soal 1</td>
+                        <td>Benar</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Soal 2</td>
+                        <td>Salah</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Soal 3</td>
+                        <td>Benar</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        ';
+        echo $this->html;
+    }
+/* ==================== End Hasil Ujian ==================== */
 }

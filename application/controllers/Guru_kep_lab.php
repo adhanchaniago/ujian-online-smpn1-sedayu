@@ -484,14 +484,14 @@ class Guru_kep_lab extends MY_Controller{
         for ($i=1; $i < $jumlah_siswa ; $i++) { 
             $th .= '<td>Siswa '.$i.'</td>';
         }
-
+        
         $tr_array= [];
         for ($j=1; $j < $jumlah_soal+1 ; $j++) {
             for ($i=1; $i < $jumlah_siswa  ; $i++) { 
                 $tr_array[$j][$i]=0;
             }
         }
-
+        
         $siswa_array= [];
         foreach ($xn as $key => $value) {
             $sub=[];
@@ -504,11 +504,17 @@ class Guru_kep_lab extends MY_Controller{
                 'soal'=>$sub,
             ];
         }
-
         # ganti data tr_array dengan siswa array
         foreach ($siswa_array as $key => $value) {
             foreach ($value['soal'] as $key_sub => $value_sub) {
-                $tr_array[$value_sub][$key] += 1;
+                if ( $value_sub[$value['siswa']]==0 ) {
+                    # if index soal sama dengan 0
+                    $tr_array[50][$value['siswa']]= +1;
+                } else {
+                    # code...
+                    $tr_array[$value_sub[$value['siswa']]+1 ][$value['siswa']]= +1;
+                }
+                
             }
         }
 
@@ -525,8 +531,7 @@ class Guru_kep_lab extends MY_Controller{
             $tr .= '</tr>';
         }
         
-        return $xn;
-        die();
+        
         return $this->html .= '
         <div class="table-responsive">
             <table class="table table-striped">
@@ -601,10 +606,16 @@ class Guru_kep_lab extends MY_Controller{
                 $tr.= '<tr>';
             }
             $this->benchmark->mark('code_end'); # selesai waktu pengacakan metode LCG
-            echo '<pre>';
-            print_r( $this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn) );
-            echo '</pre>';
-            die();
+            
+            $_get_hasil_pengujian= [
+                'jumlah_siswa'=> ($this->input->get('jumlah_siswa') +1),
+                'jumlah_soal'=> ($this->input->get('total_soal')),
+                'xn'=> $xn
+            ];
+            // echo '<pre>';
+            // print_r( $this->get_hasil_pengujian($_get_hasil_pengujian['jumlah_siswa'] ,$_get_hasil_pengujian['jumlah_soal'] ,$_get_hasil_pengujian['xn']) );
+            // echo '</pre>';
+            // die();
             $this->html= '
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs">
@@ -644,7 +655,7 @@ class Guru_kep_lab extends MY_Controller{
                         </div>
                     </div>
                     <div class="tab-pane container fade" id="menu1">
-                        '.$this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn).'
+                        '.$this->get_hasil_pengujian($_get_hasil_pengujian['jumlah_siswa'] ,$_get_hasil_pengujian['jumlah_soal'] ,$_get_hasil_pengujian['xn']).'
                     </div>
                     <div class="tab-pane container fade" id="menu2">
                         <button type="button" class="btn btn-block btn-outline-info disabled">'.$this->benchmark->elapsed_time('code_start','code_end') .' Detik</button>
@@ -705,9 +716,8 @@ class Guru_kep_lab extends MY_Controller{
             }
             $this->benchmark->mark('code_end');
             // echo "<pre>";
-            // print_r( $this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn) );
+            // print_r($this->benchmark);
             // echo "</pre>";
-            // die();
             $this->html= '
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
@@ -747,6 +757,9 @@ class Guru_kep_lab extends MY_Controller{
                     '.$this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn).'
                 </div>
                 <div class="tab-pane container fade" id="menu2">
+                    Waktu Pengacakan = Script Pengacakan Selesai - Script Pengacakan Dimulai <br>
+                    Script Pengacakan Dimulai : '.( $this->benchmark->marker['code_start'] ).'<br>
+                    Script Pengacakan Selesai :'.( $this->benchmark->marker['code_end'] ).'
                     <button type="button" class="btn btn-block btn-outline-info disabled">'.$this->benchmark->elapsed_time('code_start','code_end') .' Detik</button>
                     <hr>
                 </div>

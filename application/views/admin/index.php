@@ -95,6 +95,7 @@
           </div>
           <!-- ./col -->
         </div>
+        <!-- /.row -->
         <!-- Main row -->
       </div><!-- /.container-fluid -->
     </section>

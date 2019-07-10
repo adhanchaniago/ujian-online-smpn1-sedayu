@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2019 at 08:03 AM
+-- Generation Time: Jun 19, 2019 at 05:10 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -101,8 +101,23 @@ INSERT INTO `guru` (`nip`, `username`, `nama`, `alamat`, `tempat_lahir`, `tgl_la
 
 CREATE TABLE `hasil_ujian` (
   `id_hasil_ujian` int(11) NOT NULL,
-  `id_proses_ujian` int(11) DEFAULT NULL,
+  `nis` char(20) DEFAULT NULL,
+  `id_grup_soal` int(11) DEFAULT NULL,
   `nilai` char(3) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jawaban`
+--
+
+CREATE TABLE `jawaban` (
+  `jawaban_id` int(10) NOT NULL,
+  `soal_id` int(10) NOT NULL,
+  `nis` char(20) DEFAULT NULL,
+  `jawaban_soal` enum('a','b','c','d') DEFAULT NULL,
+  `keterangan` enum('benar','salah') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -320,7 +335,7 @@ ALTER TABLE `guru`
 --
 ALTER TABLE `hasil_ujian`
   ADD PRIMARY KEY (`id_hasil_ujian`),
-  ADD KEY `id_proses_ujian` (`id_proses_ujian`);
+  ADD KEY `id_proses_ujian` (`nis`);
 
 --
 -- Indexes for table `kelas`

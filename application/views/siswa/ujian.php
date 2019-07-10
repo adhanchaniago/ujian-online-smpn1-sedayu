@@ -40,28 +40,16 @@
                           </tr>
                       </thead>
                       <tbody>
-                      <?php
-                          foreach ($rows as $key => $value) {
-                          echo "
-                              <tr>
-                              <td>{value}</td>
-                              <td>
-                                  <div class='btn-group'>
-                                  <button type='button' class='btn btn-default'>Action</button>
-                                  <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
-                                      <span class='caret'></span>
-                                      <span class='sr-only'>Toggle Dropdown</span>
-                                  </button>
-                                  <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                                      <a class='dropdown-item edit' href='".base_url('admin/form-data-template-edit/')."'>Edit</a>
-                                      <a class='dropdown-item delete' href='".base_url('admin/data-template-delete/')."'>Delete</a>
-                                  </div>
-                                  </div>
-                              </td>
-                              </tr>
-                          ";
-                          }
-                      ?>
+                        <tr>
+                        <td>{value}</td>
+                        <td>{value}</td>
+                        <td>{value}</td>
+                        <td>{value}</td>
+                        <td>{value}</td>
+                        <td>
+                          <a class="btn btn-block btn-outline-primary ujian" href="<?php echo base_url('siswa/proses-ujian/1' )?>">Kerjakan</a>
+                        </td>
+                        </tr>
                       
                       </tbody>
                   </table>
@@ -80,7 +68,7 @@
 
   <!-- The Modal -->
   <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
       
         <!-- Modal Header -->
@@ -110,69 +98,65 @@
 <script>
 $(function () {
   $("table.example1").DataTable();
-});
-$(document).on('click', '.form-add-new', function(e){
-  e.preventDefault();
-  $.get($(this).attr('href'), function(data){
-    $('#myModal .modal-title').html('Tambah Data Informasi Template');
-    $('#myModal .modal-body').html(data);
-    $('#myModal').modal('show');
-  },'html');
-});
-$(document).on('submit', 'form#addNew', function(e) {
-  e.preventDefault();    
-  var formData = new FormData(this);
-  $.ajax({
-      url: $(this).attr("action"),
-      type: 'POST',
-      data: formData,
-      success: function (data) {
-        if ( data.stats==1 ) {
-          alert( data.msg )
-          location.reload()
-        } else {
-          alert( data.msg );
-        }
-        // console.log(data);
-      },
-      cache: false,
-      contentType: false,
-      processData: false,
-      dataType: 'json'
+  
+  $('.ujian').on('click', function(e){
+    e.preventDefault(); 
+    $.get( $(this).attr('href'), function(data){
+      $('#myModal .modal-title').html('Proses Ujian');
+      $('#myModal .modal-body').html(data);
+      $('#myModal').modal('show');
+      countDownUjian()
+    } ,'html');
   });
-});
-$('.edit').on('click', function(e){
-  e.preventDefault(); 
-  $.get( $(this).attr('href'), function(data){
-    $('#myModal .modal-title').html('Edit Informasi Template');
-    $('#myModal .modal-body').html(data);
-    $('#myModal').modal('show');
-  } ,'html');
+
+  $(document).on('submit', 'form.next-soal', function(e) {
+    e.preventDefault();    
+    var formData = new FormData(this);
+    $.ajax({
+        url: $(this).attr("action"),
+        type: 'POST',
+        data: formData,
+        success: function (data) {
+          // if ( data.stats==1 ) {
+          //   alert( data.msg )
+          //   location.reload()
+          // } else {
+          //   alert( data.msg );
+          // }
+          $('#myModal .modal-body').html(data);
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+        dataType: 'html'
+    });
+  });
+
+  /* cek proses ujian */
+  $.get('<?php echo base_url() ?>siswa/cek-proses-ujian',function(data){
+    if ( data==1 ) {
+      $.get( '<?php echo base_url() ?>siswa/proses-ujian', function(data){
+        $('#myModal .modal-title').html('Proses Ujian');
+        $('#myModal .modal-body').html(data);
+        $('#myModal').modal('show');
+        countDownUjian()
+      } ,'html');
+    }
+  })
+
+  $('#myModal').on('hidden.bs.modal', function () {
+    $.get('<?php echo base_url() ?>siswa/cek-proses-ujian',function(data){
+      if ( data==1 ) {
+        $.get( '<?php echo base_url() ?>siswa/proses-ujian', function(data){
+          $('#myModal .modal-title').html('Proses Ujian');
+          $('#myModal .modal-body').html(data);
+          $('#myModal').modal('show');
+          countDownUjian()
+        } ,'html');
+      }
+    })
+  })
 });
 
-$('.delete').on('click', function(e){
-  e.preventDefault(); 
-  $.get( $(this).attr('href'), function(data){
-    alert( (data.stats=='1') ? data.msg : data.msg )
-    location.reload()
-  } ,'json');
-});
-$(document).on('submit','form#edit',function(e){
-  e.preventDefault();    
-  var formData = new FormData(this);
-  $.ajax({
-      url: $(this).attr("action"),
-      type: 'POST',
-      data: formData,
-      success: function (data) {
-        // console.log(data)
-          alert( (data.stats=='1') ? data.msg : data.msg )
-          location.reload()
-      },
-      cache: false,
-      contentType: false,
-      processData: false,
-      dataType: 'json'
-  });
-});
+
 </script>

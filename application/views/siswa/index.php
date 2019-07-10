@@ -38,106 +38,66 @@
         <!-- /.row -->
 
         <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Daftar Informasi Jadwal Ujian</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                  <table class="table example1 table-bordered table-striped" style="width:100%">
-                      <thead>
-                          <tr>
-                              <th>Judul Ujian</th>
-                              <th>Nama Pelajaran </th>
-                              <th>Tanggal</th>
-                              <th>Waktu</th>
-                              <th>Action</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                      <?php
-                          foreach ($rows as $key => $value) {
-                          echo "
-                              <tr>
-                              <td>{value}</td>
-                              <td>
-                                  <div class='btn-group'>
-                                  <button type='button' class='btn btn-default'>Action</button>
-                                  <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
-                                      <span class='caret'></span>
-                                      <span class='sr-only'>Toggle Dropdown</span>
-                                  </button>
-                                  <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                                      <a class='dropdown-item edit' href='".base_url('admin/form-data-template-edit/')."'>Edit</a>
-                                      <a class='dropdown-item delete' href='".base_url('admin/data-template-delete/')."'>Delete</a>
-                                  </div>
-                                  </div>
-                              </td>
-                              </tr>
-                          ";
-                          }
-                      ?>
-                      
-                      </tbody>
-                  </table>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /card -->
-          </div>
-        </div>
-        <!-- /.row -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3> &nbsp </h3>
 
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Daftar Informasi Ujian Sudah Dikerjakan</h3>
+                <p>Ujian Belum Dikerjakan</p>
               </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                  <table class="table example1 table-bordered table-striped" style="width:100%">
-                      <thead>
-                          <tr>
-                              <th>Judul Ujian</th>
-                              <th>Nama Pelajaran </th>
-                              <th>Tanggal</th>
-                              <th>Waktu</th>
-                              <th>Action</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                      <?php
-                          foreach ($rows as $key => $value) {
-                          echo "
-                              <tr>
-                              <td>{value}</td>
-                              <td>
-                                  <div class='btn-group'>
-                                  <button type='button' class='btn btn-default'>Action</button>
-                                  <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
-                                      <span class='caret'></span>
-                                      <span class='sr-only'>Toggle Dropdown</span>
-                                  </button>
-                                  <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                                      <a class='dropdown-item edit' href='".base_url('admin/form-data-template-edit/')."'>Edit</a>
-                                      <a class='dropdown-item delete' href='".base_url('admin/data-template-delete/')."'>Delete</a>
-                                  </div>
-                                  </div>
-                              </td>
-                              </tr>
-                          ";
-                          }
-                      ?>
-                      
-                      </tbody>
-                  </table>
+              <div class="icon">
+                <i class="ion ion-android-clipboard"></i>
               </div>
-              <!-- /.card-body -->
+              <a href="<?php echo base_url('siswa/data-ujian')?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-            <!-- /card -->
           </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>&nbsp</sup></h3>
+
+                <p>Ujian Diselesaikan</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-android-checkbox-outline"></i>
+              </div>
+              <a href="<?php echo base_url('siswa/data-hasil-ujian') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6 d-none">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>&nbsp</h3>
+
+                <p>Kelas</p>
+              </div>
+              <div class="icon">
+                <i class=""></i>
+              </div>
+              <a href="<?php echo base_url('admin/data-kelas') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6 d-none">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>&nbsp</h3>
+
+                <p>Pelajaran</p>
+              </div>
+              <div class="icon">
+                <i class=""></i>
+              </div>
+              <a href="<?php echo base_url('admin/data-pelajaran') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
