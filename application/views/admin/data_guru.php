@@ -62,7 +62,7 @@
                             </button>
                             <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
                               <a class='dropdown-item edit' href='".base_url('admin/form-data-guru-edit/'.$value->username)."'>Edit</a>
-                              <a class='dropdown-item delete' href='".base_url('admin/data-guru-delete/'.$value->username)."'>Delete</a>
+                              <!--<a class='dropdown-item delete' href='".base_url('admin/data-guru-delete/'.$value->username)."'>Delete</a>-->
                             </div>
                           </div>
                         </td>
