@@ -112,16 +112,19 @@ class M_guru extends CI_Model{
     public function data_grup_soal()
     {
         return $this->db->query("
-            SELECT *,
-                ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
-            FROM grup_soal
-                LEFT JOIN pbm
-                    ON grup_soal.id_pelajaran=pbm.id_pelajaran
-                LEFT JOIN pelajaran
-                    ON pbm.id_pelajaran=pelajaran.id_pelajaran
-                LEFT JOIN kelas
-                    ON pelajaran.id_kelas=kelas.id_kelas
-            WHERE pbm.nip='{$this->session->userdata('username')}'
+        SELECT *,
+            ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
+        FROM grup_soal
+            LEFT JOIN pbm
+                ON grup_soal.id_pelajaran=pbm.id_pelajaran
+            LEFT JOIN pelajaran
+                ON pbm.id_pelajaran=pelajaran.id_pelajaran
+            LEFT JOIN kelas
+                ON pelajaran.id_kelas=kelas.id_kelas
+        WHERE 1=1
+            AND pbm.nip='{$this->session->userdata('username')}'
+            GROUP BY grup_soal.id_grup_soal
+            ORDER BY grup_soal.nama_grup_soal ASC
                 
         ")->result_object();
     }
@@ -135,7 +138,10 @@ class M_guru extends CI_Model{
                 ON pbm.id_pelajaran=pelajaran.id_pelajaran
             LEFT JOIN kelas
                 ON pelajaran.id_kelas=kelas.id_kelas
-        WHERE pbm.nip='{$this->session->userdata('username')}'
+        WHERE 1=1
+            AND pbm.nip='{$this->session->userdata('username')}'
+            GROUP BY kelas.id_kelas,pelajaran.id_pelajaran
+            ORDER BY pelajaran.nama_pelajaran ASC
         ")->result_object();
     }
         
@@ -194,17 +200,20 @@ class M_guru extends CI_Model{
         } else {
             # code...
             return $this->db->query("
-                SELECT *
-                FROM soal
-                    LEFT JOIN grup_soal
-                        ON soal.id_grup_soal=grup_soal.id_grup_soal
-                    LEFT JOIN pbm
-                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
-                    LEFT JOIN pelajaran
-                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
-                    LEFT JOIN kelas
-                        ON pelajaran.id_kelas=kelas.id_kelas
-                WHERE pbm.nip='{$this->session->userdata('username')}'
+            SELECT *
+            FROM soal
+                LEFT JOIN grup_soal
+                    ON soal.id_grup_soal=grup_soal.id_grup_soal
+                LEFT JOIN pbm
+                    ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                LEFT JOIN pelajaran
+                    ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                LEFT JOIN kelas
+                    ON pelajaran.id_kelas=kelas.id_kelas
+            WHERE 1=1
+                AND pbm.nip='{$this->session->userdata('username')}'
+                GROUP BY soal.id_soal
+                ORDER BY soal.id_soal DESC
                     
             ")->result_object();
         }
@@ -222,7 +231,9 @@ class M_guru extends CI_Model{
                 ON pbm.id_pelajaran=pelajaran.id_pelajaran
             LEFT JOIN kelas
                 ON pelajaran.id_kelas=kelas.id_kelas
-        WHERE pbm.nip='{$this->session->userdata('username')}'
+        WHERE 1=1
+            AND pbm.nip='{$this->session->userdata('username')}'
+            GROUP BY grup_soal.id_grup_soal
         ")->result_object();
     }
         

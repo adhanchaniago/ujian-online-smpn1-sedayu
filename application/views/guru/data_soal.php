@@ -37,7 +37,7 @@
                 <tr>
                   <!-- <th width="50%">Soal</th> -->
                   <th>Soal</th>
-                  <th>Grup Soal</th>
+                  <th>Grup&nbspSoal</th>
                   <th>Action</th>
                 </tr>
                 </thead>
