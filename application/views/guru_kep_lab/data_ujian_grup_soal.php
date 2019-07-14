@@ -32,60 +32,67 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Tahun Ajaran</th>
-                  <th>Nama Grup Soal</th>
-                  <th>Kelas</th>
-                  <th>Pelajaran</th>
-                  <th>Jumlah Soal</th>
-                  <!-- <th>Action</th> -->
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                  print_r($_SESSION);
-                  foreach ($rows as $key => $value) {
-                    if( ($value->jumlah_soal > 40)  && ($value->metode_acak !=NULL)  ){
-                    echo "
-                      <tr>
-                        <td>{$value->tahun_ajaran}</td>
-                        <td>{$value->nama_grup_soal}</td>
-                        <td>{$value->nama_kelas}</td>
-                        <td>{$value->nama_pelajaran}</td>
-                        <td>{$value->jumlah_soal}</td>
-                        <!--
-                        <td>
-                          <div class='btn-group'>
-                            <button type='button' class='btn btn-default'>Action</button>
-                            <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
-                              <span class='caret'></span>
-                              <span class='sr-only'>Toggle Dropdown</span>
-                            </button>
-                            <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                              <a class='dropdown-item edit' href='".base_url('guru-kep-lab/edit-ujian-grup-soal/')."'>Edit</a>
-                              <a class='dropdown-item delete' href='".base_url('guru-kep-lab/delete-ujian-grup-soal/')."'>Delete</a>
+              <div class="table-responsive">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Tahun Ajaran</th>
+                    <th>Nama Grup Soal</th>
+                    <th>Kelas</th>
+                    <th>Pelajaran</th>
+                    <th>Metode&nbspAcak</th>
+                    <th>Jumlah Soal</th>
+                    <th>Tanggal&nbspdan&nbspWaktu&nbspujian</th>
+                    <!-- <th>Action</th> -->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <?php
+                    // print_r($_SESSION);
+                    foreach ($rows as $key => $value) {
+                      if( ($value->jumlah_soal > 40)  && ($value->metode_acak !=NULL)  ){
+                        $metode = json_decode($value->metode_acak);
+                      echo "
+                        <tr>
+                          <td>{$value->tahun_ajaran}</td>
+                          <td>{$value->nama_grup_soal}</td>
+                          <td>{$value->nama_kelas}</td>
+                          <td>{$value->nama_pelajaran}</td>
+                          <td>{$metode->metode}</td>
+                          <td>{$metode->jumlah_soal}</td>
+                          <td class='tanggal-waktu-ujian' data-tanggal='{$metode->bdaytime}' data-waktu='{$metode->bminutes}'></td>
+                          <!--
+                          <td>
+                            <div class='btn-group'>
+                              <button type='button' class='btn btn-default'>Action</button>
+                              <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
+                                <span class='caret'></span>
+                                <span class='sr-only'>Toggle Dropdown</span>
+                              </button>
+                              <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
+                                <a class='dropdown-item edit' href='".base_url('guru-kep-lab/edit-ujian-grup-soal/')."'>Edit</a>
+                                <a class='dropdown-item delete' href='".base_url('guru-kep-lab/delete-ujian-grup-soal/')."'>Delete</a>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        -->
-                      </tr>
-                    ";
+                          </td>
+                          -->
+                        </tr>
+                      ";
+                      }
                     }
-                  }
-                ?>
-                
-                </tbody>
-                <!-- <tfoot>
-                <tr>
-                  <th>Nama Materi</th>
-                  <th>Tanggal Upload</th>
-                  <th>Tipe File</th>
-                  <th>Action</th>
-                </tr>
-                </tfoot> -->
-              </table>
+                  ?>
+                  
+                  </tbody>
+                  <!-- <tfoot>
+                  <tr>
+                    <th>Nama Materi</th>
+                    <th>Tanggal Upload</th>
+                    <th>Tipe File</th>
+                    <th>Action</th>
+                  </tr>
+                  </tfoot> -->
+                </table>
+              </div>
             </div>
             <!-- /.card-body -->
           </div>
@@ -131,6 +138,10 @@
 <script>
   $(function () {
     $("#example1").DataTable();
+    $.each($('td.tanggal-waktu-ujian'),function(i,item){
+      var d= waktuUjian($(item).attr('data-tanggal'), parseInt($(item).attr('data-waktu')));
+      $(item).html(`<b class="badge badge-info">${d.dates_indo} Jam:&nbsp${d.start} s/d ${d.end}</b>`);
+    })
   });
 
   $(function() {
