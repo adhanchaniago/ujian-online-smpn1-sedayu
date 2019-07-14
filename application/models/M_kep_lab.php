@@ -162,15 +162,17 @@ class M_kep_lab extends CI_Model{
 
         } else {
             return $this->db->query("
-                SELECT *,
-                    ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
-                FROM grup_soal
-                    LEFT JOIN pbm
-                        ON grup_soal.id_pelajaran=pbm.id_pelajaran
-                    LEFT JOIN pelajaran
-                        ON pbm.id_pelajaran=pelajaran.id_pelajaran
-                    LEFT JOIN kelas
-                        ON pelajaran.id_kelas=kelas.id_kelas
+            SELECT *,
+                ( (SELECT COUNT(id_soal) FROM soal WHERE soal.id_grup_soal=grup_soal.id_grup_soal) ) AS jumlah_soal
+            FROM grup_soal
+                LEFT JOIN pbm
+                    ON grup_soal.id_pelajaran=pbm.id_pelajaran
+                LEFT JOIN pelajaran
+                    ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                LEFT JOIN kelas
+                    ON pelajaran.id_kelas=kelas.id_kelas
+            WHERE 1=1
+                GROUP BY grup_soal.id_grup_soal
                     
             ")->result_object();
 

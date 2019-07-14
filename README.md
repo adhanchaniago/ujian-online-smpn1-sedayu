@@ -3,8 +3,8 @@ Ujian Online SMP  Negeri 1 Sedayu
 
 # Login
     - Admin         (   username= "admin" password="admin" )
-    - Guru          (   username= "1985033020190428" password="guru" )
-    - Kepala Lab    (   username= "1985033020190429" password="guru" )
+    - Guru          (   username= "196203211984032009" password="guru" mapel="bahasa indonesia kelas IX A")
+    - Kepala Lab    (   username= "197108271995122001" password="guru" )
     - Siswa         (   username= "111235020000120001" password="siswa" )
 
 # cara install:

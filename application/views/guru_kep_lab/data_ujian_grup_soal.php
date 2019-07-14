@@ -45,6 +45,7 @@
                 </thead>
                 <tbody>
                 <?php
+                  print_r($_SESSION);
                   foreach ($rows as $key => $value) {
                     if( $value->jumlah_soal > 40 ){
                     echo "
