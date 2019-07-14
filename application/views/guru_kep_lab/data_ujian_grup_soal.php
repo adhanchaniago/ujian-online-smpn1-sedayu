@@ -40,14 +40,14 @@
                   <th>Kelas</th>
                   <th>Pelajaran</th>
                   <th>Jumlah Soal</th>
-                  <th>Action</th>
+                  <!-- <th>Action</th> -->
                 </tr>
                 </thead>
                 <tbody>
                 <?php
                   print_r($_SESSION);
                   foreach ($rows as $key => $value) {
-                    if( $value->jumlah_soal > 40 ){
+                    if( ($value->jumlah_soal > 40)  && ($value->metode_acak !=NULL)  ){
                     echo "
                       <tr>
                         <td>{$value->tahun_ajaran}</td>
@@ -55,6 +55,7 @@
                         <td>{$value->nama_kelas}</td>
                         <td>{$value->nama_pelajaran}</td>
                         <td>{$value->jumlah_soal}</td>
+                        <!--
                         <td>
                           <div class='btn-group'>
                             <button type='button' class='btn btn-default'>Action</button>
@@ -64,10 +65,11 @@
                             </button>
                             <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
                               <a class='dropdown-item edit' href='".base_url('guru-kep-lab/edit-ujian-grup-soal/')."'>Edit</a>
-                              <!--<a class='dropdown-item delete' href='".base_url('guru-kep-lab/delete-ujian-grup-soal/')."'>Delete</a>-->
+                              <a class='dropdown-item delete' href='".base_url('guru-kep-lab/delete-ujian-grup-soal/')."'>Delete</a>
                             </div>
                           </div>
                         </td>
+                        -->
                       </tr>
                     ";
                     }
@@ -189,6 +191,15 @@
           //   },'html');
           // }
         });
+        
+        /* event on change Tanggal Dan Waktu Ujian atau Waktu Lama Ujian*/
+        $(document).on('change','input.bdaytime, input.bminutes',function(){
+          var d= waktuUjian($('input.bdaytime').val() ,parseInt($('input.bminutes').val()) );
+          $('div.info-ujian').html(`<b>Tanggal dan Waktu Ujian :<br> ${d.dates_indo} Jam : ${d.start} s/d ${d.end} (Waktu : ${d.interval} Menit)</b>`);
+          $('div.info-ujian').addClass('d-block');
+          // console.log($('div.info-ujian').html())
+        })
+
       },'html');
     });
 
@@ -301,4 +312,88 @@
         dataType: 'json'
     });
   });
+
+  function waktuUjian(dateString="2019-07-15T07:00",bminutes=30)
+  {
+    /* var dateString = '2019-07-15T07:00'
+    var bminutes = 30
+    return {
+      "dates" : "2019-07-15",
+      "interval" : 30,
+      "start" : "07:00",
+      "end" : "07:30",
+    } */
+    var dateTimeParts = dateString.split('T'),
+      timeParts = dateTimeParts[1].split(':'),
+      dateParts = dateTimeParts[0].split('-'),
+      date;
+    var times;
+    var timePartsMinutesTotal= parseInt(timeParts[1])+bminutes;
+    if ( timePartsMinutesTotal >= 60 ) {
+      var timeParts0= parseInt(timeParts[0]) +Math.floor(timePartsMinutesTotal/60);
+        timeParts0= (timeParts0 > 23 
+          ? ( timeParts0==24
+            ? '00'
+            : ( (timeParts0%24 < 10)
+              ? '0'+(timeParts0%24).toString()
+              : (timeParts0%24).toString()
+            )
+          )
+          : (timeParts0 < 10
+            ? '0'+timeParts0.toString()
+            : timeParts0.toString()
+          )
+        );
+      var timeParts1= timePartsMinutesTotal%60;
+        timeParts1= (timeParts1 < 10
+          ? '0'+timeParts1.toString()
+          : timeParts1.toString()
+        );
+      times = timeParts0+':'+timeParts1;
+    } else {
+      var timeParts1= timePartsMinutesTotal;
+        timeParts1= (timeParts1 < 10
+          ? '0'+timeParts1.toString()
+          : timeParts1.toString()
+        );
+      times = timeParts[0]+':'+timeParts1;
+    }
+
+    /* membuat tanggal indonesia */
+    var d = new Date(dateTimeParts[0]);
+    var weekday = new Array(7);
+    weekday[0] = "Minggu";
+    weekday[1] = "Senin";
+    weekday[2] = "Selasa";
+    weekday[3] = "Rabu";
+    weekday[4] = "Kamis";
+    weekday[5] = "Jumat";
+    weekday[6] = "Sabtu";
+
+    var hari = weekday[d.getDay()];
+
+    var month = new Array();
+    month[0] = "Januari";
+    month[1] = "Februari";
+    month[2] = "Maret";
+    month[3] = "April";
+    month[4] = "Mei";
+    month[5] = "Juni";
+    month[6] = "Juli";
+    month[7] = "Agustus";
+    month[8] = "September";
+    month[9] = "Oktober";
+    month[10] = "November";
+    month[11] = "Desember";
+
+    var bulan = month[d.getMonth()];
+
+    return {
+      "dates" : dateTimeParts[0],
+      "dates_indo" : `Hari ${hari}, ${dateParts[2]} ${bulan} ${dateParts[0]}`,
+      "interval" : bminutes,
+      "start" : dateTimeParts[1], 
+      "end" : times
+    };
+  }
 </script>

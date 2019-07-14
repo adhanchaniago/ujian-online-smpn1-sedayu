@@ -178,6 +178,13 @@ class M_kep_lab extends CI_Model{
 
         }
     }
+    public function store_ujian_grup_soal()
+    {
+        $data= [
+            'metode_acak'=> json_encode($this->post),
+        ];
+        return $this->db->update('grup_soal',$data,['id_grup_soal'=>$this->post['id_grup_soal'] ]);
+    }
 /* end ujian grup soal */
 
     public function data_grup_soal_pelajaran()

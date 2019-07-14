@@ -253,7 +253,7 @@ class Guru_kep_lab extends MY_Controller{
         }
     
         $this->html= '
-        <form action="'.base_url().'guru-kep-lab/try-metode-acak" role="form" id="addNew" method="post" enctype="multipart/form-data">
+        <form action="'.base_url().'guru-kep-lab/store-ujian-grup-soal" role="form" id="addNew" method="post" enctype="multipart/form-data">
             <input type="hidden" name="total_soal" id="total_soal">    
             <div class="row">
                 <div class="col-sm-6">
@@ -265,7 +265,7 @@ class Guru_kep_lab extends MY_Controller{
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Jumlah Siswa</label>
-                        <input min="1" id="jumlah_siswa" type="number" name="jumlah_siswa" class="form-control" placeholder="Masukan Jumlah Siswa Yang Akan Diuji Ex: 20" required>
+                        <input min="1" id="jumlah_siswa" type="number" name="jumlah_siswa" class="form-control" placeholder="Masukan Jumlah Siswa Yang Akan Diuji Ex: 40" required>
                     </div>
                 </div>
             </div>
@@ -294,10 +294,46 @@ class Guru_kep_lab extends MY_Controller{
             <hr>
             <div id="tryMetode"></div>
             </hr>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Tanggal Dan Waktu Mulai Ujian</label>
+                        <input type="datetime-local" name="bdaytime" class="form-control bdaytime" required="">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Waktu Lama Ujian(menit)</label>
+                        <input value="0" min="10" type="number" name="bminutes" class="form-control bminutes" required="" placeholder="ex: 30">
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="alert alert-info info-ujian text-center" style="display: none">
+                        
+                    </div>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary">Publish</button>
         </form>
         ';
         echo $this->html;
+    }
+    public function store_ujian_grup_soal()
+    {
+        $this->m_kep_lab->post= $this->input->post();
+        if ( $this->m_kep_lab->store_ujian_grup_soal() ) {
+            $this->msg= [
+                'stats'=>1,
+                'msg'=>'Informasi jadwal ujian berhasil dibuat',
+            ];
+        } else {
+            $this->msg= [
+                'stats'=>0,
+                'msg'=>'Informasi jadwal ujian gagal dibuat',
+            ];
+        }
+        echo json_encode($this->msg);
+        
     }
 /* end ujian grup soal */
 
@@ -469,7 +505,7 @@ class Guru_kep_lab extends MY_Controller{
         $this->html= '
             <div class="form-group">
                 <label>Pilih Bilangan Prima</label>
-                <select id="bilPrima" class="form-control" required>
+                <select id="bilPrima" name="bil_prima" class="form-control" required>
                     <option value="" selected disabled> -- Pilih Bilangan Prima -- </option>
                     '.$prima.'
                 </select>
