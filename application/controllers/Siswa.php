@@ -18,7 +18,7 @@ class Siswa extends MY_Controller{
 /* ==================== Start Beranda ==================== */
     public function index()
     {
-        $this->content['rows'] =[];
+        $this->content['rows']= $this->m_siswa->data_ujian();
         $this->view= 'siswa/index';
         $this->render_pages();
     }
@@ -409,12 +409,48 @@ class Siswa extends MY_Controller{
 /* ==================== Start Hasil Ujian ==================== */
     public function data_hasil_ujian()
     {
-        $this->content['rows']= [];
+        $this->content['rows']= $this->m_siswa->data_ujian();
         $this->view= 'siswa/hasil_ujian';
         $this->render_pages();
     }
     public function detail_hasil_ujian()
     {
+        $this->m_siswa->post['id_grup_soal']= $this->uri->segment(3);
+        $jawaban        = $this->m_siswa->data_soal_hasil_ujian();
+        $jumlah_soal    = count($jawaban);
+        $jawaban_benar  = 0;
+        $jawaban_salah  = 0;
+        $tidak_terjawab = 0;
+        $no             = 1;
+        $tbody          = '';
+        foreach ($jawaban as $key => $value) {
+            switch ($value->keterangan) {
+                case 'Benar':
+                    $jawaban_benar ++;
+                    break;
+                case 'Salah':
+                    $jawaban_salah ++;
+                    break;
+                case 'Tidak Terjawab':
+                    $tidak_terjawab ++;
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+            $tbody .= "
+                <tr>
+                    <td>{$no}</td>
+                    <td>{$value->soal}</td>
+                    <td>{$value->keterangan}</td>
+                </tr>
+            ";
+            $no++;
+        }
+        echo '<pre>';
+        // print_r($jawaban_salah);
+        echo '</pre>';
         $this->html= '
         <div class="card">
             <div class="card-body">
@@ -425,15 +461,17 @@ class Siswa extends MY_Controller{
                                 <th>Jumlah Soal</th>
                                 <th>Jawaban Benar</th>
                                 <th>Jawaban Salah</th>
+                                <th>Tidak Terjawab</th>
                                 <th>Nilai</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>40</td>
-                                <td>20</td>
-                                <td>20</td>
-                                <td>50</td>
+                                <td>'.$jumlah_soal.'</td>
+                                <td>'.$jawaban_benar.'</td>
+                                <td>'.$jawaban_salah.'</td>
+                                <td>'.$tidak_terjawab.'</td>
+                                <td>'.( ($jawaban_benar/$jumlah_soal)*100 ).'</td>
                             </tr>
                         </tbody>
                     </table>
@@ -451,21 +489,7 @@ class Siswa extends MY_Controller{
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Soal 1</td>
-                        <td>Benar</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Soal 2</td>
-                        <td>Salah</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Soal 3</td>
-                        <td>Benar</td>
-                    </tr>
+                    '.$tbody.'
                 </tbody>
             </table>
         </div>

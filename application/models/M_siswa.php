@@ -47,6 +47,22 @@ class M_siswa extends CI_Model
     }
 /* ==================== End Data Ujian ==================== */
 
+/* ==================== Start Hasil Ujian ==================== */
+    public function data_soal_hasil_ujian()
+    {
+        return $this->db->query("
+            SELECT jawaban.keterangan,
+                soal.soal
+            FROM jawaban
+                INNER JOIN soal
+                    ON jawaban.soal_id=soal.id_soal
+            WHERE 1=1
+                AND soal.id_grup_soal='{$this->post['id_grup_soal']}'
+                AND jawaban.nis='".$this->session->userdata('username')."'
+        ")->result_object();
+    }
+/* ==================== End Hasil Ujian ==================== */
+
 /* ==================== Start Profil ==================== */
     public function data_siswa_edit()
     {
