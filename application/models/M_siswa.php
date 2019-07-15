@@ -2,6 +2,51 @@
 class M_siswa extends CI_Model
 {
     public $post= null;
+    
+/* ==================== Start Data Ujian ==================== */
+    public function data_ujian()
+    {
+        return $this->db->query("
+            SELECT *,
+                (SELECT COUNT(*) AS counts FROM hasil_ujian WHERE hasil_ujian.nis=pbm.nis AND hasil_ujian.id_grup_soal=grup_soal.id_grup_soal) AS counts 
+            FROM pbm
+                INNER JOIN pelajaran
+                    ON pbm.id_pelajaran=pelajaran.id_pelajaran
+                INNER JOIN grup_soal
+                    ON pbm.id_pelajaran=grup_soal.id_pelajaran
+            WHERE 1=1
+                AND pbm.nis='".$this->session->userdata('username')."'
+                AND grup_soal.metode_acak!=''
+        ")->result_object();
+    }
+    public function data_soal_lcg()
+    {
+        return $this->db->query("
+            SELECT * FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}' ORDER BY id_grup_soal ASC
+        ")->result_object();
+    }
+    public function data_grup_soal()
+    {
+        return $this->db->query("
+            SELECT * FROM grup_soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}'
+        ")->row();
+    }
+    public function data_siswa_satu_kelas($id_pelajaran)
+    {
+        return $this->db->query("
+            SELECT nis FROM pbm WHERE id_pelajaran='{$id_pelajaran}' ORDER BY nis ASC
+        ")->result_object();
+    }
+    public function store_data_hasil_ujian()
+    {
+        return $this->db->insert('hasil_ujian',$this->post['data_hasil_ujian']);
+    }
+    public function store_data_jawaban()
+    {
+        return $this->db->insert_batch('jawaban',$this->post['data_jawaban']);
+    }
+/* ==================== End Data Ujian ==================== */
+
 /* ==================== Start Profil ==================== */
     public function data_siswa_edit()
     {

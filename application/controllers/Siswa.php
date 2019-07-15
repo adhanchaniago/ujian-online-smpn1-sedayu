@@ -187,7 +187,7 @@ class Siswa extends MY_Controller{
 /* ==================== Start Ujian ==================== */
     public function data_ujian()
     {
-        $this->content['rows']= [];
+        $this->content['rows']= $this->m_siswa->data_ujian();
         $this->view= 'siswa/ujian';
         $this->render_pages();
     }
@@ -198,7 +198,7 @@ class Siswa extends MY_Controller{
             $index_soal= $this->session->userdata('proses-ujian')['last_soal'];
             if ( ($index_soal < count( $this->session->userdata('proses-ujian')['soal']) && !empty($this->input->post('jawaban')) ) ) {
                 # update soal->jawaban $this->session->userdata('proses-ujian')['soal'][$index_soal]['jawaban']
-                $_SESSION['proses-ujian']['soal'][$index_soal]['jawaban']= $this->input->post('jawaban');
+                $_SESSION['proses-ujian']['soal'][$index_soal]->jawaban= $this->input->post('jawaban');
     
                 # update $this->session->userdata('proses-ujian')['last_soal']
                 $_SESSION['proses-ujian']['last_soal']= $index_soal +1;
@@ -208,49 +208,15 @@ class Siswa extends MY_Controller{
             
 
         } else {
+            $this->m_siswa->post['id_grup_soal']= $this->uri->segment(3);
+            $rows= $this->metode_acak();
             $data_session = array(
                 'id_grup_soal'  => $this->uri->segment(3),
+                'metode'  => $rows['metode'],
                 'start_ujian' => 'waktu start',
                 'end_ujian' => 'waktu berakhir',
                 'last_soal'=>0,
-                'soal'=> [
-                    [
-                        'id_soal'=>1,
-                        'soal'=>'Perekonomian di dunia terus merosot yang disebabkan resesi di Eropa yang berkepanjangan. Hal ini membawa dampak yang sangat besar bagi perajin di Indonesia karena produknya tidak dapat diekspor bahkan gagal ekspor. Untuk mempertahankan kelangsungan hidup keluarga dan karyawannya banyak perajin kita yang beralih usaha lain.
-                        Makna tersurat paragraf di atas adalah ...',
-                        'gambar'=>'gambar soal 1',
-                        'a'=> 'pilihan a',
-                        'b'=> 'pilihan b',
-                        'c'=> 'pilihan c',
-                        'd'=> 'pilihan d',
-                        'kunci'=> 'a',
-                        'jawaban'=> '',
-                    ],
-                    [
-                        'id_soal'=>2,
-                        'soal'=>'Perekonomian di dunia terus merosot yang disebabkan resesi di Eropa yang berkepanjangan. Hal ini membawa dampak yang sangat besar bagi perajin di Indonesia karena produknya tidak dapat diekspor bahkan gagal ekspor. Untuk mempertahankan kelangsungan hidup keluarga dan karyawannya banyak perajin kita yang beralih usaha lain.
-                        Makna tersurat paragraf di atas adalah ….',
-                        'gambar'=>'gambar soal 2',
-                        'a'=> 'pilihan a',
-                        'b'=> 'pilihan b',
-                        'c'=> 'pilihan c',
-                        'd'=> 'pilihan d',
-                        'kunci'=> 'b',
-                        'jawaban'=> '',
-                    ],
-                    [
-                        'id_soal'=>3,
-                        'soal'=>'Perekonomian di dunia terus merosot yang disebabkan resesi di Eropa yang berkepanjangan. Hal ini membawa dampak yang sangat besar bagi perajin di Indonesia karena produknya tidak dapat diekspor bahkan gagal ekspor. Untuk mempertahankan kelangsungan hidup keluarga dan karyawannya banyak perajin kita yang beralih usaha lain.
-                        Makna tersurat paragraf di atas adalah ….',
-                        'gambar'=>'gambar soal 3',
-                        'a'=> 'pilihan a',
-                        'b'=> 'pilihan b',
-                        'c'=> 'pilihan c',
-                        'd'=> 'pilihan d',
-                        'kunci'=> 'c',
-                        'jawaban'=> '',
-                    ],
-                ],
+                'soal'=> $rows['results'],
             );
             $this->session->set_userdata('proses-ujian',$data_session);
         }
@@ -270,8 +236,8 @@ class Siswa extends MY_Controller{
                         <tbody>
                             <tr>
                                 <td>'.count( $this->session->userdata('proses-ujian')['soal'] ).'</td>
-                                <td>90 Menit</td>
-                                <td id="countDownUjian"></td>
+                                <td>'.$this->session->userdata('proses-ujian')['metode']->bminutes.' Menit</td>
+                                <td id="countDownUjian" data-tanggal="'.$this->session->userdata('proses-ujian')['metode']->bdaytime.'" data-waktu="'.$this->session->userdata('proses-ujian')['metode']->bminutes.'"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -279,7 +245,7 @@ class Siswa extends MY_Controller{
             </div>
             <div class="card-body">                
                 ';
-                if ( $this->session->userdata('proses-ujian')['last_soal'] < count( $this->session->userdata('proses-ujian')['soal'] ) ) {
+                if ( ($this->session->userdata('proses-ujian')['last_soal'] < count( $this->session->userdata('proses-ujian')['soal']) && empty($this->input->get('timeout') ) ) ) {
                     $soal= $this->session->userdata('proses-ujian')['soal'][ $this->session->userdata('proses-ujian')['last_soal'] ];
                     $this->html .= '
                     <div class="card">
@@ -289,7 +255,7 @@ class Siswa extends MY_Controller{
                                 <div class="form-group">
                                     <label for="pertanyaan">Pertanyaan:</label>
                                     <div class="callout callout-success">
-                                        <p>'.$soal['soal'].'</p>
+                                        <p>'.$soal->soal.'</p>
                                     </div>
                                 </div>
                                 <label for="pilihJawaban">Pilih Jawaban:</label>
@@ -300,28 +266,28 @@ class Siswa extends MY_Controller{
                                             <td style="width:1rem">
                                                 <input type="radio" class="form-check-input" name="jawaban" value="A" required="">
                                             </td>
-                                            <td>'.$soal['a'].'</td>
+                                            <td>'.$soal->a.'</td>
                                         </tr>
                                         <tr>
                                             <td>B .</td>
                                             <td>
                                                 <input type="radio" class="form-check-input" name="jawaban" value="B" required="">
                                             </td>
-                                            <td>'.$soal['b'].'</td>
+                                            <td>'.$soal->b.'</td>
                                         </tr>
                                         <tr>
                                             <td>C .</td>
                                             <td>
                                                 <input type="radio" class="form-check-input" name="jawaban" value="C" required="">
                                             </td>
-                                            <td>'.$soal['c'].'</td>
+                                            <td>'.$soal->c.'</td>
                                         </tr>
                                         <tr>
                                             <td>D .</td>
                                             <td>
                                                 <input type="radio" class="form-check-input" name="jawaban" value="D" required="">
                                             </td>
-                                            <td>'.$soal['d'].'</td>
+                                            <td>'.$soal->d.'</td>
                                         </tr>
                                     </tbody>
                                 </table>                        
@@ -333,6 +299,34 @@ class Siswa extends MY_Controller{
                     </div>
                     ';
                 } else {
+                    /* create data for insert batch */
+                    $this->m_siswa->post['data_jawaban']= [];
+                    $benar= 0;
+                    foreach ($this->session->userdata('proses-ujian')['soal'] as $key => $value) {
+                        $keterangan= ($value->jawaban==''
+                            ? 'Tidak Terjawab' 
+                            : ($value->jawaban==$value->kunci
+                                ? 'Benar'
+                                : 'Salah'
+                            )
+                        );
+                        $benar += ($keterangan=='Benar' ? 1 : 0);
+                        $this->m_siswa->post['data_jawaban'][]= [
+                            'soal_id'=>$value->id_soal,
+                            'nis'=>$this->session->userdata('username'),
+                            'jawaban_soal'=> ($value->jawaban != '' ? $value->jawaban : '-' ),
+                            'keterangan'=>$keterangan 
+                        ];
+                    }
+
+                    $this->m_siswa->post['data_hasil_ujian']= [
+                        'nis'=>$this->session->userdata('username'),
+                        'id_grup_soal'=>$this->session->userdata('proses-ujian')['id_grup_soal'],
+                        'nilai'=> ($benar/$this->session->userdata('proses-ujian')['metode']->jumlah_soal)*100,
+                    ];
+
+                    $this->m_siswa->store_data_jawaban();
+                    $this->m_siswa->store_data_hasil_ujian();
                     $this->session->unset_userdata('proses-ujian');
                     $this->html .= '
                     <div class="callout callout-info text-center">
@@ -346,6 +340,13 @@ class Siswa extends MY_Controller{
         </div>
         ';
         echo $this->html;
+        // $this->m_siswa->post['id_grup_soal']= $this->uri->segment(3);
+        
+        
+        // echo '<pre>';
+        // // print_r( $_SESSION['proses-ujian'] );
+        // print_r( $this->m_siswa );
+        // echo '</pre>';
         // echo '<pre>';
         // print_r($_SESSION['proses-ujian']['soal'][$index_soal]['jawaban']);
         // print_r($this->input->post());
@@ -353,6 +354,51 @@ class Siswa extends MY_Controller{
         // print_r($this->session->userdata('proses-ujian')['soal'][ $this->session->userdata('proses-ujian')['last_soal'] ]);
         // print_r($this->session->has_userdata('proses-ujian'));
         // echo '</pre>';
+    }
+    protected function metode_acak()
+    {
+        $data = [];
+        // $this->m_siswa->post['id_grup_soal']= $this->session->userdata('proses-ujian')['id_grup_soal'];
+        $row_grup_soal= $this->m_siswa->data_grup_soal();
+        $data['metode']= json_decode($row_grup_soal->metode_acak);
+        // $data['metode']= $this->m_siswa->data_grup_soal();
+        if ( $data['metode']->metode == 'LCG' ) {
+            /* get no urut dalam kelas berdasarkan nis*/
+            $_no= null;
+            foreach ($this->m_siswa->data_siswa_satu_kelas($row_grup_soal->id_pelajaran) as $key => $value) {
+                if ( $value->nis==$this->session->userdata('username') )
+                    $_no= $key+1;
+            }
+
+            /* get data soal */
+            $row_soal= [];
+            foreach ($this->m_siswa->data_soal_lcg() as $key => $value) {
+                $value->kunci= $value->jawaban;
+                $value->jawaban= '';
+                $row_soal[$key+1]= $value;
+            }
+
+            /* generate soal dengan LCG */
+            $soal=[];
+            $xn=0;
+            for ($i=0; $i < $data['metode']->jumlah_soal ; $i++) { 
+                if ( $i==0 ) {
+                    # code...
+                    $xn= ( (1 *$_no) +$data['metode']->bil_prima ) % $data['metode']->total_soal;
+                    $soal[]= $row_soal[($xn==0? $data['metode']->total_soal : $xn )];
+                } else {
+                    $xn= ( (1 *$xn) +$data['metode']->bil_prima )  % $data['metode']->total_soal;
+                    $soal[]= $row_soal[($xn==0? $data['metode']->total_soal : $xn )];
+
+                }
+                
+            }
+            $data['results'] = $soal;
+
+        } else {
+            # code...
+        }
+        return $data;
     }
     public function cek_proses_ujian()
     {

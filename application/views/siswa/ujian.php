@@ -33,23 +33,30 @@
                           <tr>
                               <th>Judul Ujian</th>
                               <th>Nama Pelajaran </th>
-                              <th>Tanggal</th>
-                              <th>Jam</th>
-                              <th>Waktu Pengerjaan</th>
+                              <th>Tanggal&nbspdan&nbspWaktu&nbspUjian</th>
                               <th>Action</th>
                           </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                        <td>{value}</td>
-                        <td>{value}</td>
-                        <td>{value}</td>
-                        <td>{value}</td>
-                        <td>{value}</td>
-                        <td>
-                          <a class="btn btn-block btn-outline-primary ujian" href="<?php echo base_url('siswa/proses-ujian/1' )?>">Kerjakan</a>
-                        </td>
-                        </tr>
+                        <?php
+                          // print_r($_SESSION);
+                          foreach ($rows as $key => $value) {
+                            if ( $value->counts == 0 ) {
+                              $metode = json_decode($value->metode_acak);
+                              echo "
+                                <tr>
+                                  <td>{$value->nama_grup_soal}</td>
+                                  <td>{$value->nama_pelajaran}</td>
+                                  <td class='tanggal-waktu-ujian' data-tanggal='{$metode->bdaytime}' data-waktu='{$metode->bminutes}'></td>
+                                  <td>
+                                    <a class='btn btn-block btn-outline-primary ujian' href='".base_url('siswa/proses-ujian/' .$value->id_grup_soal)."'>Kerjakan</a>
+                                  </td>
+                                </tr>
+  
+                              ";
+                            }
+                          }
+                        ?>
                       
                       </tbody>
                   </table>
@@ -98,6 +105,19 @@
 <script>
 $(function () {
   $("table.example1").DataTable();
+
+  $.each($('td.tanggal-waktu-ujian'),function(i,item){
+    var d       = waktuUjian($(item).attr('data-tanggal'), parseInt($(item).attr('data-waktu')));
+    var n_start = parseInt( (`${d.dates}${d.start}`).replace(/-|:/g,'') );
+    var n_end   = parseInt( (`${d.dates}${d.end}`).replace(/-|:/g,'') );
+    var d_now   = new Date();
+    var n_now   = parseInt(`${d_now.getFullYear()}${String(d_now.getMonth() +1).padStart(2, '0')}${String(d_now.getDate()).padStart(2, '0')}${d_now.getHours()}${d_now.getMinutes()}`);
+    if ( (n_now < n_start) || (n_now > n_end) ) 
+      $(this).closest('tr').find('a.ujian').addClass('d-none')
+
+    // console.log(`(${n_now} < ${n_start}) || (${n_now} > ${n_end})`)
+    $(item).html(`<b class="badge badge-info">${d.dates_indo} Jam:&nbsp${d.start} s/d ${d.end} (`+$(item).attr('data-waktu')+` Menit )</b>`);
+  })
   
   $('.ujian').on('click', function(e){
     e.preventDefault(); 
@@ -158,5 +178,88 @@ $(function () {
   })
 });
 
+  function waktuUjian(dateString="2019-07-15T07:00",bminutes=30)
+  {
+    /* var dateString = '2019-07-15T07:00'
+    var bminutes = 30
+    return {
+      "dates" : "2019-07-15",
+      "interval" : 30,
+      "start" : "07:00",
+      "end" : "07:30",
+    } */
+    var dateTimeParts = dateString.split('T'),
+      timeParts = dateTimeParts[1].split(':'),
+      dateParts = dateTimeParts[0].split('-'),
+      date;
+    var times;
+    var timePartsMinutesTotal= parseInt(timeParts[1])+bminutes;
+    if ( timePartsMinutesTotal >= 60 ) {
+      var timeParts0= parseInt(timeParts[0]) +Math.floor(timePartsMinutesTotal/60);
+        timeParts0= (timeParts0 > 23 
+          ? ( timeParts0==24
+            ? '00'
+            : ( (timeParts0%24 < 10)
+              ? '0'+(timeParts0%24).toString()
+              : (timeParts0%24).toString()
+            )
+          )
+          : (timeParts0 < 10
+            ? '0'+timeParts0.toString()
+            : timeParts0.toString()
+          )
+        );
+      var timeParts1= timePartsMinutesTotal%60;
+        timeParts1= (timeParts1 < 10
+          ? '0'+timeParts1.toString()
+          : timeParts1.toString()
+        );
+      times = timeParts0+':'+timeParts1;
+    } else {
+      var timeParts1= timePartsMinutesTotal;
+        timeParts1= (timeParts1 < 10
+          ? '0'+timeParts1.toString()
+          : timeParts1.toString()
+        );
+      times = timeParts[0]+':'+timeParts1;
+    }
+
+    /* membuat tanggal indonesia */
+    var d = new Date(dateTimeParts[0]);
+    var weekday = new Array(7);
+    weekday[0] = "Minggu";
+    weekday[1] = "Senin";
+    weekday[2] = "Selasa";
+    weekday[3] = "Rabu";
+    weekday[4] = "Kamis";
+    weekday[5] = "Jumat";
+    weekday[6] = "Sabtu";
+
+    var hari = weekday[d.getDay()];
+
+    var month = new Array();
+    month[0] = "Januari";
+    month[1] = "Februari";
+    month[2] = "Maret";
+    month[3] = "April";
+    month[4] = "Mei";
+    month[5] = "Juni";
+    month[6] = "Juli";
+    month[7] = "Agustus";
+    month[8] = "September";
+    month[9] = "Oktober";
+    month[10] = "November";
+    month[11] = "Desember";
+
+    var bulan = month[d.getMonth()];
+
+    return {
+      "dates" : dateTimeParts[0],
+      "dates_indo" : `Hari ${hari}, ${dateParts[2]} ${bulan} ${dateParts[0]}`,
+      "interval" : bminutes,
+      "start" : dateTimeParts[1], 
+      "end" : times
+    };
+  }
 
 </script>

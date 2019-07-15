@@ -82,7 +82,9 @@ function getTanggalIndoSekarang()
 function countDownUjian()
 {
   // Set the date we're counting down to
-  var countDownDate = new Date("2019-06-19 15:37:25").getTime();
+  var d= waktuUjian( $('td#countDownUjian').attr('data-tanggal') ,parseInt($('td#countDownUjian').attr('data-waktu')) );
+  var countDownDate = new Date(`${d.dates} ${d.end}`).getTime();
+  // var countDownDate = new Date("2019-07-14 15:37:25").getTime();
 
   // Update the count down every 1 second
   var x = setInterval(function() {
@@ -104,11 +106,15 @@ function countDownUjian()
     // + minutes + "m " + seconds + "s ";
     document.getElementById("countDownUjian").innerHTML = hours + " Jam "
     + minutes + " Menit " + seconds + " Detik ";
-      
     // If the count down is over, write some text 
     if (distance < 0) { 
       clearInterval(x);
-      document.getElementById("countDownUjian").innerHTML = "EXPIRED";
+      $.get('<?php echo base_url() ?>siswa/proses-ujian/?timeout=true', function(data){
+        $('#myModal .modal-title').html('Proses Ujian');
+        $('#myModal .modal-body').html(data);
+        document.getElementById("countDownUjian").innerHTML = "Waktu Sudah Habis";
+        $('#myModal').modal('show');
+      } ,'html');
     }
   }, 1000);
 }
