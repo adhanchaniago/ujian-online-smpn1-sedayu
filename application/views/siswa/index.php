@@ -1,3 +1,13 @@
+<?php
+$belum_ujian    = 0;
+$selesai_ujian  = 0;
+foreach ($rows as $key => $value) {
+  if ( $value->counts > 0 )
+    $selesai_ujian ++;
+  else
+    $belum_ujian ++;
+}
+?>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -42,7 +52,7 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3> &nbsp </h3>
+                <h3> <?php echo $belum_ujian ?> </h3>
 
                 <p>Ujian Belum Dikerjakan</p>
               </div>
@@ -57,7 +67,7 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>&nbsp</sup></h3>
+                <h3> <?php echo $selesai_ujian ?> </sup></h3>
 
                 <p>Ujian Diselesaikan</p>
               </div>

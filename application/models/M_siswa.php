@@ -25,6 +25,12 @@ class M_siswa extends CI_Model
             SELECT * FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}' ORDER BY id_grup_soal ASC
         ")->result_object();
     }
+    public function data_soal_sql()
+    {
+        return $this->db->query("
+            SELECT * FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}' ORDER BY RAND('{$this->post["random_parameter"]}') LIMIT {$this->post["jumlah_soal"]}
+        ")->result_object();
+    }
     public function data_grup_soal()
     {
         return $this->db->query("

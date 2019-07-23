@@ -344,7 +344,7 @@ class Siswa extends MY_Controller{
         
         
         // echo '<pre>';
-        // // print_r( $_SESSION['proses-ujian'] );
+        // print_r( $_SESSION['proses-ujian'] );
         // print_r( $this->m_siswa );
         // echo '</pre>';
         // echo '<pre>';
@@ -395,8 +395,25 @@ class Siswa extends MY_Controller{
             }
             $data['results'] = $soal;
 
-        } else {
-            # code...
+        } else { # metode SQL Random
+            /* get no urut dalam kelas berdasarkan nis*/
+            $_no= null;
+            foreach ($this->m_siswa->data_siswa_satu_kelas($row_grup_soal->id_pelajaran) as $key => $value) {
+                if ( $value->nis==$this->session->userdata('username') )
+                    $_no= $key+1;
+            }
+            $this->m_siswa->post['random_parameter']= $_no;
+            $this->m_siswa->post['jumlah_soal']= $data['metode']->jumlah_soal;
+
+            /* get data soal */
+            $row_soal= [];
+            foreach ($this->m_siswa->data_soal_sql() as $key => $value) {
+                $value->kunci= $value->jawaban;
+                $value->jawaban= '';
+                // $row_soal[$key+1]= $value;
+                $row_soal[$key]= $value;
+            }
+            $data['results'] = $row_soal;
         }
         return $data;
     }

@@ -201,7 +201,7 @@ class Guru extends MY_Controller{
                 <input name="nama_grup_soal" type="text" class="form-control" placeholder="*) Masukan Nama Grup Soal" required="">
             </div>
             <div class="form-group">
-                <label>Jenis Kelamin</label>
+                <label>Pilih Pelajaran</label>
                 <select name="id_pelajaran" class="form-control" required>
                     <option value="" selected disabled> -- Pilih Pelajaran -- </option>
                     '.$pelajaran.'
@@ -228,7 +228,7 @@ class Guru extends MY_Controller{
                 <input value="'.$row->nama_grup_soal.'" name="nama_grup_soal" type="text" class="form-control" placeholder="*) Masukan Nama Grup Soal" required="">
             </div>
             <div class="form-group">
-                <label>Jenis Kelamin</label>
+                <label>Pilih Pelajaran</label>
                 <select name="id_pelajaran" class="form-control" required>
                     <option value="" selected disabled> -- Pilih Pelajaran -- </option>
                     '.$pelajaran.'
