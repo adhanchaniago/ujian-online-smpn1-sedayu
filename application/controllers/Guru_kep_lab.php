@@ -720,7 +720,7 @@ class Guru_kep_lab extends MY_Controller{
             for ($s=1; $s < ($this->input->get('jumlah_siswa')+1) ; $s++) {
                 $th.= "<th>Siswa $s</th>";
             }
-            $this->benchmark->mark('code_start');
+            $this->benchmark->mark('code_start'); # mulai waktu pengacakan metode SQL Random
             $tr= '';
             $sql=[];
             $xn=[];
@@ -750,7 +750,7 @@ class Guru_kep_lab extends MY_Controller{
 
                 $tr.= '<tr>';
             }
-            $this->benchmark->mark('code_end');
+            $this->benchmark->mark('code_end'); # selesai waktu pengacakan metode SQL Random
             // echo "<pre>";
             // print_r($this->benchmark);
             // echo "</pre>";
