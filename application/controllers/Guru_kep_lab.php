@@ -694,6 +694,9 @@ class Guru_kep_lab extends MY_Controller{
                         '.$this->get_hasil_pengujian($_get_hasil_pengujian['jumlah_siswa'] ,$_get_hasil_pengujian['jumlah_soal'] ,$_get_hasil_pengujian['xn']).'
                     </div>
                     <div class="tab-pane container fade" id="menu2">
+                        Waktu Pengacakan = Script Pengacakan Selesai - Script Pengacakan Dimulai <br>
+                        Script Pengacakan Dimulai : '.( $this->benchmark->marker['code_start'] ).'<br>
+                        Script Pengacakan Selesai :'.( $this->benchmark->marker['code_end'] ).'
                         <button type="button" class="btn btn-block btn-outline-info disabled">'.$this->benchmark->elapsed_time('code_start','code_end') .' Detik</button>
                     </div>
                     <div class="tab-pane container fade" id="menu3">
