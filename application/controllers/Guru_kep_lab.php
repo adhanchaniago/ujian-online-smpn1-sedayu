@@ -197,7 +197,7 @@ class Guru_kep_lab extends MY_Controller{
                 <input name="nama_grup_soal" type="text" class="form-control" placeholder="*) Masukan Nama Grup Soal" required="">
             </div>
             <div class="form-group">
-                <label>Jenis Kelamin</label>
+                <label>Pelajaran</label>
                 <select name="id_pelajaran" class="form-control" required>
                     <option value="" selected disabled> -- Pilih Pelajaran -- </option>
                     '.$pelajaran.'
