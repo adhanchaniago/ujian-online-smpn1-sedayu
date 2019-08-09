@@ -110,6 +110,7 @@ class CI_Benchmark {
 		}
 
 		return number_format($this->marker[$point2] - $this->marker[$point1], $decimals);
+		#return number_format( $code_end - $code_start, 4);
 	}
 
 	// --------------------------------------------------------------------
