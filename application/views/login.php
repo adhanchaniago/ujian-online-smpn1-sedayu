@@ -20,15 +20,15 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <style>
-    body{
-      background: url("https://smpn1sedayu.com/src/bg/bg.jpg");
+    .login-page {
+      background: url("<?php echo base_url() ?>src/bg/bg.jpg");
       background-repeat: no-repeat;
       background-size: cover;
     }
-    .card{
+    .card {
       background-color: #ffffff9e !important;
     }
-    .card-body{
+    .card-body {
       background-color: #fff0 !important;
     }
   </style>
