@@ -2,8 +2,6 @@
 <!DOCTYPE html>
 <html>
 
-<!-- Mirrored from adminlte.io/themes/dev/AdminLTE/pages/examples/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 22 Apr 2019 02:46:01 GMT -->
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,7 +20,11 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page" style="
+    background: url(https://smpn1sedayu.com/src/bg/bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+">
 <div class="login-box">
   <div class="login-logo">
     <a href="<?php echo base_url() ?>"><b>Ujian</b> Online</a>
@@ -78,6 +80,4 @@
 <!-- iCheck -->
 <script src="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/iCheck/icheck.min.js"></script>
 </body>
-
-<!-- Mirrored from adminlte.io/themes/dev/AdminLTE/pages/examples/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 22 Apr 2019 02:46:01 GMT -->
 </html>
