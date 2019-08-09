@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <style>
     body{
-      background: url(https://smpn1sedayu.com/src/bg/bg.jpg);
+      background: url("https://smpn1sedayu.com/src/bg/bg.jpg");
       background-repeat: no-repeat;
       background-size: cover;
     }
