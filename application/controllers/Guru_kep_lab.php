@@ -517,13 +517,13 @@ class Guru_kep_lab extends MY_Controller{
     {
         $this->html='';
         $th='<td>No</td>';# header table
-        for ($i=1; $i < $jumlah_siswa ; $i++) { 
+        for ($i=1; $i < ($jumlah_siswa +1) ; $i++) { 
             $th .= '<td>Siswa '.$i.'</td>';
         }
         
         $tr_array= [];
-        for ($j=1; $j < $jumlah_soal+1 ; $j++) {
-            for ($i=1; $i < $jumlah_siswa  ; $i++) { 
+        for ($j=1; $j < ($jumlah_soal +1) ; $j++) {
+            for ($i=1; $i < ($jumlah_siswa +1)  ; $i++) { 
                 $tr_array[$j][$i]=0;
             }
         }
@@ -531,18 +531,22 @@ class Guru_kep_lab extends MY_Controller{
         $siswa_array= [];
         foreach ($xn as $key => $value) {
             $sub=[];
+            $key_mod=1;
             foreach ($xn as $key_sub => $value_sub) {
                 // $sub[$key_sub]= ( $value_sub[$key]==0 )? 50 : $value_sub[$key] ;
-                $sub[]= $value_sub ;
+                $sub[$key_mod]= $value_sub ;
+                $key_mod++;
             }
             $siswa_array[$key]= [
                 'siswa'=>$key,
                 'soal'=>$sub,
             ];
         }
+        
         # ganti data tr_array dengan siswa array
-        foreach ($siswa_array as $key => $value) {
+        /* foreach ($siswa_array as $key => $value) {
             foreach ($value['soal'] as $key_sub => $value_sub) {
+                
                 if ( $value_sub[$value['siswa']]==0 ) {
                     # if index soal sama dengan 0
                     $tr_array[50][$value['siswa']]= +1;
@@ -552,7 +556,33 @@ class Guru_kep_lab extends MY_Controller{
                 }
                 
             }
+        } */
+        foreach ($tr_array as $key => $value) {
+            if ( ! empty($siswa_array[$key]) ) {
+                foreach ($siswa_array[$key]['soal'] as $key_sub => $value_sub) {
+                    # code...
+                    foreach ($value_sub as $key_2 => $value_2) {
+                        $no_soal= ($value_2==0? 50 : $value_2 );
+                        // print_r($no_soal);
+                        // $tr_array[$key_sub][$key_2]= $no_soal;
+                        $tr_array[$no_soal][$key_2]= +1;
+                        
+                    }
+                    // print_r($value_sub);
+                    // print_r($key_sub);
+                    // die();
+                }
+                // die();
+            }
         }
+        // echo '<pre>';
+        // print_r($th);
+        // print_r($tr_array);
+        // print_r($siswa_array[1]);
+        // print_r($jumlah_siswa);
+        // print_r($xn);
+        // echo '<pre>';
+        // die();
 
         # generate tr body table
         $tr='';
@@ -632,26 +662,13 @@ class Guru_kep_lab extends MY_Controller{
                         $tr.= "<td>X".($i)."=( (1*{$j})+ {$_lcg['b']}) mod {$_lcg['m']}= {$lcg[$i][$j]} </td>";
                     }
                     else {
-                        // $xn[$i][$j]= $xn[($i-1)][$j];
                         $lcg[$i][$j]= ( (1* $xn[($i-1)][$j] )+ $_lcg['b'] ) % $_lcg['m'];
                         $xn[$i][$j]= $lcg[$i][$j];
                         $tr.= "<td>X ($i) =( (1*{$xn[($i-1)][$j]})+ {$_lcg['b']}) mod {$_lcg['m']}= {$lcg[$i][$j]} </td>";
-                        // echo "<pre>";
-                        // print_r($xn);
-                        // echo "</pre>";
-                        // if ( $i==2) {
-                        //     die();
-                        // }
                     }
                 }
 
                 $tr.= '<tr>';
-                /* echo "<pre>";
-                print_r($xn);
-                echo "</pre>";
-                if ( $i==2) {
-                    die();
-                } */
             }
             // echo "<pre>";
             // print_r($xn);
@@ -659,7 +676,7 @@ class Guru_kep_lab extends MY_Controller{
             $this->benchmark->mark('code_end'); # selesai waktu pengacakan metode LCG
             
             $_get_hasil_pengujian= [
-                'jumlah_siswa'=> ($this->input->get('jumlah_siswa') +1),
+                'jumlah_siswa'=> ($this->input->get('jumlah_siswa')),
                 'jumlah_soal'=> ($this->input->get('total_soal')),
                 'xn'=> $xn
             ];
@@ -706,7 +723,7 @@ class Guru_kep_lab extends MY_Controller{
                         </div>
                     </div>
                     <div class="tab-pane container fade" id="menu1">
-                        '.('1'/* $this->get_hasil_pengujian($_get_hasil_pengujian['jumlah_siswa'] ,$_get_hasil_pengujian['jumlah_soal'] ,$_get_hasil_pengujian['xn']) */).'
+                        '.($this->get_hasil_pengujian($_get_hasil_pengujian['jumlah_siswa'] ,$_get_hasil_pengujian['jumlah_soal'] ,$_get_hasil_pengujian['xn']) ).'
                     </div>
                     <div class="tab-pane container fade" id="menu2">
                         Waktu Pengacakan = Script Pengacakan Selesai - Script Pengacakan Dimulai <br>
@@ -808,7 +825,7 @@ class Guru_kep_lab extends MY_Controller{
                     </div>
                 </div>
                 <div class="tab-pane container fade" id="menu1">
-                    '.$this->get_hasil_pengujian( ($this->input->get('jumlah_siswa') +1), ($this->input->get('total_soal') ), $xn).'
+                    '.$this->get_hasil_pengujian( ($this->input->get('jumlah_siswa')), ($this->input->get('total_soal') ), $xn).'
                 </div>
                 <div class="tab-pane container fade" id="menu2">
                     Waktu Pengacakan = Script Pengacakan Selesai - Script Pengacakan Dimulai <br>
