@@ -32,6 +32,7 @@ class Siswa extends MY_Controller{
         $this->content['row']   = $this->m_siswa->data_siswa_edit();
         $this->content['jk']    = $this->m_siswa->siswa_jk();
         $this->content['agama'] = $this->m_siswa->siswa_agama();
+        $this->content['kelas'] = $this->m_siswa->data_kelas_siswa();
         $this->view= 'siswa/profil';
         $this->render_pages();
 

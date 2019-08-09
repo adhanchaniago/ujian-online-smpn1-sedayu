@@ -80,6 +80,12 @@ class M_siswa extends CI_Model
             WHERE siswa.username='{$this->username}'
         ")->row();
     }
+    public function data_kelas_siswa()
+    {
+        return $this->db->query("
+        SELECT * FROM pbm,pelajaran,kelas WHERE pbm.id_pelajaran=pelajaran.id_pelajaran AND kelas.id_kelas=pelajaran.id_kelas AND nis='{$this->username}' GROUP BY kelas.id_kelas
+        ")->row();
+    }
     public function siswa_jk()
     {
         $query = " SHOW COLUMNS FROM `siswa` LIKE 'jk' ";

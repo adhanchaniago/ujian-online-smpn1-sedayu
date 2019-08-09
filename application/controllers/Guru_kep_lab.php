@@ -557,28 +557,19 @@ class Guru_kep_lab extends MY_Controller{
                 
             }
         } */
-        foreach ($tr_array as $key => $value) {
-            if ( ! empty($siswa_array[$key]) ) {
-                foreach ($siswa_array[$key]['soal'] as $key_sub => $value_sub) {
-                    # code...
-                    foreach ($value_sub as $key_2 => $value_2) {
-                        $no_soal= ($value_2==0? 50 : $value_2 );
-                        // print_r($no_soal);
-                        // $tr_array[$key_sub][$key_2]= $no_soal;
-                        $tr_array[$no_soal][$key_2]= +1;
-                        
-                    }
-                    // print_r($value_sub);
-                    // print_r($key_sub);
-                    // die();
-                }
-                // die();
+        // for ($i=1; $i < $this->get->input('jumlah_soal')+1 ; $i++) { 
+        //     # code...
+        // }
+        foreach ($xn as $key => $value) { #loop 1-total soal
+            foreach ($value as $key_sub => $value_sub) { # loop 1-jumlah siswa
+                $no_soal= ($value_sub==0? 50 : $value_sub );
+                $tr_array[$no_soal][$key_sub] ++;
             }
         }
         // echo '<pre>';
         // print_r($th);
         // print_r($tr_array);
-        // print_r($siswa_array[1]);
+        // print_r($siswa_array);
         // print_r($jumlah_siswa);
         // print_r($xn);
         // echo '<pre>';

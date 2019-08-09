@@ -27,28 +27,52 @@
             <!-- </div> -->
             <!-- /.card-header -->
             <div class="card-body">
-                <form action="'.base_url().'siswa/data-siswa-update" role="form" id="edit" method="post" enctype="multipart/form-data">
+            <table style="width:100%;">
+
+<tbody>
+  <tr>
+    <td rowspan="4">
+    <center><img src="img/'.$value['users_foto_mod'].'" style="height: 200px !important"></center>
+    </td>
+  <td><b>NIS</b></td>
+  <td>: <?php echo $row->nis ?></td>
+  </tr>
+  <tr>
+  <td><b>Nama</b></td>
+  <td>: <?php echo $row->nama ?></td>
+  </tr>
+  <tr>
+  <td><b>Kelas</b></td>
+  <td>: <?php echo ( empty($kelas) ? 'Maaf Anda Belum Terdaftar PBM Silahkan Menghubungi Bagian Operasional' : $kelas->nama_kelas)?></td>
+  </tr>
+  <tr>
+  <td><b>Tahun Ajaran</b></td>
+  <td>: <?php echo ( empty($kelas) ? 'Maaf Anda Belum Terdaftar PBM Silahkan Menghubungi Bagian Operasional' : $kelas->tahun_ajaran)?></td>
+  </tr>
+  </tbody>
+</table>
+                <!-- <form action="'.base_url().'siswa/data-siswa-update" role="form" id="edit" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label>NIS</label>
                         <input readonly value="<?php echo $row->nis ?>" name="nip" type="text" class="form-control" placeholder="*) Masukan NIS" required="">
                     </div>
                     <div class="form-group">
                         <label>Nama Siswa</label>
-                        <input readonly value="<?php echo $row->nama ?>" name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
+                        <input readonly value="" name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
                     </div>
                     <div class="form-group">
                         <label>Jenis Kelamin</label>
                         <div class="form-group">
                             <?php
-                              foreach ($jk as $key => $value) {
+                              /* foreach ($jk as $key => $value) {
                                 echo '
                                     <div class="form-check-inline">
                                         <label class="form-check-label">
-                                            <input '.($value==$row->jk? 'checked' : null).' type="radio" class="form-check-input" name="jk" value="'.$value.'" required>'.($value=='L' ? 'Laki-Laki' : 'Perempuan' ).'
+                                            <input '.($value==$row->jk? 'checked' : null).' type="radio" class="form-check-input" name="jk" value="'.$value.'" required>'..'
                                         </label>
                                     </div>
                                 ';
-                              }
+                              } */
                             ?>
                         </div>
                     </div>
@@ -56,7 +80,7 @@
                         <label>Agama</label>
                         <div class="form-group">
                             <?php
-                              foreach ($agama as $key => $value) {
+                              /* foreach ($agama as $key => $value) {
                                 echo '
                                     <div class="form-check-inline">
                                         <label class="form-check-label">
@@ -64,7 +88,7 @@
                                         </label>
                                     </div>
                                 ';
-                              }
+                              } */
                             ?>
                         </div>
                     </div>
@@ -95,7 +119,7 @@
                     <div class="form-group">
                         <label>Foto</label>
                         <img class="d-block img-thumbnail" src="<?php echo base_url('src/siswa/'.$row->gambar) ?>">
-                    </div>
+                    </div> -->
                     <a href="<?php echo base_url('siswa/form-data-siswa-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a>
             </div>
             <!-- /.card-body -->
