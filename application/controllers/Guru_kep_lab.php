@@ -632,15 +632,30 @@ class Guru_kep_lab extends MY_Controller{
                         $tr.= "<td>X".($i)."=( (1*{$j})+ {$_lcg['b']}) mod {$_lcg['m']}= {$lcg[$i][$j]} </td>";
                     }
                     else {
-                        $xn[$i][$j]= $xn[($i-1)][$j];
-                        $lcg[$i][$j]= ( (1* $xn[$i][$j] )+ $_lcg['b'] ) % $_lcg['m'];
+                        // $xn[$i][$j]= $xn[($i-1)][$j];
+                        $lcg[$i][$j]= ( (1* $xn[($i-1)][$j] )+ $_lcg['b'] ) % $_lcg['m'];
                         $xn[$i][$j]= $lcg[$i][$j];
-                        $tr.= "<td>X ($i) =( (1*{$xn[$i][$j]})+ {$_lcg['b']}) mod {$_lcg['m']}= {$lcg[$i][$j]} </td>";
+                        $tr.= "<td>X ($i) =( (1*{$xn[($i-1)][$j]})+ {$_lcg['b']}) mod {$_lcg['m']}= {$lcg[$i][$j]} </td>";
+                        // echo "<pre>";
+                        // print_r($xn);
+                        // echo "</pre>";
+                        // if ( $i==2) {
+                        //     die();
+                        // }
                     }
                 }
 
                 $tr.= '<tr>';
+                /* echo "<pre>";
+                print_r($xn);
+                echo "</pre>";
+                if ( $i==2) {
+                    die();
+                } */
             }
+            // echo "<pre>";
+            // print_r($xn);
+            // echo "</pre>";
             $this->benchmark->mark('code_end'); # selesai waktu pengacakan metode LCG
             
             $_get_hasil_pengujian= [
@@ -691,7 +706,7 @@ class Guru_kep_lab extends MY_Controller{
                         </div>
                     </div>
                     <div class="tab-pane container fade" id="menu1">
-                        '.$this->get_hasil_pengujian($_get_hasil_pengujian['jumlah_siswa'] ,$_get_hasil_pengujian['jumlah_soal'] ,$_get_hasil_pengujian['xn']).'
+                        '.('1'/* $this->get_hasil_pengujian($_get_hasil_pengujian['jumlah_siswa'] ,$_get_hasil_pengujian['jumlah_soal'] ,$_get_hasil_pengujian['xn']) */).'
                     </div>
                     <div class="tab-pane container fade" id="menu2">
                         Waktu Pengacakan = Script Pengacakan Selesai - Script Pengacakan Dimulai <br>
