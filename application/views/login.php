@@ -19,12 +19,21 @@
   <link rel="stylesheet" href="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/iCheck/square/blue.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <style>
+    body{
+      background: url(https://smpn1sedayu.com/src/bg/bg.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .card{
+      background-color: #ffffff9e !important;
+    }
+    .card-body{
+      background-color: #fff0 !important;
+    }
+  </style>
 </head>
-<body class="hold-transition login-page" style="
-    background: url(https://smpn1sedayu.com/src/bg/bg.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-">
+<body class="hold-transition login-page" >
 <div class="login-box">
   <div class="login-logo">
     <a href="<?php echo base_url() ?>"><b>Ujian</b> Online</a>
