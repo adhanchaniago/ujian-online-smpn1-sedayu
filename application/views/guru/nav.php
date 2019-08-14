@@ -9,6 +9,17 @@
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
       </li>
     </ul>
+    <table>
+      <tr style="border-bottom: 1px solid #ddd;">
+        <td id="tglSekarang" colspan="4"></td>
+      </tr>
+      <tr>
+        <td>Jam </td>
+        <td id="jam"></td>
+        <td id="menit"></td>
+        <td id="detik"></td>
+      </tr>
+    </table>
 
     <!-- Right navbar links -->
     <div class="navbar-nav ml-auto">
