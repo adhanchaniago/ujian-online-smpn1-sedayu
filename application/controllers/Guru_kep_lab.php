@@ -16,6 +16,8 @@ class Guru_kep_lab extends MY_Controller{
 
     public function index()
     {
+        $this->content['grup_soal_count']= count($this->m_kep_lab->grup_soal());
+        $this->content['soal_count']= count($this->m_kep_lab->soal());
         $this->view= 'guru_kep_lab/index';
         $this->render_pages();
     }
@@ -28,6 +30,7 @@ class Guru_kep_lab extends MY_Controller{
         $this->content['row']   = $this->m_kep_lab->edit_profil ();
         $this->content['jk']    = $this->m_kep_lab->guru_jk();
         $this->content['agama'] = $this->m_kep_lab->guru_agama();
+        $this->content['pelajaran'] = $this->m_kep_lab->get_pelajaran_by_username();
         
         $this->view= 'guru_kep_lab/profil';
         $this->render_pages();
@@ -562,7 +565,8 @@ class Guru_kep_lab extends MY_Controller{
         // }
         foreach ($xn as $key => $value) { #loop 1-total soal
             foreach ($value as $key_sub => $value_sub) { # loop 1-jumlah siswa
-                $no_soal= ($value_sub==0? 50 : $value_sub );
+                // $no_soal= ($value_sub==0? 50 : $value_sub );
+                $no_soal= ($value_sub==0? $this->input->get('total_soal') : $value_sub );
                 $tr_array[$no_soal][$key_sub] ++;
             }
         }
@@ -608,18 +612,22 @@ class Guru_kep_lab extends MY_Controller{
     public function get_soal($id_grup_soal)
     {
         $this->m_kep_lab->post['id_grup_soal']= $id_grup_soal;
-        $no=1;
+        // $no=1;
         $this->html='';
         foreach ($this->m_kep_lab->get_soal() as $key => $value) {
             $this->html .= "
                 <tr>
-                    <td>{$no}</td>
+                    <td>{$value->id_mod}</td>
                     <td>{$value->soal}</td>
                 </tr>
             ";
-            $no++;
+            // $no++;
         }
         return $this->html;
+        // echo "<table>$this->html</table>";
+        // echo '<pre>';
+        // print_r($this->m_kep_lab->get_soal());
+        // echo '</pre>';
     }
     /* end mendapatkan soal berdasarkan grup soal */
 
@@ -697,7 +705,7 @@ class Guru_kep_lab extends MY_Controller{
                     <br>
                     <div class="tab-pane container active" id="home">
                         <div class="table-responsive">
-                            <span class="alert alert-info"><strong>Info!</strong> Jika Xn=0 maka soal yang digunakan adalah soal no 50</span>
+                            <span class="alert alert-info"><strong>Info!</strong> Jika Xn=0 maka soal yang digunakan adalah soal no '.$this->input->get('total_soal').'</span>
                             </br>
                             <br>
                             <table class="table table-striped">
@@ -758,9 +766,9 @@ class Guru_kep_lab extends MY_Controller{
                 foreach ($this->m_kep_lab->metode_sql() as $key => $value) {
                     $sql[$no][$js]= [
                         'seed'=> $js,
-                        'result'=> $value->id_soal
+                        'result'=> $value->id_mod
                     ];
-                    $xn[$no][$js]= $value->id_soal;
+                    $xn[$no][$js]= $value->id_mod;
                     $no++;
                 }
             }

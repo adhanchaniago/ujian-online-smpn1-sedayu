@@ -27,27 +27,33 @@
             <!-- </div> -->
             <!-- /.card-header -->
             <div class="card-body">
-                  <div class="form-group">
-                      <label>Nama Admin</label>
-                      <input readonly value="<?php echo $row->nama ?>" name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
-                  </div>
-                  <div class="form-group">
-                      <label>No Telp</label>
-                      <input readonly value="<?php echo $row->no_telp ?>" name="telp" type="telp" class="form-control" placeholder="*) 08123456789" required="">
-                  </div>
-                  <div class="form-group">
-                      <label>Email</label>
-                      <input readonly value="<?php echo $row->email ?>" name="email" type="text" class="form-control" placeholder="*) email@gmail.com" required="">
-                  </div>
-                  <div class="form-group">
-                      <label>Alamat</label>
-                      <textarea readonly name="alamat" class="form-control" rows="3" required><?php echo $row->alamat ?></textarea>
-                  </div>
-                  <div class="form-group">
-                      <label>Username</label>
-                      <input readonly value="<?php echo $row->username ?>" name="username" type="text" class="form-control" placeholder="*) Masukan Username" required="">
-                  </div>
-                  <a href="<?php echo base_url('admin/form-data-admin-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a>
+              <table class="table table-bordered">
+                <tbody>
+                  <tr>
+                    <td colspan="2"><a href="<?php echo base_url('admin/form-data-admin-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td><label>Nama Admin</label></td>
+                    <td><?php echo $row->nama ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>No Telp</label></td>
+                    <td><?php echo $row->no_telp ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Email</label></td>
+                    <td><?php echo $row->email ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Alamat</label></td>
+                    <td><?php echo $row->alamat ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Username</label></td>
+                    <td><?php echo $row->username ?></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <!-- /.card-body -->
           </div>

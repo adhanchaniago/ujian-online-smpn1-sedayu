@@ -516,13 +516,29 @@ class M_admin extends CI_Model{
         switch ($this->session->userdata('level')) {
             case 'admin':
                 # code...
+                // return $this->db->query("
+                //     SELECT *,
+                //         IF(siswa.jk='L','Laki-Laki','Perempuan') AS gender
+                //     FROM siswa
+                //         LEFT JOIN users
+                //             ON siswa.username=users.username
+                // ")->result_object();
                 return $this->db->query("
                     SELECT *,
-                        IF(siswa.jk='L','Laki-Laki','Perempuan') AS gender
+                    IF(siswa.jk='L','Laki-Laki','Perempuan') AS gender,
+                    IFNULL((SELECT kelas.nama_kelas FROM pbm,pelajaran,kelas WHERE pbm.id_pelajaran=pelajaran.id_pelajaran AND kelas.id_kelas=pelajaran.id_kelas AND pbm.nis=siswa.nis ORDER BY kelas.id_kelas DESC LIMIT 1),'-') AS nama_kelas_mod
                     FROM siswa
-                        LEFT JOIN users
-                            ON siswa.username=users.username
+                    LEFT JOIN users
+                    ON siswa.username=users.username
                 ")->result_object();
+                // return $this->db->query("
+                //     SELECT *,
+                //     IF(siswa.jk='L','Laki-Laki','Perempuan') AS gender,
+                //     IFNULL((SELECT kelas.nama_kelas FROM pbm,pelajaran,kelas WHERE pbm.id_pelajaran=pelajaran.id_pelajaran AND kelas.id_kelas=pelajaran.id_kelas AND pbm.nis=siswa.nis ORDER BY kelas.id_kelas DESC LIMIT 1),'-') AS kelas
+                //     FROM siswa
+                //     LEFT JOIN users
+                //     ON siswa.username=users.username
+                // ")->result_object();
                 break;
             
             default:
@@ -1403,6 +1419,24 @@ class M_admin extends CI_Model{
                 break;
         }
     }
+
+    /* ==================== start mendapatkan data peleajaran guru dari data pbm ==================== */
+    public function get_pelajaran_guru_by_pbm(){
+        return $this->db->query("SELECT * FROM pbm LEFT JOIN guru ON guru.nip=pbm.nip LEFT JOIN pelajaran ON pelajaran.id_pelajaran=pbm.id_pelajaran LEFT JOIN kelas ON kelas.id_kelas=pelajaran.id_kelas WHERE 1 GROUP BY pbm.nip,pbm.tahun_ajaran,pbm.id_pelajaran,kelas.id_kelas ORDER BY pbm.tahun_ajaran ASC")->result_object();
+    }
+    /* ==================== end mendapatkan data peleajaran guru dari data pbm ==================== */
+    
+    /* ==================== start mendapatkan data peleajaran siswa dari data pbm ==================== */
+    public function get_pelajaran_siswa_by_pbm(){
+        return $this->db->query("SELECT * FROM pbm LEFT JOIN siswa ON siswa.nis=pbm.nis LEFT JOIN pelajaran ON pelajaran.id_pelajaran=pbm.id_pelajaran LEFT JOIN kelas ON kelas.id_kelas=pelajaran.id_kelas WHERE 1 GROUP BY pbm.nis,pbm.tahun_ajaran,pbm.id_pelajaran,kelas.id_kelas ORDER BY pbm.tahun_ajaran ASC")->result_object();
+    }
+    /* ==================== end mendapatkan data peleajaran siswa dari data pbm ==================== */
+    
+    /* ==================== start mendapatkan data siswa dari berdasarka kelas dari data pbm ==================== */
+    public function search_siswa_by_kelas($id_kelas){
+        return $this->db->query("SELECT * FROM pbm LEFT JOIN siswa ON siswa.nis=pbm.nis LEFT JOIN pelajaran ON pelajaran.id_pelajaran=pbm.id_pelajaran LEFT JOIN kelas ON kelas.id_kelas=pelajaran.id_kelas WHERE 1 AND kelas.id_kelas='{$id_kelas}' GROUP BY pbm.nis")->result_object();
+    }
+    /* ==================== end mendapatkan data siswa dari berdasarka kelas dari data pbm ==================== */
 
 
 

@@ -250,6 +250,13 @@ class M_guru extends CI_Model{
         ];
         return $this->db->insert('soal',$data);
     }
+    public function data_soal_store_batch()
+    {
+        $this->db->trans_start();
+        $this->db->insert_batch('soal',$this->post);
+        $this->db->trans_complete();
+        return $this->db->trans_status();
+    }
 
     public function data_soal_edit()
     {
@@ -274,5 +281,12 @@ class M_guru extends CI_Model{
         ];
         return $this->db->update('soal',$data,$where);
     }
+
+    /* ==================== start get pelajaran by username ==================== */
+    public function get_pelajaran_by_username()
+    {
+        return $this->db->query("SELECT * FROM pbm LEFT JOIN guru ON guru.nip=pbm.nip LEFT JOIN pelajaran ON pelajaran.id_pelajaran=pbm.id_pelajaran LEFT JOIN kelas ON kelas.id_kelas=pelajaran.id_kelas WHERE 1 AND guru.username='".$this->session->userdata('username')."' GROUP BY pelajaran.id_pelajaran,kelas.id_kelas ")->result_object();
+    }
+    /* ==================== end get pelajaran by username ==================== */
     
 }

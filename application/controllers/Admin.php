@@ -166,6 +166,8 @@ class Admin extends MY_Controller{
     public function data_guru()
     {
         $this->content['rows']= $this->m_admin->data_guru();
+        $this->content['rows_pbm']= $this->m_admin->get_pelajaran_guru_by_pbm();
+
         $this->view= 'admin/data_guru';
         $this->render_pages();
     }
@@ -467,6 +469,7 @@ class Admin extends MY_Controller{
     public function data_siswa()
     {
         $this->content['rows']= $this->m_admin->data_siswa();
+        $this->content['rows_pbm']= $this->m_admin->get_pelajaran_siswa_by_pbm();
         $this->view= 'admin/data_siswa';
         $this->render_pages();
     }
@@ -857,6 +860,38 @@ class Admin extends MY_Controller{
             ];
         }
         echo json_encode($this->msg);
+    }
+    public function search_siswa()
+    {
+        $this->html= "";
+        $tbody= "";
+        $no=1;
+        foreach ($this->m_admin->search_siswa_by_kelas($this->uri->segment(3)) as $key => $value) {
+            $tbody .= "
+                <tr>
+                    <td>{$no}</td>
+                    <td>{$value->nis}</td>
+                    <td>{$value->nama}</td>
+                </tr>
+            ";
+            $no++;
+        }
+        $this->html .='
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>No</th>
+                  <th>NIS</th>
+                  <th>Nama</th>
+                </tr>
+                </thead>
+                <tbody>
+                    '.$tbody.'
+                </tbody>
+            </table>
+        ';
+        print_r($this->html);
+        
     }
     public function data_pelajaran()
     {

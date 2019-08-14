@@ -283,20 +283,35 @@ class M_kep_lab extends CI_Model{
     
     public function metode_sql()
     {
-        return $this->db->query("SELECT * FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}' ORDER BY RAND({$this->post["seed"]})
+        $this->db->trans_start();
+        $this->db->query("SET @id=0");
+        $result= $this->db->query("
+            SELECT *,@id:=@id+1 AS id_mod FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}' ORDER BY RAND({$this->post["seed"]})
             LIMIT {$this->post["limit"]}
-        ")->result_object();
+        ");
+        $this->db->trans_complete();
+        return $result->result_object();
     }
 
     /* mendapatkan soal */
     public function get_soal()
     {
-        return $this->db->query("
-            SELECT * FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}'
+        $this->db->trans_start();
+        $this->db->query("SET @id=0");
+        $result= $this->db->query("
+            SELECT *,@id:=@id+1 AS id_mod FROM soal WHERE id_grup_soal='{$this->post["id_grup_soal"]}'
             ORDER BY id_soal ASC
-        ")->result_object();
+        ");
+        $this->db->trans_complete();
+        return $result->result_object();
+
     }
     /* end mendapatkan soal */
 
-
+    /* ==================== start get pelajaran by username ==================== */
+    public function get_pelajaran_by_username()
+    {
+        return $this->db->query("SELECT * FROM pbm LEFT JOIN guru ON guru.nip=pbm.nip LEFT JOIN pelajaran ON pelajaran.id_pelajaran=pbm.id_pelajaran LEFT JOIN kelas ON kelas.id_kelas=pelajaran.id_kelas WHERE 1 AND guru.username='".$this->session->userdata('username')."' GROUP BY pelajaran.id_pelajaran,kelas.id_kelas ")->result_object();
+    }
+    /* ==================== end get pelajaran by username ==================== */
 }

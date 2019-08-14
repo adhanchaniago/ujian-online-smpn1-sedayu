@@ -37,8 +37,7 @@
                 <tr>
                   <th>NIP</th>
                   <th>Nama Guru</th>
-                  <th>Jenis Kelamin</th>
-                  <th>No Telpon</th>
+                  <th>PBM</th>
                   <th>Blok</th>
                   <th>Action</th>
                 </tr>
@@ -46,12 +45,15 @@
                 <tbody>
                 <?php
                   foreach ($rows as $key => $value) {
+                    $pbm_html="";
+                    foreach ($rows_pbm as $key_pbm => $pbm) {
+                      $pbm_html .= ($pbm->username==$value->username? "<li>{$pbm->nama_pelajaran} ({$pbm->nama_kelas} Tahun Ajaran {$pbm->tahun_ajaran})</li>" : NULL);
+                    }
                     echo "
                       <tr>
                         <td>{$value->nip}</td>
                         <td>{$value->nama}</td>
-                        <td>{$value->gender}</td>
-                        <td>{$value->no_telp}</td>
+                        <td>".(empty($pbm_html) ? "-" : "<ol>{$pbm_html}</ol>" )."</td>
                         <td>{$value->blok}</td>
                         <td>
                           <div class='btn-group'>

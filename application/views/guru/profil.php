@@ -27,76 +27,85 @@
             <!-- </div> -->
             <!-- /.card-header -->
             <div class="card-body">
-                <form action="'.base_url().'guru/data-guru-update" role="form" id="edit" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label>NIP</label>
-                        <input readonly value="<?php echo $row->nip ?>" name="nip" type="text" class="form-control" placeholder="*) Masukan NIP" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Guru</label>
-                        <input readonly value="<?php echo $row->nama ?>" name="nama" type="text" class="form-control" placeholder="*) Masukan Nama" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Jenis Kelamin</label>
-                        <div class="form-group">
-                            <?php
-                              foreach ($jk as $key => $value) {
-                                echo '
-                                    <div class="form-check-inline">
-                                        <label class="form-check-label">
-                                            <input '.($value==$row->jk? 'checked' : null).' type="radio" class="form-check-input" name="jk" value="'.$value.'" required>'.($value=='L' ? 'Laki-Laki' : 'Perempuan' ).'
-                                        </label>
-                                    </div>
-                                ';
-                              }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Agama</label>
-                        <div class="form-group">
-                            <?php
-                              foreach ($agama as $key => $value) {
-                                echo '
-                                    <div class="form-check-inline">
-                                        <label class="form-check-label">
-                                            <input '.($value==$row->agama? 'checked' : null).' type="radio" class="form-check-input" name="agama" value="'.$value.'" required>'.$value.'
-                                        </label>
-                                    </div>
-                                ';
-                              }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Tempat Lahir</label>
-                        <input readonly value="<?php echo $row->tempat_lahir ?>" name="tempat_lahir" type="text" class="form-control" placeholder="*) Masukan Tempat Lahir" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Tanggal Lahir</label>
-                        <input readonly value="<?php echo $row->tgl_lahir ?>" name="tgl_lahir" type="date" class="form-control" placeholder="" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>No Telp</label>
-                        <input readonly value="<?php echo $row->no_telp ?>" name="telp" type="telp" class="form-control" placeholder="*) 08123456789" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input readonly value="<?php echo $row->email ?>" name="email" type="text" class="form-control" placeholder="*) email@gmail.com" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Alamat</label>
-                        <textarea readonly name="alamat" class="form-control" rows="3" required><?php echo $row->alamat ?></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input readonly value="<?php echo $row->username ?>" name="username" type="text" class="form-control" placeholder="*) Masukan Username" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Foto</label>
-                        <img class="d-block img-thumbnail" src="<?php echo base_url('src/guru/'.$row->gambar) ?>">
-                    </div>
-                    <a href="<?php echo base_url('guru/form-data-guru-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a>
+              <table class="table table-bordered">
+                <tbody>
+                  <tr>
+                    <td colspan="2"><a href="<?php echo base_url('guru/form-data-guru-edit/'.$row->username) ?>" class="btn btn-primary edit">Edit</a></td>
+                  </tr>
+                  <tr>
+                    <td><label>NIP</label></td>
+                    <td><?php echo $row->nip ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Nama Guru</label></td>
+                    <td><?php echo $row->nama ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Pelajaran</label></td>
+                    <td>
+                    <?php
+                      if ( count($pelajaran) > 0 ) {
+                        echo '<ol>';
+                        foreach ($pelajaran as $key => $value) {
+                          echo "<li>{$value->nama_pelajaran} ({$value->nama_kelas})</li>";
+                        }
+                        echo '</ol>';
+                      } else {
+                        echo 'Maaf Anda Belum Terdaftar PBM Silahkan Menghubungi Bagian Operasional';
+                      }
+                    ?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label>Tahun Ajaran</label></td>
+                    <td>
+                    <?php
+                      if ( count($pelajaran) > 0 ) {
+                        print_r($pelajaran[0]->tahun_ajaran);
+                      } else {
+                        echo 'Maaf Anda Belum Terdaftar PBM Silahkan Menghubungi Bagian Operasional';
+                      }
+                    ?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label>Jenis Kelamin</label></td>
+                    <td><?php echo ($row->jk=='L' ? 'Laki-Laki' : 'Perempuan' ) ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Agama</label></td>
+                    <td><?php echo $row->agama ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Tempat Lahir</label></td>
+                    <td><?php echo $row->tempat_lahir ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Tanggal Lahir</label></td>
+                    <td><?php echo date("m-d-Y", strtotime($row->tgl_lahir)) ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>No Telp</label></td>
+                    <td><?php echo $row->no_telp ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Email</label></td>
+                    <td><?php echo $row->email ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Alamat</label></td>
+                    <td><?php echo $row->alamat ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Username</label></td>
+                    <td><?php echo $row->username ?></td>
+                  </tr>
+                  <tr>
+                    <td><label>Foto</label></td>
+                    <td><?php echo ($row->gambar=='NULL'? 'Belum Ada Foto' : '<img class="d-block img-thumbnail" src="'.base_url('src/guru/'.$row->gambar).'">') ?></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <!-- /.card-body -->
           </div>

@@ -16,6 +16,8 @@ class Guru extends MY_Controller{
 
     public function index()
     {
+        $this->content['grup_soal_count']= count($this->m_guru->data_grup_soal());
+        $this->content['soal_count']= count($this->m_guru->data_soal());
         $this->view= 'guru/index';
         $this->render_pages();
     }
@@ -170,11 +172,15 @@ class Guru extends MY_Controller{
 
     public function data_profil()
     {
+        // echo '<pre>';
+        // print_r($this->session->userdata());
+        // echo '</pre>';
         $this->m_guru->username= $this->session->userdata('username');
 
         $this->content['row']   = $this->m_guru->data_guru_edit();
         $this->content['jk']    = $this->m_guru->guru_jk();
         $this->content['agama'] = $this->m_guru->guru_agama();
+        $this->content['pelajaran'] = $this->m_guru->get_pelajaran_by_username();
         $this->view= 'guru/profil';
         $this->render_pages();
     }
@@ -461,5 +467,23 @@ class Guru extends MY_Controller{
             ];
         }
         echo json_encode($this->msg);
+    }
+    public function insert_batch_soal()
+    {
+        $soal= 500;
+        $a=0;
+        $data="";
+        $a_rand=array("A","B","C","D");
+        while ($a++ <= 500) {
+            $random_keys=array_rand($a_rand);
+            # code...
+            $data .= "('Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D','5','{$a_rand[$random_keys]}','Soal no {$a}'),";
+        }
+        $this->m_guru->post= $data;
+        echo '<pre>';
+        // print_r(array_rand($a_rand));
+        print_r("INSERT INTO `soal` (`a`, `b`, `c`, `d`, `id_grup_soal`, `jawaban`, `soal`) VALUES {$data}");
+        // print_r($this->m_guru->post);
+        echo '</pre>';
     }
 }
